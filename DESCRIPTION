@@ -1,0 +1,22 @@
+Package: poolsexvis
+Type: Package
+Title: Visualization of results from the Poolsex pipeline
+Version: 0.1.0
+Author: Romain Feron
+Maintainer: Romain Feron <romain.feron.91@gmail.com>
+Author@R: person("Romain", "Feron", email = "romain.feron.91@gmail.com", 
+  role = c("aut", "cre"))
+Description: This package is part of the Poolsex pipeline, which analyzes pooled sequencing data for sex-determination.
+    It offers functions to visualize the pipeline's results in a simple and consistent way.
+License: GPL-3
+Encoding: UTF-8
+LazyData: false
+Imports:
+    readr (>= 1.1.1),
+    ggplot2 (>= 2.2.1),
+    gtools (>= 3.5.0),
+    circlize (>= 0.4.3),
+    cowplot (>= 0.9.2)
+URL: https://github.com/INRA-LPGP/poolsex-vis
+BugReports: https://github.com/INRA-LPGP/poolsex-vis/issues
+RoxygenNote: 6.0.1
