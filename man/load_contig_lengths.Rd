@@ -4,7 +4,8 @@
 \alias{load_contig_lengths}
 \title{Load a contig lengths file}
 \usage{
-load_contig_lengths(input_file_path, chromosomes_names = NULL)
+load_contig_lengths(input_file_path, chromosomes_names = NULL,
+  plot.unplaced = TRUE)
 }
 \arguments{
 \item{input_file_path}{Path to a contig lengths file.}

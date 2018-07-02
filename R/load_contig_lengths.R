@@ -17,7 +17,7 @@
 
 
 
-load_contig_lengths <- function(input_file_path, chromosomes_names = NULL) {
+load_contig_lengths <- function(input_file_path, chromosomes_names = NULL, plot.unplaced = TRUE) {
 
     raw_data <- suppressMessages(readr::read_delim(input_file_path, "\t", escape_double = FALSE, col_names = FALSE,  trim_ws = TRUE))
     data <- raw_data$X2
@@ -35,18 +35,32 @@ load_contig_lengths <- function(input_file_path, chromosomes_names = NULL) {
 
         output$lg <- subset(data, substr(names(data), 1, 2) %in% c("LG", "lg", "Lg", "Ch", "ch", "CH", "NC"))
 
-        # Usually mitochondria is also called NC_xxx. If one chromosome is > 100 times smaller than the average of all ohter chromosomes,
-        # it is considered to be the mitochondria and is removed
-        putative_mt <- min(output$lg)
-        if (100 * putative_mt < mean(output$lg)) output$lg <- output$lg[output$lg != putative_mt]
+        if (is.data.frame(output$lg) && dim(output$lg)[1] > 0) {
 
-        output$lg <- output$lg[gtools::mixedorder(names(output$lg))]  # Order chromosomes based on their ID
+            # Usually mitochondria is also called NC_xxx. If one chromosome is > 100 times smaller than the average of all ohter chromosomes,
+            # it is considered to be the mitochondria and is removed
+            putative_mt <- min(output$lg)
+            if (100 * putative_mt < mean(output$lg)) output$lg <- output$lg[output$lg != putative_mt]
+
+            output$lg <- output$lg[gtools::mixedorder(names(output$lg))]  # Order chromosomes based on their ID
+        }
 
         output$unplaced <- subset(data, !(substr(names(data), 1, 2) %in% c("LG", "lg", "Ch", "ch", "MT", "mt", "NC")))
 
     }
 
     output$unplaced <- sort(output$unplaced, decreasing = TRUE)  # Sort unplaced scaffolds by size
+
+    if (plot.unplaced) {
+
+        output$plot <- c(output$lg, "Unplaced" = sum(output$unplaced))
+
+    } else {
+
+        output$plot <- output$lg
+
+    }
+
 
     return(output)
 }
