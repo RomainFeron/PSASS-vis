@@ -10,13 +10,13 @@ draw_window_fst(data, ylim = c(0, 1.025 * max(data$Fst) + 0.01),
   "dodgerblue3", `1` = "goldenrod1", `2` = "grey20"))
 }
 \arguments{
-\item{data}{FST position data frame.}
+\item{data}{FST window data frame.}
 
-\item{ylim}{Limits of the y axis (default c(min(FST), 1)).}
+\item{ylim}{Limits of the y axis (default c(0, 1.025 * max(FST))).}
 
 \item{bg.col}{Background color for sectors, either a single color or a vector of colors for each sector (default "white").}
 
-\item{point.size}{Size of a point in the plot (default 0.5).}
+\item{point.size}{Size of a point in the plot (default 0.01).}
 
 \item{top.track}{If TRUE, this track will be considered top track of the plot and the x axis will be drawn (default FALSE).}
 
