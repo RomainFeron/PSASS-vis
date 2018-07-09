@@ -24,6 +24,8 @@ draw_position_fst <- function(data,
                               top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3,
                               color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
 
+    print(" - Drawing position FST track ... ")
+
     # Draw the top track of the plot, showing sex-bias
     circlize::circos.track(factors = data$Contig,
                            x = data$Position,
@@ -86,7 +88,7 @@ draw_position_fst <- function(data,
                                    label_offset <- - 5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
-                                                         expression(bold(paste0("F"["ST"], " > 0.25"))),
+                                                         expression(bold(paste("F"["ST"], "  pos.", sep=""))),
                                                          sector.index = sectors[1],
                                                          facing = "clockwise",
                                                          cex = 1.3,
