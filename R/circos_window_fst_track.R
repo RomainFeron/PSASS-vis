@@ -2,13 +2,13 @@
 #'
 #' @description Draws a track on a circos plot for FST window data. This function is intended for use in the \code{\link{circos_plot}} function.
 #'
-#' @param data FST position data frame.
+#' @param data FST window data frame.
 #'
-#' @param ylim Limits of the y axis (default c(min(FST), 1)).
+#' @param ylim Limits of the y axis (default c(0, 1.025 * max(FST))).
 #'
 #' @param bg.col Background color for sectors, either a single color or a vector of colors for each sector (default "white").
 #'
-#' @param point.size Size of a point in the plot (default 0.5).
+#' @param point.size Size of a point in the plot (default 0.01).
 #'
 #' @param top.track If TRUE, this track will be considered top track of the plot and the x axis will be drawn (default FALSE).
 #'
