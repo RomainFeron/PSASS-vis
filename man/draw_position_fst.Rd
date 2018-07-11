@@ -6,8 +6,8 @@
 \usage{
 draw_position_fst(data, ylim = c(min(data$Fst), 1), bg.col = "white",
   point.size = 0.5, top.track = FALSE, sector.names = NULL,
-  sector.titles.expand = 1.3, color.palette = c(`0` = "dodgerblue3", `1` =
-  "goldenrod1", `2` = "grey20"))
+  sector.titles.expand = 1.3, sectors = NULL, color.palette = c(`0` =
+  "dodgerblue3", `1` = "goldenrod1", `2` = "grey20"))
 }
 \arguments{
 \item{data}{FST position data frame.}
@@ -21,6 +21,8 @@ draw_position_fst(data, ylim = c(min(data$Fst), 1), bg.col = "white",
 \item{top.track}{If TRUE, this track will be considered top track of the plot and the x axis will be drawn (default FALSE).}
 
 \item{sector.names}{Vector of contig names obtained with the \code{\link{load_contig_names}} (default NULL).}
+
+\item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
 
 \item{color.palette}{Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).}
 

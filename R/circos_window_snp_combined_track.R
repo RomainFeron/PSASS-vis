@@ -1,12 +1,12 @@
-#' @title Circos coverage track
+#' @title Circos SNP window track
 #'
-#' @description Draws a track on a circos plot for coverage data. This function is intended for use in the \code{\link{circos_plot}} function.
+#' @description Draws a track on a circos plot for SNP window data. This function is intended for use in the \code{\link{circos_plot}} function.
 #'
-#' @param data Coverage data frame.
+#' @param data SNP window data frame.
 #'
 #' @param sex Sex to draw the track for, either "Females" or "Males".
 #'
-#' @param type Type of coverage to draw the track for, either "absolute" or "relative" (default "absolute").
+#' @param ylim Limits of the y axis (default c(0, 1.025 * max(data$Males, data$Females))).
 #'
 #' @param bg.col Background color for sectors, either a single color or a vector of colors for each sector (default "white").
 #'
@@ -18,70 +18,45 @@
 #'
 #' @param sector.title.expand Value controlling the distance between sector titles and the top axis (default 1.3).
 #'
-#' @param sectors Vector with the names of the sectors in the plot (default NULL).
+#' @param males.color Color for male-specific SNPs (default "dodgerblue3").
 #'
-#' @param males.color Color for male coverage (default "dodgerblue3").
-#'
-#' @param females.color Color for female coverage (default "firebrick2").
+#' @param females.color Color for female-specific SNPs (default "firebrick2").
 
 
-draw_coverage <- function(data, sex, type = "absolute",
-                          bg.col = "white", point.size = 0.01,
-                          top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                          males.color = "dodgerblue3", females.color = "firebrick2") {
+draw_window_snp_combined <- function(data,
+                                     ylim = c(0, 1.025 * max(data$Males, data$Females) + 0.01), bg.col = "white", point.size = 0.01,
+                                     top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                                     males.color = "dodgerblue3", females.color = "firebrick2") {
 
 
-    # Set data to plot, point color and axis title according to specified sex and type of coverage
-    cov_data <- c()
-
-    if (!type %in% c("absolute", "relative")) {
-
-        print(paste0(' - Warning: unknown type \"', type, '\" for coverage track.'))
-        return(1)
-
-    } else if (type == "absolute") {
-
-        ylim <- c(0, 1.025 * max(data$Males_abs, data$Females_abs) + 0.01)
-
-    } else {
-
-        ylim <- c(0, 1.025 * max(data$Males_rel, data$Females_rel) + 0.01)
-
-    }
+    # Set data to plot, point color and axis title according to specified sex
+    snp_data <- c()
 
     if (!(sex %in% c("Males", "Females"))) {
 
-        print(paste0(' - Warning: unknown sex \"', sex, '\" for coverage track.'))
+        print(paste0(' - Warning: unknown sex \"', sex, '\" for window SNP track.'))
         return(1)
 
     } else if (sex == "Males") {
 
-        if (type == "absolute") {
-            cov_data <- data$Males_abs
-        } else {
-            cov_data <- data$Males_rel
-        }
+        snp_data <- data$Males
         point.color <- males.color
-        y_label <- expression(bold("M. cov."))
+        y_label <- expression(bold("SNP win."))
 
     } else {
 
-        if (type == "absolute") {
-            cov_data <- data$Females_abs
-        } else {
-            cov_data <- data$Females_rel
-        }
+        snp_data <- data$Females
         point.color <- females.color
-        y_label <- expression(bold("F. cov."))
+        y_label <- expression(bold("SNP win."))
 
     }
 
-    print(paste0(" - Drawing coverage track for ", sex, " ..."))
+    print(paste0(" - Drawing window SNP track for ", sex, " ..."))
 
     # Draw the top track of the plot, showing sex-bias
     circlize::circos.track(factors = data$Contig,
                            x = data$Position,
-                           y = cov_data,
+                           y = snp_data,
                            ylim = ylim,
                            bg.col = bg.col,
                            panel.fun = function(x, y) {  # panel.fun is the function drawing the track
@@ -137,12 +112,12 @@ draw_coverage <- function(data, sex, type = "absolute",
                                                           labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 0))
 
                                    #Add y axis labels
-                                   label_offset <- - 7.5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
+                                   label_offset <- - 5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
                                                          y_label,
                                                          sector.index = sectors[1],
-                                                         facing = "inside",
+                                                         facing = "clockwise",
                                                          cex = 1.3,
                                                          font = 2)
                                }

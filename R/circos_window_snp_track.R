@@ -18,6 +18,8 @@
 #'
 #' @param sector.title.expand Value controlling the distance between sector titles and the top axis (default 1.3).
 #'
+#' @param sectors Vector with the names of the sectors in the plot (default NULL).
+#'
 #' @param males.color Color for male-specific SNPs (default "dodgerblue3").
 #'
 #' @param females.color Color for female-specific SNPs (default "firebrick2").
@@ -25,7 +27,7 @@
 
 draw_window_snp <- function(data, sex,
                             ylim = c(0, 1.025 * max(data$Males, data$Females) + 0.01), bg.col = "white", point.size = 0.01,
-                            top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3,
+                            top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
                             males.color = "dodgerblue3", females.color = "firebrick2") {
 
 
@@ -41,13 +43,13 @@ draw_window_snp <- function(data, sex,
 
         snp_data <- data$Males
         point.color <- males.color
-        y_label <- expression(bold("M. SNP win."))
+        y_label <- expression(bold(atop("M. SNP", "win.")))
 
     } else {
 
         snp_data <- data$Females
         point.color <- females.color
-        y_label <- expression(bold("F. SNP win."))
+        y_label <- expression(bold(atop("F. SNP", "win.")))
 
     }
 
@@ -112,12 +114,12 @@ draw_window_snp <- function(data, sex,
                                                           labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 0))
 
                                    #Add y axis labels
-                                   label_offset <- - 5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
+                                   label_offset <- - 7.5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
                                                          y_label,
                                                          sector.index = sectors[1],
-                                                         facing = "clockwise",
+                                                         facing = "inside",
                                                          cex = 1.3,
                                                          font = 2)
                                }

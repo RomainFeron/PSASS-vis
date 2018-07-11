@@ -14,6 +14,8 @@
 #'
 #' @param sector.names Vector of contig names obtained with the \code{\link{load_contig_names}} (default NULL).
 #'
+#' @param sectors Vector with the names of the sectors in the plot (default NULL).
+#'
 #' @param sector.title.expand Value controlling the distance between sector titles and the top axis (default 1.3).
 #'
 #' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
@@ -21,7 +23,7 @@
 
 draw_window_fst <- function(data,
                             ylim = c(0, 1.025 * max(data$Fst) + 0.01), bg.col = "white", point.size = 0.01,
-                            top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3,
+                            top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
                             color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
 
     print(" - Drawing window FST track ... ")
@@ -85,12 +87,12 @@ draw_window_fst <- function(data,
                                                           labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 0))
 
                                    #Add y axis labels
-                                   label_offset <- - 5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
+                                   label_offset <- - 7.5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
-                                                         expression(bold(paste("F"["ST"], "  win.", sep=""))),
+                                                         expression(bold(atop("F"["ST"], "\nwin.", sep=""))),
                                                          sector.index = sectors[1],
-                                                         facing = "clockwise",
+                                                         facing = "inside",
                                                          cex = 1.3,
                                                          font = 2)
                                }

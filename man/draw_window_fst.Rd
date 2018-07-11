@@ -6,8 +6,8 @@
 \usage{
 draw_window_fst(data, ylim = c(0, 1.025 * max(data$Fst) + 0.01),
   bg.col = "white", point.size = 0.01, top.track = FALSE,
-  sector.names = NULL, sector.titles.expand = 1.3, color.palette = c(`0` =
-  "dodgerblue3", `1` = "goldenrod1", `2` = "grey20"))
+  sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` = "grey20"))
 }
 \arguments{
 \item{data}{FST window data frame.}
@@ -21,6 +21,8 @@ draw_window_fst(data, ylim = c(0, 1.025 * max(data$Fst) + 0.01),
 \item{top.track}{If TRUE, this track will be considered top track of the plot and the x axis will be drawn (default FALSE).}
 
 \item{sector.names}{Vector of contig names obtained with the \code{\link{load_contig_names}} (default NULL).}
+
+\item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
 
 \item{color.palette}{Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).}
 

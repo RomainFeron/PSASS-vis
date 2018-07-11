@@ -2,15 +2,17 @@
 % Please edit documentation in R/circos_combined_coverage_track.R
 \name{draw_coverage_ratio}
 \alias{draw_coverage_ratio}
-\title{Circos coverage track}
+\title{Circos combined coverage track}
 \usage{
 draw_coverage_ratio(data, min.cov = 10, bg.col = "white",
   point.size = 0.01, top.track = FALSE, sector.names = NULL,
-  sector.titles.expand = 1.3, color.palette = c(`0` = "dodgerblue3", `1` =
-  "goldenrod1", `2` = "grey20"))
+  sector.titles.expand = 1.3, sectors = NULL, color.palette = c(`0` =
+  "dodgerblue3", `1` = "goldenrod1", `2` = "grey20"))
 }
 \arguments{
 \item{data}{Coverage data frame.}
+
+\item{min.cov}{Minimum coverage to compute coverage ratio (default: 10)}
 
 \item{bg.col}{Background color for sectors, either a single color or a vector of colors for each sector (default "white").}
 
@@ -20,10 +22,12 @@ draw_coverage_ratio(data, min.cov = 10, bg.col = "white",
 
 \item{sector.names}{Vector of contig names obtained with the \code{\link{load_contig_names}} (default NULL).}
 
+\item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
+
 \item{color.palette}{Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).}
 
 \item{sector.title.expand}{Value controlling the distance between sector titles and the top axis (default 1.3).}
 }
 \description{
-Draws a track on a circos plot for coverage data. This function is intended for use in the \code{\link{circos_plot}} function.
+Draws a track on a circos plot for coverage ratio data This function is intended for use in the \code{\link{circos_plot}} function.
 }

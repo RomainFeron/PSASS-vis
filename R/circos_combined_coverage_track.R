@@ -1,8 +1,10 @@
-#' @title Circos coverage track
+#' @title Circos combined coverage track
 #'
-#' @description Draws a track on a circos plot for coverage data. This function is intended for use in the \code{\link{circos_plot}} function.
+#' @description Draws a track on a circos plot for coverage ratio data This function is intended for use in the \code{\link{circos_plot}} function.
 #'
 #' @param data Coverage data frame.
+#'
+#' @param min.cov Minimum coverage to compute coverage ratio (default: 10)
 #'
 #' @param bg.col Background color for sectors, either a single color or a vector of colors for each sector (default "white").
 #'
@@ -14,23 +16,24 @@
 #'
 #' @param sector.title.expand Value controlling the distance between sector titles and the top axis (default 1.3).
 #'
+#' @param sectors Vector with the names of the sectors in the plot (default NULL).
+#'
 #' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
 
 
 draw_coverage_ratio <- function(data, min.cov = 10,
-                          bg.col = "white", point.size = 0.01,
-                          top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3,
-                          color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")) {
+                                bg.col = "white", point.size = 0.01,
+                                top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                                color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")) {
 
 
     print(" - Drawing coverage ratio track ...")
 
-    # data$Ratio <- (data$Males_abs - data$Females_abs) / (data$Males_abs + data$Females_abs)
+    # Compute log of coverage ratio
     data$Ratio <- log(data$Males_abs / data$Females_abs, 2)
-    data$Ratio[which(data$Males_abs < min.cov & data$Females_abs < min.cov)] <- 0
-    # ylim <- c(-1.1, 1.1)
+    data$Ratio[which(data$Males_abs < min.cov & data$Females_abs < min.cov)] <- 0  # Don't compute ratio when coverage is lower than min.cov
     lim <- 1.25 * max(abs(data$Ratio))
-    ylim <- c(-lim, lim)
+    ylim <- c(-lim, lim)  # Y axis limits
 
     # Draw the top track of the plot, showing sex-bias
     circlize::circos.track(factors = data$Contig,
@@ -80,8 +83,6 @@ draw_coverage_ratio <- function(data, min.cov = 10,
                                                        pch = 21)
 
                                circlize::circos.lines(x = c(0, xmax), y = c(0, 0), col = "grey70", cex = 0.02)
-                               # circlize::circos.lines(x = c(0, xmax), y = c(1/3, 1/3), col = "dodgerblue3", cex = 0.03, lty = 2)
-                               # circlize::circos.lines(x = c(0, xmax), y = c(-1/3, -1/3), col = "firebrick2", cex = 0.02, lty = 2)
 
                                # Add Y axis on the first sector only
                                if (sector.index == sectors[1]) {
@@ -95,12 +96,12 @@ draw_coverage_ratio <- function(data, min.cov = 10,
                                                           labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 2))
 
                                    #Add y axis labels
-                                   label_offset <- - 5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
+                                   label_offset <- - 7.5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
-                                                         "Cov. ratio",
+                                                         "Cov.\nratio",
                                                          sector.index = sectors[1],
-                                                         facing = "clockwise",
+                                                         facing = "inside",
                                                          cex = 1.3,
                                                          font = 2)
                                }

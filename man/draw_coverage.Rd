@@ -6,7 +6,7 @@
 \usage{
 draw_coverage(data, sex, type = "absolute", bg.col = "white",
   point.size = 0.01, top.track = FALSE, sector.names = NULL,
-  sector.titles.expand = 1.3, males.color = "dodgerblue3",
+  sector.titles.expand = 1.3, sectors = NULL, males.color = "dodgerblue3",
   females.color = "firebrick2")
 }
 \arguments{
@@ -23,6 +23,8 @@ draw_coverage(data, sex, type = "absolute", bg.col = "white",
 \item{top.track}{If TRUE, this track will be considered top track of the plot and the x axis will be drawn (default FALSE).}
 
 \item{sector.names}{Vector of contig names obtained with the \code{\link{load_contig_names}} (default NULL).}
+
+\item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
 
 \item{males.color}{Color for male coverage (default "dodgerblue3").}
 
