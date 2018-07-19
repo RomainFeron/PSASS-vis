@@ -61,7 +61,6 @@ load_contig_lengths <- function(input_file_path, chromosomes_names = NULL, plot.
 
     }
 
-
     return(output)
 }
 
