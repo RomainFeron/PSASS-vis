@@ -1,6 +1,6 @@
 #' @title Circos coverage track
 #'
-#' @description Draws a track on a circos plot for coverage data. This function is intended for use in the \code{\link{circos_plot}} function.
+#' @description Draws a track on a circos plot for coverage data. This function is intended for use in the \code{\link{draw_circos_plot}} function.
 #'
 #' @param data Coverage data frame.
 #'
@@ -25,7 +25,7 @@
 #' @param females.color Color for female coverage (default "firebrick2").
 
 
-track_coverage <- function(data, sex, type = "absolute",
+track_circos_coverage <- function(data, sex, type = "absolute",
                            bg.col = "white", point.size = 0.01,
                            top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
                            males.color = "dodgerblue3", females.color = "firebrick2") {
