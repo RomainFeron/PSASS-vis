@@ -26,7 +26,7 @@ track_scaffold_position_fst <- function(data,
                                         major.lines.x = FALSE,
                                         ylim = c(min(data$Fst), 1),
                                         point.size = 0.5,
-                                        bottom.track = TRUE) {
+                                        bottom.track = FALSE) {
 
     # Create major grid lines for y axis if specified
     if (major.lines.y) {
