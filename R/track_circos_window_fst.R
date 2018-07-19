@@ -21,10 +21,10 @@
 #' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
 
 
-draw_window_fst <- function(data,
-                            ylim = c(0, 1.025 * max(data$Fst) + 0.01), bg.col = "white", point.size = 0.01,
-                            top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                            color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
+track_window_fst <- function(data,
+                             ylim = c(0, 1.025 * max(data$Fst) + 0.01), bg.col = "white", point.size = 0.01,
+                             top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                             color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
 
     print(" - Drawing window FST track ... ")
 

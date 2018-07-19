@@ -14,7 +14,7 @@
 #'
 #' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
 #' "window_snp_females", "combined_snp", "coverage_males", "coverage_females", "coverage_ratio"
-#' (default: c("window_fst", "combined_snp", "coverage_ratio")).
+#' (default: c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio")).
 #'
 #' @param highlight A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).
 #'
@@ -176,13 +176,13 @@ draw_circos_plot <- function(data,
 
         if (tracks[i] == "position_fst") {
 
-            draw_position_fst(data$position_fst, bg.col = bgs,
+            track_position_fst(data$position_fst, bg.col = bgs,
                               point.size = point.size, top.track = top.track, color.palette = color.palette,
                               sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
 
         } else if (tracks[i] == "window_fst") {
 
-            draw_window_fst(data$window_fst, bg.col = bgs,
+            track_window_fst(data$window_fst, bg.col = bgs,
                             point.size = point.size, top.track = top.track, color.palette = color.palette,
                             sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
 
@@ -190,20 +190,20 @@ draw_circos_plot <- function(data,
 
             # TO BE IMPLEMENTED
 
-            draw_window_snp(data$window_snp, sex = "Males", bg.col = bgs,
+            track_window_snp(data$window_snp, sex = "Males", bg.col = bgs,
                             top.track = top.track, sector.names = sector_names,
                             sector.titles.expand = sector.titles.expand, sectors = sectors)
 
         } else if (tracks[i] == "window_snp_males") {
 
-            draw_window_snp(data$window_snp, sex = "Males",
+            track_window_snp(data$window_snp, sex = "Males",
                             bg.col = bgs, point.size = point.size, top.track = top.track,
                             sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
                             males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
 
         } else if (tracks[i] == "window_snp_females") {
 
-            draw_window_snp(data$window_snp, sex = "Females",
+            track_window_snp(data$window_snp, sex = "Females",
                             bg.col = bgs, point.size = point.size, top.track = top.track,
                             sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
                             males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
@@ -212,27 +212,27 @@ draw_circos_plot <- function(data,
 
             # TO BE IMPLEMENTED
 
-            draw_window_snp(data$window_snp, sex = "Females", bg.col = bgs,
+            track_window_snp(data$window_snp, sex = "Females", bg.col = bgs,
                             top.track = top.track, sector.names = sector_names,
                             sector.titles.expand = sector.titles.expand, sectors = sectors)
 
         } else if (tracks[i] == "coverage_males") {
 
-            draw_coverage(data$coverage, sex = "Males", type = coverage.type,
+            track_coverage(data$coverage, sex = "Males", type = coverage.type,
                           bg.col = bgs, top.track = top.track, point.size = point.size,
                           sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
                           males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
 
         } else if (tracks[i] == "coverage_females") {
 
-            draw_coverage(data$coverage, sex = "Females", type = coverage.type,
+            track_coverage(data$coverage, sex = "Females", type = coverage.type,
                           bg.col = bgs, top.track = top.track, point.size = point.size,
                           sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
                           males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
 
         } else if (tracks[i] == "coverage_ratio") {
 
-            draw_coverage_ratio(data$coverage, min.cov = min.coverage,
+            track_coverage_ratio(data$coverage, min.cov = min.coverage,
                                 bg.col = bgs, point.size = point.size, top.track = top.track, color.palette = color.palette,
                                 sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
 

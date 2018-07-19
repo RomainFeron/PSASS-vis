@@ -21,10 +21,10 @@
 #' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
 
 
-draw_position_fst <- function(data,
-                              ylim = c(min(data$Fst), 1), bg.col = "white", point.size = 0.5,
-                              top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                              color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
+track_position_fst <- function(data,
+                               ylim = c(min(data$Fst), 1), bg.col = "white", point.size = 0.5,
+                               top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                               color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
 
     print(" - Drawing position FST track ... ")
 

@@ -23,10 +23,10 @@
 #' @param females.color Color for female-specific SNPs (default "firebrick2").
 
 
-draw_window_snp_combined <- function(data,
-                                     ylim = c(0, 1.025 * max(data$Males, data$Females) + 0.01), bg.col = "white", point.size = 0.01,
-                                     top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                                     males.color = "dodgerblue3", females.color = "firebrick2") {
+track_window_snp_combined <- function(data,
+                                      ylim = c(0, 1.025 * max(data$Males, data$Females) + 0.01), bg.col = "white", point.size = 0.01,
+                                      top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                                      males.color = "dodgerblue3", females.color = "firebrick2") {
 
 
     # Set data to plot, point color and axis title according to specified sex

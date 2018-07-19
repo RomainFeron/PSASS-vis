@@ -27,7 +27,7 @@ draw_circos_plot(data, output.file = NULL, width = 2400, height = 2400,
 
 \item{tracks}{Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
 "window_snp_females", "combined_snp", "coverage_males", "coverage_females", "coverage_ratio"
-(default: c("window_fst", "combined_snp", "coverage_ratio")).}
+(default: c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio")).}
 
 \item{highlight}{A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).}
 
