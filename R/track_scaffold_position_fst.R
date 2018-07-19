@@ -50,7 +50,7 @@ track_scaffold_position_fst <- function(data,
         ggplot2::theme(legend.position = "none",
                        axis.text.y = ggplot2::element_text(margin = ggplot2::margin(l = 5)),
                        panel.grid.major.y = major_lines_y,
-                       panel.grid.major.x = major_lines_x) +
+                       panel.grid.major.x = major_lines_x)
 
     # Add x axis if bottom track
     if (!bottom.track) {
