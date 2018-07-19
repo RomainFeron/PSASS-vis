@@ -1,55 +1,69 @@
-#' @title Base circos plot
+#' @title Draw circos plot
 #'
 #' @description Draw a circos plot from the PoolSex data
 #'
 #' @param data A PoolSex data structure obtained with the \code{\link{load_data_files}} function.
 #'
+#' @param output.file Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).
+#'
+#' @param width Width of the output file if specified, in pixels (default: 2400).
+#'
+#' @param height Height of the output file if specified, in pixels (default: 2400).
+#'
+#' @param res Resolution of the output file if specified, in \% (default: 120).
+#'
 #' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
 #' "window_snp_females", "combined_snp", "coverage_males", "coverage_females", "coverage_ratio"
-#' (default c("window_fst", "combined_snp", "coverage_ratio")).
+#' (default: c("window_fst", "combined_snp", "coverage_ratio")).
 #'
-#' @param highlight A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default NULL).
+#' @param highlight A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).
 #'
-#' @param zoom.highlights If TRUE, highlighted sectors will be enlarged and placed at the top of the plot (default FALSE).
+#' @param zoom.highlights If TRUE, highlighted sectors will be enlarged and placed at the top of the plot (default: FALSE).
 #'
-#' @param zoom.ratio Zoom factor for highlighted sectors if zoom.highlights is TRUE (default 2).
+#' @param zoom.ratio Zoom factor for highlighted sectors if zoom.highlights is TRUE (default: 2).
 #'
-#' @param zoom.suffix Suffix to append to the name of zoomed highlighted sectors (default " (zoom)").
+#' @param zoom.suffix Suffix to append to the name of zoomed highlighted sectors (default: " (zoom)").
 #'
-#' @param base.color Background color of a non-highlighted sector (default "white").
+#' @param base.color Background color of a non-highlighted sector (default: "white").
 #'
-#' @param highlight.color Background color of a highlighted sector (default "grey80").
+#' @param highlight.color Background color of a highlighted sector (default: "grey80").
 #'
-#' @param point.size Size of the points in the plot (default 0.1).
+#' @param point.size Size of the points in the plot (default: 0.1).
 #'
-#' @param color.unplaced If TRUE, unplaced scaffolds will be colored with alternating colors, like in a manhattan plot (default FALSE)
+#' @param color.unplaced If TRUE, unplaced scaffolds will be colored with alternating colors, like in a manhattan plot (default: FALSE)
 #'
 #' @param color.palette Colors of the points in the plot. "0" and "1" specify the alternating colors for unplaced scaffolds
 #' if color.unplaced is TRUE, "2" specifies the color for chromosomes for unsexed tracks (position_fst, window_fst, coverage_ratio), and
 #' "males" and "females" specify the color of each sex for sexed tracks (position_snp, window_snp_males, window_snp_females, combined_snp,
-#' coverage_males, coverage_females) (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2")).
+#' coverage_males, coverage_females) (default: c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2")).
 #'
-#' @param sector.titles.expand Parameter to control the space between sector titles and x-axis (default 1.5).
+#' @param sector.titles.expand Parameter to manually override the space between sector titles and x-axis (default: NULL).
 #'
-#' @param coverage.type Type of coverage to be plotted, either "absolute" or "relative" (default "absolute").
+#' @param coverage.type Type of coverage to be plotted, either "absolute" or "relative" (default: "absolute").
 #'
 #' @param min.coverage Minimum coverage to compute coverage ratio.
-#' The ratio for positions with coverage lower than this value in either sex will be 1 (default 10).
+#' The ratio for positions with coverage lower than this value in either sex will be 1 (default: 10).
 #'
 #' @examples
 #'
-#' base_circos_plot(data, tracks = c("position_fst", "position_snp", "coverage_males"),
+#' draw_circos_plot(data, tracks = c("position_fst", "position_snp", "coverage_males"),
 #'                  highlight = c("Chr10", "Chr17"), color.unplaced = TRUE)
 
 
-base_circos_plot <- function(data,
-                            tracks = c("window_fst", "window_snp", "coverage_ratio"),
-                            highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2, zoom.suffix = " (zoom)",
-                            base.color = "white", highlight.color = "grey80", point.size = 0.1,
-                            color.unplaced = FALSE,
-                            color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2"),
-                            sector.titles.expand = 1.5, coverage.type = "absolute", min.coverage = 10) {
+draw_circos_plot <- function(data,
+                             output.file = NULL, width = 2400, height = 2400, res = 120,
+                             tracks = c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio"),
+                             highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2, zoom.suffix = " (zoom)",
+                             base.color = "white", highlight.color = "grey80", point.size = 0.1,
+                             color.unplaced = FALSE,
+                             color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2"),
+                             sector.titles.expand = NULL, coverage.type = "absolute", min.coverage = 10) {
 
+
+    # Open output file if specified
+    if (!is.null(output.file)) {
+        png(output.file, width=width, height=height,  res=res, type="cairo")
+    }
 
     # Get sector information
     n_sectors <- length(data$lengths$plot)
@@ -118,16 +132,17 @@ base_circos_plot <- function(data,
     # Setup gaps between sectors
     gaps <- rep(1, n_sectors)
     gaps[length(gaps)] <- 12  # Bigger gap after the last sector to leave some space for track titles
-    if (zoom.highlights) { gaps[length(gaps) - length(highlight)] <- 6 }  # Add a small gap before the first zoomed sector
+    if (zoom.highlights & (length(highlight) > 0)) { gaps[length(gaps) - length(highlight)] <- 5 }  # Add a small gap before the first zoomed sector
 
 
     # Calculate angle offset to have zoomed sector on top
-    a <- 360 * sum(tail(sector_width, n = length(highlight))) / sum(sector_width) / 2 + 6
+    a <- 360 * sum(tail(sector_width, n = length(highlight))) / sum(sector_width) / 2 + 7.5
 
 
-    # Calculate width of track based on number of tracks
+    # Calculate width of track and sector.title.expand factor based on number of tracks
     n_tracks <- length(tracks)
     track.height <- 0
+    if (is.null(sector.titles.expand)) sector.titles.expand <- 1.1 + n_tracks / 10
     if (n_tracks == 1) {
         track.height <- 0.3
     } else if (n_tracks >= 2) {
@@ -226,5 +241,10 @@ base_circos_plot <- function(data,
             print(paste0("Warning: unknown track type \"", tracks[i], "\" ..."))
 
         }
+    }
+
+    # Close output file
+    if (!is.null(output.file)) {
+        dev.off()
     }
 }
