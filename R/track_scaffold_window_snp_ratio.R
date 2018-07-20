@@ -61,9 +61,9 @@ track_scaffold_window_snp_ratio <- function(data,
     # Draw the plot
     g <- ggplot2::ggplot() +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_m),
-                             fill = "dodgerblue3", color = "dodgerblue3", alpha = 0.75) +
+                             fill = "dodgerblue3", color = "dodgerblue3", size = 0.4, alpha = 0.75) +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_f),
-                             fill = "firebrick2", color = "firebrick2", alpha = 0.75) +
+                             fill = "firebrick2", color = "firebrick2", size = 0.4, alpha = 0.75) +
         ggplot2::scale_y_continuous(name = expression(paste("log"[2], "(M:F) SNPs window")), expand = c(0.01, 0.01), limits = ylim,
                                     breaks = seq(-ymax, ymax, 2 * ymax / 6), labels = round(seq(-ymax, ymax, 2 * ymax / 6))) +
         generate_x_scale(region, scaffold.name) +
