@@ -47,7 +47,8 @@ track_scaffold_window_snp_ratio <- function(data,
     }
 
     # Separate male and female biased ratio for color
-    data$Ratio <- log((1 + data$Males) / (1 + data$Females), 2) * log((1 + abs(data$Males - data$Females)), 2)
+    # Formula for SNP ratio. The base SNP ratio is given a weight based on the absolute difference between Males and Females SNPs
+    data$Ratio <- log((1 + data$Males) / (1 + data$Females), 2) * log(1 + abs(data$Males - data$Females), 2) ^ 1.5
     data$Ratio_m <- data$Ratio
     data$Ratio_m[which(data$Ratio_m < 0)] <- 0
     data$Ratio_f <- data$Ratio
@@ -63,7 +64,8 @@ track_scaffold_window_snp_ratio <- function(data,
                              fill = "dodgerblue3", color = "dodgerblue3", alpha = 0.75) +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_f),
                              fill = "firebrick2", color = "firebrick2", alpha = 0.75) +
-        ggplot2::scale_y_continuous(name = "SNP ratio window", expand = c(0.01, 0.01), limits = ylim) +
+        ggplot2::scale_y_continuous(name = expression(paste("log"[2], "(M:F) SNPs window")), expand = c(0.01, 0.01), limits = ylim,
+                                    breaks = seq(-ymax, ymax, 2 * ymax / 6), labels = round(seq(-ymax, ymax, 2 * ymax / 6))) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(axis.text.y = ggplot2::element_text(margin = ggplot2::margin(l = 5)),
                        panel.grid.major.y = major_lines_y,
