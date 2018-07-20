@@ -17,7 +17,7 @@
 #'
 #' @param ylim Limits of the y axis (default: c(min(FST), 1)).
 #'
-#' @param color Color of the plotted area (default: "grey50").
+#' @param color Color of the plotted area. If NULL, "dodgerblue3" will be used for males and "firebrick2" for females (default: NULL).
 #'
 #' @param bottom.track If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).
 
