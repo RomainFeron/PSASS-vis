@@ -1,6 +1,6 @@
 #' @title Scaffold ratio SNP window track
 #'
-#' @description Draws a track on a scaffold plot for the ratio of SNP window data.
+#' @description Draws a scaffold plot track for the ratio of SNP window data.
 #' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
 #' @param data SNP window data frame.
@@ -61,9 +61,9 @@ track_scaffold_window_snp_ratio <- function(data,
     # Draw the plot
     g <- ggplot2::ggplot() +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_m),
-                             fill = "dodgerblue3", color = "dodgerblue3", size = 0.4, alpha = 0.75) +
+                             fill = males.color, color = males.color, size = 0.4, alpha = 0.75) +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_f),
-                             fill = "firebrick2", color = "firebrick2", size = 0.4, alpha = 0.75) +
+                             fill = females.color, color = females.color, size = 0.4, alpha = 0.75) +
         ggplot2::scale_y_continuous(name = expression(paste("log"[2], "(M:F) SNPs window")), expand = c(0.01, 0.01), limits = ylim,
                                     breaks = seq(-ymax, ymax, 2 * ymax / 6), labels = round(seq(-ymax, ymax, 2 * ymax / 6))) +
         generate_x_scale(region, scaffold.name) +

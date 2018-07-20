@@ -1,6 +1,6 @@
 #' @title Scaffold SNP window track
 #'
-#' @description Draws a track on a scaffold plot for SNP window data for a single sex.
+#' @description Draws a scaffold plot track for single sex SNP window data.
 #' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
 #' @param data SNP window data frame.
@@ -15,7 +15,7 @@
 #'
 #' @param major.lines.x If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
 #'
-#' @param ylim Limits of the y axis (default: c(min(FST), 1)).
+#' @param ylim Limits of the y axis (default: NULL).
 #'
 #' @param color Color of the plotted area. If NULL, "dodgerblue3" will be used for males and "firebrick2" for females (default: NULL).
 #'
@@ -62,7 +62,8 @@ track_scaffold_window_snp <- function(data,
 
     # Draw the plot
     g <- ggplot2::ggplot() +
-        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Position, ymin = 0, ymax = snp_data), fill = color, alpha = 0.75) +
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Position, ymin = 0, ymax = snp_data),
+                             fill = color, color = color, size = 0.4, alpha = 0.75) +
         ggplot2::scale_y_continuous(name = paste0(sex_short, " SNP window"), expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(legend.position = "none",

@@ -1,6 +1,7 @@
 #' @title Scaffold FST window track
 #'
-#' @description Draws a track on a scaffold plot for FST window data. This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
+#' @description Draws a scaffold plot track for FST window data.
+#' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
 #' @param data FST window data frame.
 #'

@@ -29,6 +29,6 @@ track_scaffold_window_snp_combined(data, scaffold.name, region,
 \item{bottom.track}{If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).}
 }
 \description{
-Draws a track on a scaffold plot for SNP window data for both sexes combined.
+Draws a scaffold plot track for both sexes SNP window data.
 This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 }

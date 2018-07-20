@@ -21,13 +21,13 @@ track_scaffold_window_snp(data, sex, scaffold.name, region,
 
 \item{major.lines.x}{If TRUE, major grid lines will be plotted for the y axis (default: TRUE).}
 
-\item{ylim}{Limits of the y axis (default: c(min(FST), 1)).}
+\item{ylim}{Limits of the y axis (default: NULL).}
 
 \item{color}{Color of the plotted area. If NULL, "dodgerblue3" will be used for males and "firebrick2" for females (default: NULL).}
 
 \item{bottom.track}{If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).}
 }
 \description{
-Draws a track on a scaffold plot for SNP window data for a single sex.
+Draws a scaffold plot track for single sex SNP window data.
 This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 }

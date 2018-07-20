@@ -1,6 +1,7 @@
 #' @title Scaffold FST position track
 #'
-#' @description Draws a track on a scaffold plot for FST position data. This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
+#' @description Draws a track on a scaffold plot for FST position data.
+#' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
 #' @param data FST position data frame.
 #'

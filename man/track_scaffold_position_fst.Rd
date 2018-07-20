@@ -26,5 +26,6 @@ track_scaffold_position_fst(data, scaffold.name, region, major.lines.y = TRUE,
 \item{bottom.track}{If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).}
 }
 \description{
-Draws a track on a scaffold plot for FST position data. This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
+Draws a track on a scaffold plot for FST position data.
+This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 }
