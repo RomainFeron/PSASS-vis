@@ -16,6 +16,8 @@ track_scaffold_window_coverage_combined(data, scaffold.name, region,
 
 \item{region}{A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000).}
 
+\item{type}{Type of coverage to use, either "absolute" or "relative" (default: "absolute").}
+
 \item{major.lines.y}{If TRUE, major grid lines will be plotted for the y axis (default: TRUE).}
 
 \item{major.lines.x}{If TRUE, major grid lines will be plotted for the y axis (default: TRUE).}

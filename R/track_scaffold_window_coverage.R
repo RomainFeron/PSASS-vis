@@ -7,7 +7,9 @@
 #'
 #' @param sex Sex to plot the data for, either "males" or "females".
 #'
-#' @param scaffold.name Name of the plotted scaffold (for the x axis)
+#' @param scaffold.name Name of the plotted scaffold (for the x axis).
+#'
+#' @param type Type of coverage to use, either "absolute" or "relative" (default: "absolute").
 #'
 #' @param region A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000).
 #'
