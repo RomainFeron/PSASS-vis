@@ -1,6 +1,7 @@
 #' @title Scaffold SNP window track
 #'
-#' @description Draws a track on a scaffold plot for SNP window data. This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
+#' @description Draws a track on a scaffold plot for SNP window data for a single sex.
+#' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
 #' @param data SNP window data frame.
 #'
