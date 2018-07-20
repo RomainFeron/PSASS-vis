@@ -49,7 +49,7 @@ track_scaffold_window_coverage_combined <- function(data,
         major_lines_x <- ggplot2::element_blank()
     }
 
-    # Creating data based on type of coverage
+    # Create data based on type of coverage
     if (type == "absolute") {
         data$Males <- data$Males_abs
         data$Females <- data$Females_abs
@@ -65,6 +65,7 @@ track_scaffold_window_coverage_combined <- function(data,
 
     # Draw the plot
     g <- ggplot2::ggplot() +
+        cowplot::theme_cowplot() +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Males, fill = "Males", color = "Males"),
                              alpha = 0.25, show.legend = c("color"=TRUE, "fill"=FALSE)) +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Females, fill = "Females", color = "Females"),

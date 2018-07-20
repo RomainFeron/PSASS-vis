@@ -75,7 +75,7 @@ track_scaffold_window_coverage <- function(data,
 
     # Draw the plot
     g <- ggplot2::ggplot() +
-        # cowplot::theme_cowplot() +
+        cowplot::theme_cowplot() +
         ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Position, ymin = 0, ymax = cov_data),
                              fill = color, color = color, size = 0.4, alpha = 0.75) +
         ggplot2::scale_y_continuous(name = paste0(sex_short, " coverage window"), expand = c(0.01, 0.01), limits = ylim) +

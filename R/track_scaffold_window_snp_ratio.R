@@ -60,6 +60,7 @@ track_scaffold_window_snp_ratio <- function(data,
 
     # Draw the plot
     g <- ggplot2::ggplot() +
+        cowplot::theme_cowplot() +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_m),
                              fill = males.color, color = males.color, size = 0.4, alpha = 0.75) +
         ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_f),
