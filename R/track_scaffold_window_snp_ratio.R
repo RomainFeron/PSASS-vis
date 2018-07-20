@@ -48,7 +48,7 @@ track_scaffold_window_snp_ratio <- function(data,
 
     # Separate male and female biased ratio for color
     # Formula for SNP ratio. The base SNP ratio is given a weight based on the absolute difference between Males and Females SNPs
-    data$Ratio <- log((1 + data$Males) / (1 + data$Females), 2) * log(1 + abs(data$Males - data$Females), 2) ^ 1.5
+    data$Ratio <- log((1 + data$Males) / (1 + data$Females), 2) * log(1 + abs(data$Males - data$Females), 2) ^ 2
     data$Ratio_m <- data$Ratio
     data$Ratio_m[which(data$Ratio_m < 0)] <- 0
     data$Ratio_f <- data$Ratio
