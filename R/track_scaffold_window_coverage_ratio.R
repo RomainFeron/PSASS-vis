@@ -11,6 +11,8 @@
 #'
 #' @param type Type of coverage to use, either "absolute" or "relative" (default: "absolute").
 #'
+#' @param min.coverage Minimum coverage to compute coverage ratio (default: 0).
+#'
 #' @param major.lines.y If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
 #'
 #' @param major.lines.x If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
@@ -28,6 +30,7 @@ track_scaffold_window_coverage_ratio <- function(data,
                                                  scaffold.name,
                                                  region,
                                                  type = "absolute",
+                                                 min.coverage = 0,
                                                  major.lines.y = TRUE,
                                                  major.lines.x = FALSE,
                                                  ylim = NULL,
@@ -63,6 +66,7 @@ track_scaffold_window_coverage_ratio <- function(data,
     # Separate male and female biased ratio for color
     # Formula for SNP ratio.
     data$Ratio <- log((1 + data$Males) / (1 + data$Females), 2)
+    data$Ratio[which(data$Males_abs < min.coverage | data$Females_abs < min.coverage)] <- 0  # No Ratio computed when coverage is too low
     data$Ratio_m <- data$Ratio
     data$Ratio_m[which(data$Ratio_m < 0)] <- 0
     data$Ratio_f <- data$Ratio
@@ -71,6 +75,13 @@ track_scaffold_window_coverage_ratio <- function(data,
     # Y axis limits
     ymax <- 1.1 * max(abs(data$Ratio))
     ylim <- c(-ymax, ymax)
+
+    # Add x axis if bottom track
+    if (!bottom.track) {
+        axis_title_x <- ggplot2::element_blank()
+    } else {
+        axis_title_x <- element_text()
+    }
 
     # Draw the plot
     g <- ggplot2::ggplot() +
@@ -84,12 +95,8 @@ track_scaffold_window_coverage_ratio <- function(data,
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(axis.text.y = ggplot2::element_text(margin = ggplot2::margin(l = 5)),
                        panel.grid.major.y = major_lines_y,
-                       panel.grid.major.x = major_lines_x)
-
-    # Add x axis if bottom track
-    if (!bottom.track) {
-        g <- g + ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank())
-    }
+                       panel.grid.major.x = major_lines_x,
+                       axis.title.x = axis_title_x)
 
     return(g)
 }

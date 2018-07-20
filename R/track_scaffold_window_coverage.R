@@ -49,6 +49,7 @@ track_scaffold_window_coverage <- function(data,
         major_lines_x <- ggplot2::element_blank()
     }
 
+    # Generate data according to specified coverage type
     if (type == "absolute") {
         data$Males <- data$Males_abs
         data$Females <- data$Females_abs
@@ -59,6 +60,7 @@ track_scaffold_window_coverage <- function(data,
         stop(paste0(" - Error: coverage type \"", type, "\" does not exist."))
     }
 
+    # Generate data according to specified sex
     if (sex == "males") {
         cov_data <- data$Males
         if (is.null(color)) color <- "dodgerblue3"
@@ -73,6 +75,13 @@ track_scaffold_window_coverage <- function(data,
         stop(paste0(" - Error: sex \"", sex, "\" does not exist."))
     }
 
+    # Add x axis if bottom track
+    if (!bottom.track) {
+        axis_title_x <- ggplot2::element_blank()
+    } else {
+        axis_title_x <- element_text()
+    }
+
     # Draw the plot
     g <- ggplot2::ggplot() +
         cowplot::theme_cowplot() +
@@ -83,12 +92,8 @@ track_scaffold_window_coverage <- function(data,
         ggplot2::theme(legend.position = "none",
                        axis.text.y = ggplot2::element_text(margin = ggplot2::margin(l = 5)),
                        panel.grid.major.y = major_lines_y,
-                       panel.grid.major.x = major_lines_x)
-
-    # Add x axis if bottom track
-    if (!bottom.track) {
-        g <- g + ggplot2::theme(axis.title.x = ggplot2::element_blank(), axis.text.x = ggplot2::element_blank())
-    }
+                       panel.grid.major.x = major_lines_x,
+                       axis.title.x = axis_title_x)
 
     return(g)
 }

@@ -5,9 +5,9 @@
 \title{Scaffold ratio coverage window track}
 \usage{
 track_scaffold_window_coverage_ratio(data, scaffold.name, region,
-  type = "absolute", major.lines.y = TRUE, major.lines.x = FALSE,
-  ylim = NULL, males.color = "dodgerblue3", females.color = "firebrick2",
-  bottom.track = FALSE)
+  type = "absolute", min.coverage = 0, major.lines.y = TRUE,
+  major.lines.x = FALSE, ylim = NULL, males.color = "dodgerblue3",
+  females.color = "firebrick2", bottom.track = FALSE)
 }
 \arguments{
 \item{data}{Coverage window data frame.}
@@ -17,6 +17,8 @@ track_scaffold_window_coverage_ratio(data, scaffold.name, region,
 \item{region}{A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000).}
 
 \item{type}{Type of coverage to use, either "absolute" or "relative" (default: "absolute").}
+
+\item{min.coverage}{Minimum coverage to compute coverage ratio (default: 0).}
 
 \item{major.lines.y}{If TRUE, major grid lines will be plotted for the y axis (default: TRUE).}
 
