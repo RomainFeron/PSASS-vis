@@ -62,7 +62,7 @@ track_scaffold_window_snp <- function(data,
 
     # Draw the plot
     g <- ggplot2::ggplot() +
-        ggplot2::geom_area(data = data, ggplot2::aes(x = Position, y = snp_data), fill = color, alpha = 0.5) +
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Position, ymin = 0, ymax = snp_data), fill = color, alpha = 0.75) +
         ggplot2::scale_y_continuous(name = paste0(sex_short, " SNP window"), expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(legend.position = "none",

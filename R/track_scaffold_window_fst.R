@@ -44,7 +44,7 @@ track_scaffold_window_fst <- function(data,
 
     # Draw the plot
     g <- ggplot2::ggplot() +
-        ggplot2::geom_area(data = data, ggplot2::aes(x = Position, y = Fst), fill = color, color = "black") +
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Position, ymin = 0, ymax = Fst), fill = color, color = "black") +
         ggplot2::scale_y_continuous(name = expression(paste("F"["ST"], " win.", sep="")), expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(legend.position = "none",
