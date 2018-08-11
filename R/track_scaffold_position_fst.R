@@ -47,7 +47,7 @@ track_scaffold_position_fst <- function(data,
     if (!bottom.track) {
         axis_title_x <- ggplot2::element_blank()
     } else {
-        axis_title_x <- element_text()
+        axis_title_x <- ggplot2::element_text()
     }
 
     # Draw the plot

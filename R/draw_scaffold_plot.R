@@ -54,6 +54,10 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
         stop(paste0(" - Error: scaffold \"", scaffold, "\" does not exist."))
     }
 
+    # If both males and females SNPs tracks, set a common scale
+    snp_y_lim <- NULL
+    if ("window_snp_males" %in% tracks & "window_snp_females" %in% tracks) snp_y_lim <- c(0, max(data$window_snp$Males, data$window_snp$Females))
+
     # Setting region to entire scaffold if region is NULL
     if (is.null(region)) {
         if (scaffold %in% names(data$lengths$lg)) {
@@ -102,6 +106,7 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
                            data$window_snp$Position >= region[1] & data$window_snp$Position <= region[2])
 
             p <- track_scaffold_window_snp(temp, "males", scaffold_name, region,
+                                           ylim = snp_y_lim,
                                            major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                            color = males.color, bottom.track = bottom.track)
             plots[[i]] <- p
@@ -113,6 +118,7 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
                         data$window_snp$Position >= region[1] & data$window_snp$Position <= region[2])
 
             p <- track_scaffold_window_snp(temp, "females", scaffold_name, region,
+                                           ylim = snp_y_lim,
                                            major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                            color = females.color, bottom.track = bottom.track)
             plots[[i]] <- p

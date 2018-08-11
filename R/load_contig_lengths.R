@@ -11,6 +11,7 @@
 #' @return A list with the following elements:
 #' - lg : lengths of contigs determined to be chromosomes
 #' - unplaced : lengths of contigs determined to be unplaced
+#' - plot : lengths of sectors to be plotted
 #'
 #' @examples
 #' lengths <- load_contig_lengths("contig_lengths.tsv", chromosomes_names = chromosomes_names)
@@ -35,7 +36,7 @@ load_contig_lengths <- function(input_file_path, chromosomes_names = NULL, plot.
 
         output$lg <- subset(data, substr(names(data), 1, 2) %in% c("LG", "lg", "Lg", "Ch", "ch", "CH", "NC"))
 
-        if (is.data.frame(output$lg) && dim(output$lg)[1] > 0) {
+        if (is.vector(output$lg) && length(output$lg) > 0) {
 
             # Usually mitochondria is also called NC_xxx. If one chromosome is > 100 times smaller than the average of all ohter chromosomes,
             # it is considered to be the mitochondria and is removed
