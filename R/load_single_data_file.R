@@ -40,18 +40,21 @@ load_single_data_file <- function(input_file_path, contig_lengths, plot.unplaced
 
         # Transform position on each contig into position on cumulated contig
         temp <- cumsum(contig_lengths$unplaced) - contig_lengths$unplaced[1]
+        data_unplaced$Original_position <- data_unplaced$Position
         data_unplaced$Position <- data_unplaced$Position + temp[data_unplaced$Contig]
         data_unplaced$Contig_id <- data_unplaced$Contig
         data_unplaced$Contig <- "Unplaced"
 
         # Regroup data into one data frame
         data_lg$Contig_id <- data_lg$Contig
+        data_lg$Original_position <- data_lg$Position
         data <- rbind(data_lg, data_unplaced)
         data$Contig <- factor(data$Contig, levels = c(names(contig_lengths$lg), "Unplaced"))
 
     } else {
 
         data <- data_lg
+        data$Original_position <- data$Position
         data$Contig <- factor(data$Contig, levels = names(contig_lengths$lg))
 
     }

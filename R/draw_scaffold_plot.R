@@ -44,14 +44,28 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
     n_tracks <- length(tracks)
     plots <- rep(list(NULL), n_tracks)
 
-    # Getting scaffold information
+    # Getting contig information
+
     if (scaffold %in% data$names) {
+
+        # Case of scaffold = "LG05"
         scaffold_name <- scaffold
         scaffold <- names(data$names[which(data$names == scaffold)])
+
     } else if (scaffold %in% names(data$names)) {
-        scaffold_name <- names(data$names[which(data$names == scaffold)])
+
+        # Case of scaffold = "NC_0215354.2"
+        scaffold_name <- data$names[which(names(data$names) == scaffold)]
+
+    } else if (scaffold %in% c(names(data$lengths$unplaced), names(data$lengths$lg))) {
+
+        # Case of unplaced scaffold or no scaffold names
+        scaffold_name <- scaffold
+
     } else {
+
         stop(paste0(" - Error: scaffold \"", scaffold, "\" does not exist."))
+
     }
 
     # If both males and females SNPs tracks, set a common scale
@@ -77,8 +91,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         if (tracks[i] == "position_fst") {
 
-            temp <- subset(data$position_fst, data$position_fst$Contig == scaffold &
-                           data$position_fst$Position >= region[1] & data$position_fst$Position <= region[2])
+            temp <- subset(data$position_fst, data$position_fst$Contig_id == scaffold &
+                           data$position_fst$Original_position >= region[1] & data$position_fst$Original_position <= region[2])
 
             p <- track_scaffold_position_fst(temp, scaffold_name, region,
                                              major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -87,8 +101,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "window_fst") {
 
-            temp <- subset(data$window_fst, data$window_fst$Contig == scaffold &
-                           data$window_fst$Position >= region[1] & data$window_fst$Position <= region[2])
+            temp <- subset(data$window_fst, data$window_fst$Contig_id == scaffold &
+                           data$window_fst$Original_position >= region[1] & data$window_fst$Original_position <= region[2])
 
             p <- track_scaffold_window_fst(temp, scaffold_name, region,
                                            major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -102,8 +116,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "window_snp_males") {
 
-            temp <- subset(data$window_snp, data$window_snp$Contig == scaffold &
-                           data$window_snp$Position >= region[1] & data$window_snp$Position <= region[2])
+            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
+                           data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
 
             p <- track_scaffold_window_snp(temp, "males", scaffold_name, region,
                                            ylim = snp_y_lim,
@@ -114,8 +128,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "window_snp_females") {
 
-            temp <- subset(data$window_snp, data$window_snp$Contig == scaffold &
-                        data$window_snp$Position >= region[1] & data$window_snp$Position <= region[2])
+            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
+                        data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
 
             p <- track_scaffold_window_snp(temp, "females", scaffold_name, region,
                                            ylim = snp_y_lim,
@@ -126,8 +140,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "window_snp_combined") {
 
-            temp <- subset(data$window_snp, data$window_snp$Contig == scaffold &
-                           data$window_snp$Position >= region[1] & data$window_snp$Position <= region[2])
+            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
+                           data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
 
             p <- track_scaffold_window_snp_combined(temp, scaffold_name, region,
                                                     major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -137,8 +151,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "window_snp_ratio") {
 
-            temp <- subset(data$window_snp, data$window_snp$Contig == scaffold &
-                           data$window_snp$Position >= region[1] & data$window_snp$Position <= region[2])
+            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
+                           data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
 
             p <- track_scaffold_window_snp_ratio(temp, scaffold_name, region,
                                                  major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -148,8 +162,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "coverage_males") {
 
-            temp <- subset(data$coverage, data$coverage$Contig == scaffold &
-                               data$coverage$Position >= region[1] & data$coverage$Position <= region[2])
+            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
+                               data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
 
             p <- track_scaffold_window_coverage(temp, "males", scaffold_name, region, type = coverage.type,
                                                 major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -158,8 +172,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "coverage_females") {
 
-            temp <- subset(data$coverage, data$coverage$Contig == scaffold &
-                           data$coverage$Position >= region[1] & data$coverage$Position <= region[2])
+            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
+                           data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
 
             p <- track_scaffold_window_coverage(temp, "females", scaffold_name, region, type = coverage.type,
                                                 major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -168,8 +182,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "coverage_combined") {
 
-            temp <- subset(data$coverage, data$coverage$Contig == scaffold &
-                           data$coverage$Position >= region[1] & data$coverage$Position <= region[2])
+            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
+                           data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
 
             p <- track_scaffold_window_coverage_combined(temp, scaffold_name, region, type = coverage.type,
                                                          major.lines.y = major.lines.y, major.lines.x = major.lines.x,
@@ -179,8 +193,8 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
 
         } else if (tracks[i] == "coverage_ratio") {
 
-            temp <- subset(data$coverage, data$coverage$Contig == scaffold &
-                               data$coverage$Position >= region[1] & data$coverage$Position <= region[2])
+            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
+                               data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
 
             p <- track_scaffold_window_coverage_ratio(temp, scaffold_name, region, type = coverage.type, min.coverage = min.coverage,
                                                       major.lines.y = major.lines.y, major.lines.x = major.lines.x,

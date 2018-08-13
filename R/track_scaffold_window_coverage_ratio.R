@@ -86,9 +86,9 @@ track_scaffold_window_coverage_ratio <- function(data,
     # Draw the plot
     g <- ggplot2::ggplot() +
         cowplot::theme_cowplot() +
-        ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_m),
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Original_position, ymin = 0, ymax = Ratio_m),
                              fill = males.color, color = males.color, size = 0.4, alpha = 0.75) +
-        ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Ratio_f),
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Original_position, ymin = 0, ymax = Ratio_f),
                              fill = females.color, color = females.color, size = 0.4, alpha = 0.75) +
         ggplot2::scale_y_continuous(name = expression(paste("log"[2], "(M:F) coverage window")), expand = c(0.01, 0.01), limits = ylim,
                                     breaks = seq(-ymax, ymax, 2 * ymax / 6), labels = round(seq(-ymax, ymax, 2 * ymax / 6), 2)) +

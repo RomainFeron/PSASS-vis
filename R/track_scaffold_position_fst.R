@@ -53,7 +53,7 @@ track_scaffold_position_fst <- function(data,
     # Draw the plot
     g <- ggplot2::ggplot() +
         cowplot::theme_cowplot() +
-        ggplot2::geom_point(data = data, ggplot2::aes(x = Position, y = Fst), size = point.size) +
+        ggplot2::geom_point(data = data, ggplot2::aes(x = Original_position, y = Fst), size = point.size) +
         ggplot2::scale_y_continuous(name = expression(paste("F"["ST"], " pos.", sep="")), expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(legend.position = "none",

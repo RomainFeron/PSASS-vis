@@ -73,9 +73,9 @@ track_scaffold_window_coverage_combined <- function(data,
     # Draw the plot
     g <- ggplot2::ggplot() +
         cowplot::theme_cowplot() +
-        ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Males, fill = "Males", color = "Males"),
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Original_position, ymin = 0, ymax = Males, fill = "Males", color = "Males"),
                              alpha = 0.25, show.legend = c("color"=TRUE, "fill"=FALSE)) +
-        ggplot2::geom_ribbon(data = data, aes(x = Position, ymin = 0, ymax = Females, fill = "Females", color = "Females"),
+        ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Original_position, ymin = 0, ymax = Females, fill = "Females", color = "Females"),
                              alpha = 0.25, show.legend = c("color"=TRUE, "fill"=TRUE)) +
         ggplot2::scale_y_continuous(name = "Combined coverage window", expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
