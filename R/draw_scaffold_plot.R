@@ -26,8 +26,22 @@
 #'
 #' @param coverage.type Type of coverage to be plotted, either "absolute" or "relative" (default: "absolute").
 #'
+#' @param coverage.ratio.lines If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).
+#'
 #' @param min.coverage Minimum coverage to compute coverage ratio.
 #' The log of ratio for positions with coverage lower than this value in either sex will be 0 (default: 10).
+#'
+#' @param major.lines.y If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
+#'
+#' @param major.lines.x If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
+#'
+#' @param alpha.value Transparency values for combined tracks (default: 0.25).
+#'
+#' @param fst.window.color Color of the FST window track (default: "grey50").
+#'
+#' @param males.color Color of the male window tracks (default: "dodgerblue3").
+#'
+#' @param females.color Color of the female window tracks (default: "firebrick2").
 #'
 #' @examples
 #'
@@ -36,9 +50,9 @@
 draw_scaffold_plot <- function(data, scaffold, region = NULL,
                                output.file = NULL, width = 12, height = 4, dpi = 300,
                                tracks = c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio"),
-                               point.size = 0.5, coverage.type = "absolute", min.coverage = 10,
+                               point.size = 0.5, coverage.type = "absolute", min.coverage = 10, coverage.ratio.lines = FALSE,
                                major.lines.y = TRUE, major.lines.x = FALSE,
-                               fst.window.color = "grey50", males.color = "dodgerblue3", females.color = "firebrick2") {
+                               fst.window.color = "grey50", males.color = "dodgerblue3", females.color = "firebrick2", alpha.value = 0.25) {
 
     # Initialize list of plots
     n_tracks <- length(tracks)
@@ -188,7 +202,7 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
             p <- track_scaffold_window_coverage_combined(temp, scaffold_name, region, type = coverage.type,
                                                          major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                                          males.color = males.color, females.color = females.color,
-                                                         bottom.track = bottom.track)
+                                                         bottom.track = bottom.track, alpha.value = alpha.value)
             plots[[i]] <- p
 
         } else if (tracks[i] == "coverage_ratio") {
@@ -199,7 +213,7 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
             p <- track_scaffold_window_coverage_ratio(temp, scaffold_name, region, type = coverage.type, min.coverage = min.coverage,
                                                       major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                                       males.color = males.color, females.color = females.color,
-                                                      bottom.track = bottom.track)
+                                                      bottom.track = bottom.track, ratio.lines = coverage.ratio.lines)
             plots[[i]] <- p
 
         } else {
