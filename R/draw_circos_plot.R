@@ -62,7 +62,7 @@ draw_circos_plot <- function(data,
 
     # Open output file if specified
     if (!is.null(output.file)) {
-        png(output.file, width=width, height=height,  res=res, type="cairo")
+        png(output.file, width=width, height=height,  res=res)
     }
 
     # Get sector information
@@ -136,8 +136,11 @@ draw_circos_plot <- function(data,
 
 
     # Calculate angle offset to have zoomed sector on top
-    a <- 360 * sum(tail(sector_width, n = length(highlight))) / sum(sector_width) / 2 + 7.5
-
+    if (zoom.highlights & length(highlight) > 0) {
+        a <- 360 * sum(tail(sector_width, n = length(highlight))) / sum(sector_width) / 2 + 7.5
+    } else {
+        a <- 7.5
+    }
 
     # Calculate width of track and sector.title.expand factor based on number of tracks
     n_tracks <- length(tracks)
