@@ -66,35 +66,35 @@ load_data_files <- function(contig_lengths_file_path,
 
     }
 
-    if (!is.null(position_fst_file_path)) {
+    if (!is.null(position_fst_file_path) & file.exists(position_fst_file_path)) {
 
         print(" - Loading positions FST file")
         output$position_fst <- load_single_data_file(position_fst_file_path, output$lengths, plot.unplaced = plot.unplaced)
 
     }
 
-    if (!is.null(window_fst_file_path)) {
+    if (!is.null(window_fst_file_path) & file.exists(window_fst_file_path)) {
 
         print(" - Loading sliding window FST file")
         output$window_fst <- load_single_data_file(window_fst_file_path, output$lengths, plot.unplaced = plot.unplaced)
 
     }
 
-    if (!is.null(position_snp_file_path)) {
+    if (!is.null(position_snp_file_path) & file.exists(position_snp_file_path)) {
 
         print(" - Loading positions SNP file")
         output$position_snp <- load_single_data_file(position_snp_file_path, output$lengths, plot.unplaced = plot.unplaced)
 
     }
 
-    if (!is.null(window_snp_file_path)) {
+    if (!is.null(window_snp_file_path) & file.exists(window_snp_file_path)) {
 
         print(" - Loading sliding window SNP file")
         output$window_snp <- load_single_data_file(window_snp_file_path, output$lengths, plot.unplaced = plot.unplaced)
 
     }
 
-    if (!is.null(coverage_file_path)) {
+    if (!is.null(coverage_file_path) & file.exists(coverage_file_path)) {
 
         print(" - Loading coverage file")
         output$coverage <- load_single_data_file(coverage_file_path, output$lengths, plot.unplaced = plot.unplaced)
