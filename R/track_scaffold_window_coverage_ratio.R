@@ -24,6 +24,8 @@
 #' @param females.color Color of the plotted area for females (default: "firebrick2").
 #'
 #' @param bottom.track If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).
+#'
+#' @param ratio.lines If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).
 
 
 track_scaffold_window_coverage_ratio <- function(data,
@@ -36,7 +38,8 @@ track_scaffold_window_coverage_ratio <- function(data,
                                                  ylim = NULL,
                                                  males.color = "dodgerblue3",
                                                  females.color = "firebrick2",
-                                                 bottom.track = FALSE) {
+                                                 bottom.track = FALSE,
+                                                 ratio.lines = FALSE) {
 
     # Create major grid lines for y axis if specified
     if (major.lines.y) {
@@ -97,6 +100,14 @@ track_scaffold_window_coverage_ratio <- function(data,
                        panel.grid.major.y = major_lines_y,
                        panel.grid.major.x = major_lines_x,
                        axis.title.x = axis_title_x)
+
+    if (ratio.lines == TRUE) {
+        g <- g +
+            ggplot2::geom_hline(yintercept = log(2, 2), color = "black", linetype = 3) +
+            ggplot2::geom_hline(yintercept = log(3/2, 2), color = "black", linetype = 3) +
+            ggplot2::geom_hline(yintercept = log(2/3, 2), color = "black", linetype = 3) +
+            ggplot2::geom_hline(yintercept = log(1/2, 2), color = "black", linetype = 3)
+    }
 
     return(g)
 }
