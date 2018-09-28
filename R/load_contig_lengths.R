@@ -36,7 +36,7 @@ load_contig_lengths <- function(input_file_path, chromosomes_names = NULL, plot.
 
         output$lg <- subset(data, substr(names(data), 1, 2) %in% c("LG", "lg", "Lg", "Ch", "ch", "CH", "NC"))
 
-        if (is.vector(output$lg) && length(output$lg) > 0) {
+        if (is.vector(output$lg) && length(output$lg) > 1) {
 
             # Usually mitochondria is also called NC_xxx. If one chromosome is > 100 times smaller than the average of all ohter chromosomes,
             # it is considered to be the mitochondria and is removed
@@ -44,6 +44,9 @@ load_contig_lengths <- function(input_file_path, chromosomes_names = NULL, plot.
             if (100 * putative_mt < mean(output$lg)) output$lg <- output$lg[output$lg != putative_mt]
 
             output$lg <- output$lg[gtools::mixedorder(names(output$lg))]  # Order chromosomes based on their ID
+
+        } else if (length(output$lg) == 1) {
+            output$lg <- output$lg[-1,]  # If there is only one LG, it is assumed it is a mitochondria
         }
 
         output$unplaced <- subset(data, !(substr(names(data), 1, 2) %in% c("LG", "lg", "Ch", "ch", "MT", "mt", "NC")))
