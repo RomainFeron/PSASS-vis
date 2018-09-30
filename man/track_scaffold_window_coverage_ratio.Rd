@@ -7,7 +7,8 @@
 track_scaffold_window_coverage_ratio(data, scaffold.name, region,
   type = "absolute", min.coverage = 0, major.lines.y = TRUE,
   major.lines.x = FALSE, ylim = NULL, males.color = "dodgerblue3",
-  females.color = "firebrick2", bottom.track = FALSE)
+  females.color = "firebrick2", bottom.track = FALSE,
+  ratio.lines = FALSE)
 }
 \arguments{
 \item{data}{Coverage window data frame.}
@@ -31,6 +32,8 @@ track_scaffold_window_coverage_ratio(data, scaffold.name, region,
 \item{females.color}{Color of the plotted area for females (default: "firebrick2").}
 
 \item{bottom.track}{If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).}
+
+\item{ratio.lines}{If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).}
 }
 \description{
 Draws a scaffold plot track for the ratio of coverage window data.

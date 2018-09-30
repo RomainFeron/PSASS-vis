@@ -4,15 +4,16 @@
 \alias{draw_circos_plot}
 \title{Draw circos plot}
 \usage{
-draw_circos_plot(data, output.file = NULL, width = 2400, height = 2400,
-  res = 120, tracks = c("window_fst", "window_snp_males",
-  "window_snp_females", "coverage_ratio"), highlight = NULL,
-  zoom.highlights = FALSE, zoom.ratio = 2, zoom.suffix = " (zoom)",
-  base.color = "white", highlight.color = "grey80", point.size = 0.1,
+draw_circos_plot(data, output.file = NULL, width = 2400,
+  height = 2400, res = 120, tracks = c("window_fst",
+  "window_snp_males", "window_snp_females", "coverage_ratio"),
+  highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2,
+  zoom.suffix = " (zoom)", base.color = "white",
+  highlight.color = "grey80", point.size = 0.1,
   color.unplaced = FALSE, color.palette = c(`0` = "dodgerblue3", `1` =
-  "goldenrod1", `2` = "grey20", males = "dodgerblue3", females = "firebrick2"),
-  sector.titles.expand = NULL, coverage.type = "absolute",
-  min.coverage = 10)
+  "goldenrod1", `2` = "grey20", males = "dodgerblue3", females =
+  "firebrick2"), sector.titles.expand = NULL,
+  coverage.type = "absolute", min.coverage = 10)
 }
 \arguments{
 \item{data}{A PoolSex data structure obtained with the \code{\link{load_data_files}} function.}

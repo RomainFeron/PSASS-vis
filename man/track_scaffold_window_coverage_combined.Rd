@@ -6,8 +6,9 @@
 \usage{
 track_scaffold_window_coverage_combined(data, scaffold.name, region,
   type = "absolute", major.lines.y = TRUE, major.lines.x = FALSE,
-  ylim = NULL, males.color = "dodgerblue3", females.color = "firebrick2",
-  bottom.track = FALSE)
+  ylim = NULL, males.color = "dodgerblue3",
+  females.color = "firebrick2", bottom.track = FALSE,
+  alpha.value = 0.25)
 }
 \arguments{
 \item{data}{Coverage window data frame.}
@@ -29,6 +30,8 @@ track_scaffold_window_coverage_combined(data, scaffold.name, region,
 \item{females.color}{Color of the plotted area for females (default: "firebrick2").}
 
 \item{bottom.track}{If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).}
+
+\item{alpha.value}{Transparency values for the tracks (default: 0.25).}
 }
 \description{
 Draws a scaffold plot track for both sexes coverage window data.

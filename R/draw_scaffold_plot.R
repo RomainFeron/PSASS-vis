@@ -18,9 +18,9 @@
 #'
 #' @param dpi Resolution of the output file if specified, in dpi (default: 300).
 #'
-#' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
-#' "window_snp_females", "combined_snp", "coverage_males", "coverage_females", "coverage_ratio"
-#' (default: c("window_fst", "combined_snp", "coverage_ratio")).
+#' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males",
+#' "window_snp_females", "window_snp_combined", "window_snp_ratio", "coverage_males", "coverage_females", "coverage_combined", "coverage_ratio"
+#' (default: c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio")).
 #'
 #' @param point.size Size of the points in the plot (default: 0.1).
 #'

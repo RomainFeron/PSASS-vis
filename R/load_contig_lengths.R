@@ -46,7 +46,8 @@ load_contig_lengths <- function(input_file_path, chromosomes_names = NULL, plot.
             output$lg <- output$lg[gtools::mixedorder(names(output$lg))]  # Order chromosomes based on their ID
 
         } else if (length(output$lg) == 1) {
-            output$lg <- output$lg[-1,]  # If there is only one LG, it is assumed it is a mitochondria
+
+            output$lg <- output$lg[-1]  # If there is only one LG, it is assumed it is a mitochondria
         }
 
         output$unplaced <- subset(data, !(substr(names(data), 1, 2) %in% c("LG", "lg", "Ch", "ch", "MT", "mt", "NC")))

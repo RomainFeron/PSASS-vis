@@ -4,9 +4,9 @@
 \alias{track_scaffold_position_fst}
 \title{Scaffold FST position track}
 \usage{
-track_scaffold_position_fst(data, scaffold.name, region, major.lines.y = TRUE,
-  major.lines.x = FALSE, ylim = c(min(data$Fst), 1), point.size = 0.5,
-  bottom.track = FALSE)
+track_scaffold_position_fst(data, scaffold.name, region,
+  major.lines.y = TRUE, major.lines.x = FALSE,
+  ylim = c(min(data$Fst), 1), point.size = 0.5, bottom.track = FALSE)
 }
 \arguments{
 \item{data}{FST position data frame.}

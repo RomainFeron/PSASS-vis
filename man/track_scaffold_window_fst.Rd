@@ -4,9 +4,9 @@
 \alias{track_scaffold_window_fst}
 \title{Scaffold FST window track}
 \usage{
-track_scaffold_window_fst(data, scaffold.name, region, major.lines.y = TRUE,
-  major.lines.x = FALSE, ylim = c(0, max(data$Fst)), color = "grey50",
-  bottom.track = FALSE)
+track_scaffold_window_fst(data, scaffold.name, region,
+  major.lines.y = TRUE, major.lines.x = FALSE, ylim = c(0,
+  max(data$Fst)), color = "grey50", bottom.track = FALSE)
 }
 \arguments{
 \item{data}{FST window data frame.}

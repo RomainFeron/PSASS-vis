@@ -16,6 +16,7 @@ load_contig_lengths(input_file_path, chromosomes_names = NULL,
 A list with the following elements:
 - lg : lengths of contigs determined to be chromosomes
 - unplaced : lengths of contigs determined to be unplaced
+- plot : lengths of sectors to be plotted
 }
 \description{
 Loads a table of contig lengths. The function separates the lengths of chromosomes and unplaced contigs
