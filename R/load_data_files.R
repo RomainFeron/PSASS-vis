@@ -1,6 +1,6 @@
 #' @title Load a single data file
 #'
-#' @description Loads all data files from poolsex analysis and other files needed for the plots.
+#' @description Loads all data files from PSASS and other files needed for the plots.
 #'
 #' @param contig_lengths_file_path Path to a contig lengths file.
 #'

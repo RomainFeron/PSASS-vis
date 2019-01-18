@@ -1,8 +1,8 @@
 #' @title Draw scaffold plot
 #'
-#' @description Draw a scaffold plot from the PoolSex data
+#' @description Draw a scaffold plot from the PSASS data
 #'
-#' @param data A PoolSex data structure obtained with the \code{\link{load_data_files}} function.
+#' @param data A PSASS data structure obtained with the \code{\link{load_data_files}} function.
 #'
 #' @param scaffold Name of the scaffold to be plotted. The name can be from the dataset (e.g. "NC_0245486.2") or from the
 #' 'chromosomes_names' file (e.g. "LG4").

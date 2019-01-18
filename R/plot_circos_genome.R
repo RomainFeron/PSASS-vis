@@ -1,6 +1,6 @@
 #' @title Plot genome circos
 #'
-#' @description Generate a circos plot of the entire genome from the results of PoolSex analysis.
+#' @description Generate a circos plot of the entire genome from the results of PSASS.
 #'
 #' @param contig_lengths_file_path Path to a contig lengths file.
 #'
@@ -66,11 +66,11 @@
 #' # Standard plot with default options
 #' plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv',
 #'                    chromosomes_names_file_path = 'data/chromosomes_names.tsv',
-#'                    prefix = 'data/poolsex_analysis',
-#'                    output.file = 'figures/poolsex_genome.png')
+#'                    prefix = 'data/psass',
+#'                    output.file = 'figures/psass_genome.png')
 #'
 #' # Plot FST positions and male SNP window with highlight on NC_02456.3
-#' plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv', prefix = 'data/poolsex_analysis',
+#' plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv', prefix = 'data/psass',
 #'                    tracks = c("position_fst", "window_snp_males"), highlight = c("NC_02456.3"))
 
 

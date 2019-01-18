@@ -1,8 +1,8 @@
 #' @title Draw circos plot
 #'
-#' @description Draw a circos plot from the PoolSex data
+#' @description Draw a circos plot from the PSASS data
 #'
-#' @param data A PoolSex data structure obtained with the \code{\link{load_data_files}} function.
+#' @param data A PSASS data structure obtained with the \code{\link{load_data_files}} function.
 #'
 #' @param output.file Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).
 #'
