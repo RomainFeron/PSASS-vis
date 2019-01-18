@@ -19,17 +19,17 @@
 #' @param dpi Resolution of the output file if specified, in dpi (default: 300).
 #'
 #' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males",
-#' "window_snp_females", "window_snp_combined", "window_snp_ratio", "coverage_males", "coverage_females", "coverage_combined", "coverage_ratio"
-#' (default: c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio")).
+#' "window_snp_females", "window_snp_combined", "window_snp_ratio", "depth_males", "depth_females", "depth_combined", "depth_ratio"
+#' (default: c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio")).
 #'
 #' @param point.size Size of the points in the plot (default: 0.1).
 #'
-#' @param coverage.type Type of coverage to be plotted, either "absolute" or "relative" (default: "absolute").
+#' @param depth.type Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").
 #'
-#' @param coverage.ratio.lines If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).
+#' @param depth.ratio.lines If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).
 #'
-#' @param min.coverage Minimum coverage to compute coverage ratio.
-#' The log of ratio for positions with coverage lower than this value in either sex will be 0 (default: 10).
+#' @param min.depth Minimum depth to compute depth ratio.
+#' The log of ratio for positions with depth lower than this value in either sex will be 0 (default: 10).
 #'
 #' @param major.lines.y If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
 #'
@@ -49,8 +49,8 @@
 
 draw_scaffold_plot <- function(data, scaffold, region = NULL,
                                output.file = NULL, width = 12, height = 4, dpi = 300,
-                               tracks = c("window_fst", "window_snp_males", "window_snp_females", "coverage_ratio"),
-                               point.size = 0.5, coverage.type = "absolute", min.coverage = 10, coverage.ratio.lines = FALSE,
+                               tracks = c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio"),
+                               point.size = 0.5, depth.type = "absolute", min.depth = 10, depth.ratio.lines = FALSE,
                                major.lines.y = TRUE, major.lines.x = FALSE,
                                fst.window.color = "grey50", males.color = "dodgerblue3", females.color = "firebrick2", alpha.value = 0.25) {
 
@@ -174,46 +174,46 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
                                                  bottom.track = bottom.track)
             plots[[i]] <- p
 
-        } else if (tracks[i] == "coverage_males") {
+        } else if (tracks[i] == "depth_males") {
 
-            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
-                               data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
+            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
+                               data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
 
-            p <- track_scaffold_window_coverage(temp, "males", scaffold_name, region, type = coverage.type,
+            p <- track_scaffold_window_depth(temp, "males", scaffold_name, region, type = depth.type,
                                                 major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                                 color = males.color, bottom.track = bottom.track)
             plots[[i]] <- p
 
-        } else if (tracks[i] == "coverage_females") {
+        } else if (tracks[i] == "depth_females") {
 
-            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
-                           data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
+            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
+                           data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
 
-            p <- track_scaffold_window_coverage(temp, "females", scaffold_name, region, type = coverage.type,
+            p <- track_scaffold_window_depth(temp, "females", scaffold_name, region, type = depth.type,
                                                 major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                                 color = females.color, bottom.track = bottom.track)
             plots[[i]] <- p
 
-        } else if (tracks[i] == "coverage_combined") {
+        } else if (tracks[i] == "depth_combined") {
 
-            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
-                           data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
+            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
+                           data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
 
-            p <- track_scaffold_window_coverage_combined(temp, scaffold_name, region, type = coverage.type,
+            p <- track_scaffold_window_depth_combined(temp, scaffold_name, region, type = depth.type,
                                                          major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                                          males.color = males.color, females.color = females.color,
                                                          bottom.track = bottom.track, alpha.value = alpha.value)
             plots[[i]] <- p
 
-        } else if (tracks[i] == "coverage_ratio") {
+        } else if (tracks[i] == "depth_ratio") {
 
-            temp <- subset(data$coverage, data$coverage$Contig_id == scaffold &
-                               data$coverage$Original_position >= region[1] & data$coverage$Original_position <= region[2])
+            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
+                               data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
 
-            p <- track_scaffold_window_coverage_ratio(temp, scaffold_name, region, type = coverage.type, min.coverage = min.coverage,
+            p <- track_scaffold_window_depth_ratio(temp, scaffold_name, region, type = depth.type, min.depth = min.depth,
                                                       major.lines.y = major.lines.y, major.lines.x = major.lines.x,
                                                       males.color = males.color, females.color = females.color,
-                                                      bottom.track = bottom.track, ratio.lines = coverage.ratio.lines)
+                                                      bottom.track = bottom.track, ratio.lines = depth.ratio.lines)
             plots[[i]] <- p
 
         } else {

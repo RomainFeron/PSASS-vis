@@ -1,15 +1,15 @@
-#' @title Scaffold combined coverage window track
+#' @title Scaffold combined depth window track
 #'
-#' @description Draws a scaffold plot track for both sexes coverage window data.
+#' @description Draws a scaffold plot track for both sexes depth window data.
 #' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
-#' @param data Coverage window data frame.
+#' @param data depth window data frame.
 #'
 #' @param scaffold.name Name of the plotted scaffold (for the x axis)
 #'
 #' @param region A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000).
 #'
-#' @param type Type of coverage to use, either "absolute" or "relative" (default: "absolute").
+#' @param type Type of depth to use, either "absolute" or "relative" (default: "absolute").
 #'
 #' @param major.lines.y If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
 #'
@@ -26,17 +26,10 @@
 #' @param alpha.value Transparency values for the tracks (default: 0.25).
 
 
-track_scaffold_window_coverage_combined <- function(data,
-                                                    scaffold.name,
-                                                    region,
-                                                    type = "absolute",
-                                                    major.lines.y = TRUE,
-                                                    major.lines.x = FALSE,
-                                                    ylim = NULL,
-                                                    males.color = "dodgerblue3",
-                                                    females.color = "firebrick2",
-                                                    bottom.track = FALSE,
-                                                    alpha.value = 0.25) {
+track_scaffold_window_depth_combined <- function(data, scaffold.name, region, type = "absolute",
+                                                 major.lines.y = TRUE, major.lines.x = FALSE,
+                                                 ylim = NULL, males.color = "dodgerblue3", females.color = "firebrick2",
+                                                 bottom.track = FALSE, alpha.value = 0.25) {
 
     # Create major grid lines for y axis if specified
     if (major.lines.y) {
@@ -52,15 +45,15 @@ track_scaffold_window_coverage_combined <- function(data,
         major_lines_x <- ggplot2::element_blank()
     }
 
-    # Create data based on type of coverage
+    # Create data based on type of depth
     if (type == "absolute") {
-        data$Males <- data$Males_abs
-        data$Females <- data$Females_abs
+        data$Males <- data$Males_depth_abs
+        data$Females <- data$Females_depth_abs
     } else if (type == "relative") {
-        data$Males <- data$Males_rel
-        data$Females <- data$Females_rel
+        data$Males <- data$Males_depth_rel
+        data$Females <- data$Females_depth_rel
     } else {
-        stop(paste0(" - Error: coverage type \"", type, "\" does not exist."))
+        stop(paste0(" - Error: depth type \"", type, "\" does not exist."))
     }
 
     # Y axis limits
@@ -80,7 +73,7 @@ track_scaffold_window_coverage_combined <- function(data,
                              alpha = alpha.value, show.legend = c("color"=TRUE, "fill"=FALSE)) +
         ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Original_position, ymin = 0, ymax = Females, fill = "Females", color = "Females"),
                              alpha = alpha.value, show.legend = c("color"=TRUE, "fill"=TRUE)) +
-        ggplot2::scale_y_continuous(name = "Combined coverage window", expand = c(0.01, 0.01), limits = ylim) +
+        ggplot2::scale_y_continuous(name = "Combined depth window", expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::scale_fill_manual(name = "", values = c("Males" = males.color, "Females" = females.color)) +
         ggplot2::scale_color_manual(name = "", values = c("Males" = males.color, "Females" = females.color)) +

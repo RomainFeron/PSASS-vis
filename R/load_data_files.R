@@ -17,7 +17,7 @@
 #'
 #' @param position_snps_file_path Path to a SNPs positions output file (default NULL).
 #'
-#' @param coverage_file_path Path to a coverage output file (default NULL).
+#' @param depth_file_path Path to a depth output file (default NULL).
 #'
 #' @param plot.unplaced If TRUE, unplaced contigs will be plotted as a supercontig (default TRUE).
 #'
@@ -28,7 +28,7 @@
 #' - position_fst : position fst data (if specified)
 #' - window_snp : sliding window snp data (if specified)
 #' - position_snp : position snp data (if specified)
-#' - coverage : coverage data (if specified)
+#' - depth : depth data (if specified)
 #'
 #' @examples
 #' data <- load_data_files(prefix = "data/poolseq_analysis", chromosomes_names_file_path = "data/chromosomes_names.tsv",
@@ -36,7 +36,7 @@
 #'
 #' data <- load_data_files(window_fst_file_path = "data/poolseq_analysis_window_fst.tsv",
 #'                         window_snps_file_path = "data/poolseq_analysis_window_snps.tsv",
-#'                         coverage_file_path = "data/poolseq_analysis_coverage.tsv",
+#'                         depth_file_path = "data/poolseq_analysis_depth.tsv",
 #'                         contig_lengths_file_path = "data/contig_lengths.tsv",
 #'                         plot.unplaced = FALSE)
 
@@ -45,7 +45,7 @@ load_data_files <- function(contig_lengths_file_path,
                             prefix = NULL,
                             window_fst_file_path = NULL, position_fst_file_path = NULL,
                             window_snps_file_path = NULL, position_snps_file_path = NULL,
-                            coverage_file_path = NULL, chromosomes_names_file_path = NULL,
+                            depth_file_path = NULL, chromosomes_names_file_path = NULL,
                             plot.unplaced = TRUE) {
 
     output <- list()
@@ -58,11 +58,11 @@ load_data_files <- function(contig_lengths_file_path,
 
     if (!is.null(prefix)) {
 
-        window_fst_file_path <- paste0(prefix, "_window_fst.tsv")
-        position_fst_file_path <- paste0(prefix, "_position_fst.tsv")
-        window_snp_file_path <- paste0(prefix, "_window_snp.tsv")
-        position_snp_file_path <- paste0(prefix, "_position_snp.tsv")
-        coverage_file_path <- paste0(prefix, "_coverage.tsv")
+        window_fst_file_path <- paste0(prefix, "_fst_window.tsv")
+        position_fst_file_path <- paste0(prefix, "_fst_position.tsv")
+        window_snp_file_path <- paste0(prefix, "_snps_window.tsv")
+        position_snp_file_path <- paste0(prefix, "_snps_position.tsv")
+        depth_file_path <- paste0(prefix, "_depth.tsv")
 
     }
 
@@ -94,10 +94,10 @@ load_data_files <- function(contig_lengths_file_path,
 
     }
 
-    if (!is.null(coverage_file_path) & file.exists(coverage_file_path)) {
+    if (!is.null(depth_file_path) & file.exists(depth_file_path)) {
 
-        print(" - Loading coverage file")
-        output$coverage <- load_single_data_file(coverage_file_path, output$lengths, plot.unplaced = plot.unplaced)
+        print(" - Loading depth file")
+        output$depth <- load_single_data_file(depth_file_path, output$lengths, plot.unplaced = plot.unplaced)
 
     }
 

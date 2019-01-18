@@ -7,17 +7,17 @@
 plot_genome_circos(contig_lengths_file_path, plot.unplaced = TRUE,
   prefix = NULL, window_fst_file_path = NULL,
   position_fst_file_path = NULL, window_snps_file_path = NULL,
-  position_snps_file_path = NULL, coverage_file_path = NULL,
+  position_snps_file_path = NULL, depth_file_path = NULL,
   chromosomes_names_file_path = NULL, output.file = NULL,
   width = 2400, height = 2400, res = 120, tracks = c("window_fst",
-  "window_snp_males", "window_snp_females", "coverage_ratio"),
+  "window_snp_males", "window_snp_females", "depth_ratio"),
   highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2,
   zoom.suffix = " (zoom)", base.color = "white",
   highlight.color = "grey80", point.size = 0.1,
   color.unplaced = FALSE, color.palette = c(`0` = "dodgerblue3", `1` =
   "goldenrod1", `2` = "grey20", males = "dodgerblue3", females =
-  "firebrick2"), sector.titles.expand = NULL,
-  coverage.type = "absolute", min.coverage = 10)
+  "firebrick2"), sector.titles.expand = NULL, depth.type = "absolute",
+  min.depth = 10)
 }
 \arguments{
 \item{contig_lengths_file_path}{Path to a contig lengths file.}
@@ -35,7 +35,7 @@ such as "window_fst_file_path" (default NULL).}
 
 \item{position_snps_file_path}{Path to a SNPs positions output file (default NULL).}
 
-\item{coverage_file_path}{Path to a coverage output file (default NULL).}
+\item{depth_file_path}{Path to a depth output file (default NULL).}
 
 \item{chromosomes_names_file_path}{Path to a contig names file (default NULL).}
 
@@ -48,8 +48,8 @@ such as "window_fst_file_path" (default NULL).}
 \item{res}{Resolution of the output file if specified, in \% (default: 120).}
 
 \item{tracks}{Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
-"window_snp_females", "combined_snp", "coverage_males", "coverage_females", "coverage_ratio"
-(default: c("window_fst", "combined_snp", "coverage_ratio")).}
+"window_snp_females", "combined_snp", "depth_males", "depth_females", "depth_ratio"
+(default: c("window_fst", "combined_snp", "depth_ratio")).}
 
 \item{highlight}{A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).}
 
@@ -68,29 +68,29 @@ such as "window_fst_file_path" (default NULL).}
 \item{color.unplaced}{If TRUE, unplaced scaffolds will be colored with alternating colors, like in a manhattan plot (default: FALSE)}
 
 \item{color.palette}{Colors of the points in the plot. "0" and "1" specify the alternating colors for unplaced scaffolds
-if color.unplaced is TRUE, "2" specifies the color for chromosomes for unsexed tracks (position_fst, window_fst, coverage_ratio), and
+if color.unplaced is TRUE, "2" specifies the color for chromosomes for unsexed tracks (position_fst, window_fst, depth_ratio), and
 "males" and "females" specify the color of each sex for sexed tracks (position_snp, window_snp_males, window_snp_females, combined_snp,
-coverage_males, coverage_females) (default: c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2")).}
+depth_males, depth_females) (default: c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2")).}
 
 \item{sector.titles.expand}{Parameter to manually override the space between sector titles and x-axis (default: NULL).}
 
-\item{coverage.type}{Type of coverage to be plotted, either "absolute" or "relative" (default: "absolute").}
+\item{depth.type}{Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").}
 
-\item{min.coverage}{Minimum coverage to compute coverage ratio.
-The ratio for positions with coverage lower than this value in either sex will be 1 (default: 10).}
+\item{min.depth}{Minimum depth to compute depth ratio.
+The ratio for positions with depth lower than this value in either sex will be 1 (default: 10).}
 }
 \description{
-Generate a circos plot of the entire genome from the results of PoolSex analysis.
+Generate a circos plot of the entire genome from the results of PSASS.
 }
 \examples{
 
 # Standard plot with default options
 plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv',
                    chromosomes_names_file_path = 'data/chromosomes_names.tsv',
-                   prefix = 'data/poolsex_analysis',
-                   output.file = 'figures/poolsex_genome.png')
+                   prefix = 'data/psass',
+                   output.file = 'figures/psass_genome.png')
 
 # Plot FST positions and male SNP window with highlight on NC_02456.3
-plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv', prefix = 'data/poolsex_analysis',
+plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv', prefix = 'data/psass',
                    tracks = c("position_fst", "window_snp_males"), highlight = c("NC_02456.3"))
 }

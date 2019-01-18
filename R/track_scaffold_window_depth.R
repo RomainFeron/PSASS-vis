@@ -1,15 +1,15 @@
-#' @title Scaffold coverage window track
+#' @title Scaffold depth window track
 #'
-#' @description Draws a scaffold plot track for single sex SNP coverage data.
+#' @description Draws a scaffold plot track for single sex SNP depth data.
 #' This function is intended for use in the \code{\link{draw_scaffold_plot}} function.
 #'
-#' @param data Coverage window data frame.
+#' @param data depth window data frame.
 #'
 #' @param sex Sex to plot the data for, either "males" or "females".
 #'
 #' @param scaffold.name Name of the plotted scaffold (for the x axis).
 #'
-#' @param type Type of coverage to use, either "absolute" or "relative" (default: "absolute").
+#' @param type Type of depth to use, either "absolute" or "relative" (default: "absolute").
 #'
 #' @param region A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000).
 #'
@@ -24,16 +24,9 @@
 #' @param bottom.track If TRUE, this track will be considered bottom track of the plot and the x axis will be drawn (default: FALSE).
 
 
-track_scaffold_window_coverage <- function(data,
-                                           sex,
-                                           scaffold.name,
-                                           region,
-                                           type = "absolute",
-                                           major.lines.y = TRUE,
-                                           major.lines.x = FALSE,
-                                           ylim = NULL,
-                                           color = NULL,
-                                           bottom.track = FALSE) {
+track_scaffold_window_depth <- function(data, sex, scaffold.name, region, type = "absolute",
+                                        major.lines.y = TRUE, major.lines.x = FALSE,
+                                        ylim = NULL, color = NULL, bottom.track = FALSE) {
 
     # Create major grid lines for y axis if specified
     if (major.lines.y) {
@@ -49,15 +42,15 @@ track_scaffold_window_coverage <- function(data,
         major_lines_x <- ggplot2::element_blank()
     }
 
-    # Generate data according to specified coverage type
+    # Generate data according to specified depth type
     if (type == "absolute") {
-        data$Males <- data$Males_abs
-        data$Females <- data$Females_abs
+        data$Males <- data$Males_depth_abs
+        data$Females <- data$Females_depth_abs
     } else if (type == "relative") {
-        data$Males <- data$Males_rel
-        data$Females <- data$Females_rel
+        data$Males <- data$Males_depth_rel
+        data$Females <- data$Females_depth_rel
     } else {
-        stop(paste0(" - Error: coverage type \"", type, "\" does not exist."))
+        stop(paste0(" - Error: depth type \"", type, "\" does not exist."))
     }
 
     # Generate data according to specified sex
@@ -87,7 +80,7 @@ track_scaffold_window_coverage <- function(data,
         cowplot::theme_cowplot() +
         ggplot2::geom_ribbon(data = data, ggplot2::aes(x = Original_position, ymin = 0, ymax = cov_data),
                              fill = color, color = color, size = 0.4, alpha = 0.75) +
-        ggplot2::scale_y_continuous(name = paste0(sex_short, " coverage window"), expand = c(0.01, 0.01), limits = ylim) +
+        ggplot2::scale_y_continuous(name = paste0(sex_short, " depth window"), expand = c(0.01, 0.01), limits = ylim) +
         generate_x_scale(region, scaffold.name) +
         ggplot2::theme(legend.position = "none",
                        axis.text.y = ggplot2::element_text(margin = ggplot2::margin(l = 5)),

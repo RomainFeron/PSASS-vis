@@ -1,12 +1,10 @@
-#' @title Circos coverage track
+#' @title Circos depth ratio track
 #'
-#' @description Draws a track on a circos plot for coverage data. This function is intended for use in the \code{\link{draw_circos_plot}} function.
+#' @description Draws a track on a circos plot for depth ratio data. This function is intended for use in the \code{\link{draw_circos_plot}} function.
 #'
-#' @param data Coverage data frame.
+#' @param data depth data frame.
 #'
-#' @param sex Sex to draw the track for, either "Females" or "Males".
-#'
-#' @param type Type of coverage to draw the track for, either "absolute" or "relative" (default "absolute").
+#' @param min.depth Minimum depth to compute depth ratio (default: 10)
 #'
 #' @param bg.col Background color for sectors, either a single color or a vector of colors for each sector (default "white").
 #'
@@ -20,68 +18,27 @@
 #'
 #' @param sectors Vector with the names of the sectors in the plot (default NULL).
 #'
-#' @param males.color Color for male coverage (default "dodgerblue3").
-#'
-#' @param females.color Color for female coverage (default "firebrick2").
+#' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
 
 
-track_circos_coverage <- function(data, sex, type = "absolute",
-                           bg.col = "white", point.size = 0.01,
-                           top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                           males.color = "dodgerblue3", females.color = "firebrick2") {
+track_circos_depth_ratio <- function(data, min.depth = 10,
+                                     bg.col = "white", point.size = 0.01,
+                                     top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                                     color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")) {
 
 
-    # Set data to plot, point color and axis title according to specified sex and type of coverage
-    cov_data <- c()
+    print(" - Drawing depth ratio track ...")
 
-    if (!type %in% c("absolute", "relative")) {
-
-        print(paste0(' - Warning: unknown type \"', type, '\" for coverage track.'))
-        return(1)
-
-    } else if (type == "absolute") {
-
-        ylim <- c(0, 1.025 * max(data$Males_abs, data$Females_abs) + 0.01)
-
-    } else {
-
-        ylim <- c(0, 1.025 * max(data$Males_rel, data$Females_rel) + 0.01)
-
-    }
-
-    if (!(sex %in% c("Males", "Females"))) {
-
-        print(paste0(' - Warning: unknown sex \"', sex, '\" for coverage track.'))
-        return(1)
-
-    } else if (sex == "Males") {
-
-        if (type == "absolute") {
-            cov_data <- data$Males_abs
-        } else {
-            cov_data <- data$Males_rel
-        }
-        point.color <- males.color
-        y_label <- expression(bold("M. cov."))
-
-    } else {
-
-        if (type == "absolute") {
-            cov_data <- data$Females_abs
-        } else {
-            cov_data <- data$Females_rel
-        }
-        point.color <- females.color
-        y_label <- expression(bold("F. cov."))
-
-    }
-
-    print(paste0(" - Drawing coverage track for ", sex, " ..."))
+    # Compute log of depth ratio
+    data$Ratio <- log(data$Males_depth_abs / data$Females_depth_abs, 2)
+    data$Ratio[which(data$Males_depth_abs < min.depth & data$Females_depth_abs < min.depth)] <- 0  # Don't compute ratio when depth is lower than min.depth
+    lim <- 1.25 * max(abs(data$Ratio))
+    ylim <- c(-lim, lim)  # Y axis limits
 
     # Draw the top track of the plot, showing sex-bias
     circlize::circos.track(factors = data$Contig,
                            x = data$Position,
-                           y = cov_data,
+                           y = data$Ratio,
                            ylim = ylim,
                            bg.col = bg.col,
                            panel.fun = function(x, y) {  # panel.fun is the function drawing the track
@@ -121,9 +78,11 @@ track_circos_coverage <- function(data, sex, type = "absolute",
 
                                # Plot the data
                                circlize::circos.points(x, y, cex = point.size,
-                                                       col = point.color,
-                                                       bg = point.color,
+                                                       col = color.palette[as.character(data$Color[which(data$Contig == sector.index)])],
+                                                       bg = color.palette[as.character(data$Color[which(data$Contig == sector.index)])],
                                                        pch = 21)
+
+                               circlize::circos.lines(x = c(0, xmax), y = c(0, 0), col = "grey70", cex = 0.02)
 
                                # Add Y axis on the first sector only
                                if (sector.index == sectors[1]) {
@@ -134,13 +93,13 @@ track_circos_coverage <- function(data, sex, type = "absolute",
                                                           sector.index = sectors[1],
                                                           labels.cex = 1.2,
                                                           labels.niceFacing = FALSE,
-                                                          labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 0))
+                                                          labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 2))
 
                                    #Add y axis labels
                                    label_offset <- - 7.5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
-                                                         y_label,
+                                                         "Cov.\nratio",
                                                          sector.index = sectors[1],
                                                          facing = "inside",
                                                          cex = 1.3,

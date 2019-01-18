@@ -7,7 +7,7 @@
 load_data_files(contig_lengths_file_path, prefix = NULL,
   window_fst_file_path = NULL, position_fst_file_path = NULL,
   window_snps_file_path = NULL, position_snps_file_path = NULL,
-  coverage_file_path = NULL, chromosomes_names_file_path = NULL,
+  depth_file_path = NULL, chromosomes_names_file_path = NULL,
   plot.unplaced = TRUE)
 }
 \arguments{
@@ -24,7 +24,7 @@ such as "window_fst_file_path" (default NULL).}
 
 \item{position_snps_file_path}{Path to a SNPs positions output file (default NULL).}
 
-\item{coverage_file_path}{Path to a coverage output file (default NULL).}
+\item{depth_file_path}{Path to a depth output file (default NULL).}
 
 \item{chromosomes_names_file_path}{Path to a contig names file (default NULL).}
 
@@ -38,10 +38,10 @@ A list with the following elements:
 - position_fst : position fst data (if specified)
 - window_snp : sliding window snp data (if specified)
 - position_snp : position snp data (if specified)
-- coverage : coverage data (if specified)
+- depth : depth data (if specified)
 }
 \description{
-Loads all data files from poolsex analysis and other files needed for the plots.
+Loads all data files from PSASS and other files needed for the plots.
 }
 \examples{
 data <- load_data_files(prefix = "data/poolseq_analysis", chromosomes_names_file_path = "data/chromosomes_names.tsv",
@@ -49,7 +49,7 @@ data <- load_data_files(prefix = "data/poolseq_analysis", chromosomes_names_file
 
 data <- load_data_files(window_fst_file_path = "data/poolseq_analysis_window_fst.tsv",
                         window_snps_file_path = "data/poolseq_analysis_window_snps.tsv",
-                        coverage_file_path = "data/poolseq_analysis_coverage.tsv",
+                        depth_file_path = "data/poolseq_analysis_depth.tsv",
                         contig_lengths_file_path = "data/contig_lengths.tsv",
                         plot.unplaced = FALSE)
 }
