@@ -59,7 +59,6 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
     plots <- rep(list(NULL), n_tracks)
 
     # Getting contig information
-
     if (scaffold %in% data$names) {
 
         # Case of scaffold = "LG05"
@@ -234,4 +233,6 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
         print(combined)
 
     }
+
+    return(combined)
 }
