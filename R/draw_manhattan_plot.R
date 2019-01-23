@@ -45,34 +45,34 @@ draw_manhattan_plot <- function(data,
     if (track == "window_fst") {
 
         manhattan_data <- data$window_fst[, c(1, 2, 3, 5, 6)]
-        y_title = expression(paste("F"["ST"], " in a sliding window"))
+        y_title = expression(bold((paste("F"["ST"], " in a sliding window"))))
 
     } else if (track == "position_fst") {
 
         manhattan_data <- data$position_fst[, c(1, 2, 3, 5, 6)]
-        y_title = expression(paste("Per-base F"["ST"]))
+        y_title = expression(bold(paste("Per-base F"["ST"])))
 
     } else if (track == "window_snp_males") {
 
         manhattan_data <- data$window_snp[, c(1, 2, 3, 6, 7)]
-        y_title = expression(paste("Male-specific SNPs in a sliding window"))
+        y_title = expression(bold(paste("Male-specific SNPs in a sliding window")))
 
     } else if (track == "window_snp_females") {
 
         manhattan_data <- data$window_snp[, c(1, 2, 4, 6, 7)]
-        y_title = expression(paste("Female-specific SNPs in a sliding window"))
+        y_title = expression(bold(paste("Female-specific SNPs in a sliding window")))
 
     } else if (track == "depth_males") {
 
         if (depth.type == "absolute") {
 
             manhattan_data <- data$depth[, c(1, 2, 3, 8, 9)]
-            y_title = expression(paste("Absolute male depth in a sliding window"))
+            y_title = expression(bold(paste("Absolute male depth in a sliding window")))
 
         } else if (depth.type == "relative") {
 
             manhattan_data <- data$depth[, c(1, 2, 5, 8, 9)]
-            y_title = expression(paste("Relative male depth in a sliding window"))
+            y_title = expression(bold(paste("Relative male depth in a sliding window")))
 
         }
 
@@ -81,31 +81,54 @@ draw_manhattan_plot <- function(data,
         if (depth.type == "absolute") {
 
             manhattan_data <- data$depth[, c(1, 2, 4, 8, 9)]
-            y_title = expression(paste("Absolute female depth in a sliding window"))
+            y_title = expression(bold(paste("Absolute female depth in a sliding window")))
 
         } else if (depth.type == "relative") {
 
             manhattan_data <- data$depth[, c(1, 2, 6, 8, 9)]
-            y_title = expression(paste("Relative female depth in a sliding window"))
+            y_title = expression(bold(paste("Relative female depth in a sliding window")))
 
         }
 
     }
 
-    names(manhattan_data) <- c("Contig", "Position", "Value", "Contig_id", "Original_position")
+    names(manhattan_data) <- c("Contig", "Position", "Value", "Original_position", "Contig_id")
 
     # Adjust x-axis position for each point in the data based on cumulative lengths of contigs
     manhattan_data$Position = manhattan_data$Position + cumulative_lengths[manhattan_data$Contig]
 
     # Attribute alternating colors to each contig
-    order <- seq(1, length(data$lengths$plot))
-    names(order) <- names(data$lengths$plot)
-    manhattan_data$Color <- order[manhattan_data$Contig] %% 2
-    manhattan_data$Color <- as.factor(as.character(manhattan_data$Color))
+    if (length(data$lengths$lg) > 0) {
+
+        order <- seq(1, length(data$lengths$plot))
+        names(order) <- names(data$lengths$plot)
+        manhattan_data$Color <- order[manhattan_data$Contig] %% 2
+        manhattan_data$Color <- as.factor(as.character(manhattan_data$Color))
+        show_lgs <- TRUE
+
+    } else {
+
+        order <- seq(1, length(data$lengths$unplaced))
+        names(order) <- names(data$lengths$unplaced)
+        manhattan_data$Color <- order[manhattan_data$Contig_id] %% 2
+        manhattan_data$Color <- as.factor(as.character(manhattan_data$Color))
+        show_lgs = FALSE
+
+    }
 
     # Create the background data for alternating background color
-    background = data.frame(start = cumulative_lengths, end = cumulative_lengths + data$lengths$plot)
-    background$Color = rep_len(c("A", "B"), length.out = dim(background)[1])  # Alternating A/B
+    if (length(data$lengths$lg) > 0) {
+
+        background = data.frame(start = cumulative_lengths, end = cumulative_lengths + data$lengths$plot)
+        background$Color = rep_len(c("A", "B"), length.out = dim(background)[1])  # Alternating A/B
+
+    } else {
+
+        background = data.frame(start = cumulative_lengths, end = cumulative_lengths + data$lengths$plot)
+        background$Color = rep_len(c("A", "B"), length.out = dim(background)[1])  # Alternating A/B
+
+    }
+
 
     # Create merged color palette for background and data points
     merged_color_palette <- c("0"=point.palette[1], "1"=point.palette[2], "B"=background.palette[1], "A"=background.palette[2])
@@ -127,11 +150,6 @@ draw_manhattan_plot <- function(data,
         # Attribute color values from merged color scale for points and backgrounds
         ggplot2::scale_color_manual(values = merged_color_palette) +
         ggplot2::scale_fill_manual(values = merged_color_palette) +
-        # Generate x-axis, use background start and end to place LG labels
-        ggplot2::scale_x_continuous(name="Linkage Group",
-                                    breaks = background$start + (background$end - background$start) / 2,
-                                    labels = names(order),
-                                    expand = c(0, 0)) +
         # Generate y-axis
         ggplot2::scale_y_continuous(name=y_title,
                                     limits=c(ymin, ymax),
@@ -148,6 +166,23 @@ draw_manhattan_plot <- function(data,
                        axis.title.y = ggplot2::element_text(face="bold", margin = ggplot2::margin(0, 10, 0, 0)),
                        axis.text.y = ggplot2::element_text(color="black", face="bold"),
                        axis.text.x = ggplot2::element_text(color="black", face="bold", angle=90, vjust=0.5))
+
+    if (show_lgs) {
+
+        # Generate x-axis, use background start and end to place LG labels
+        manhattan_plot <- manhattan_plot + ggplot2::scale_x_continuous(name="Linkage Group",
+                                                                       breaks = background$start + (background$end - background$start) / 2,
+                                                                       labels = names(order),
+                                                                       expand = c(0, 0))
+
+    } else {
+
+        # Generate x-axis
+        manhattan_plot <- manhattan_plot +
+            ggplot2::scale_x_continuous() +
+            ggplot2::theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), axis.title.x = element_blank())
+
+    }
 
     if (!is.null(output.file)) {
 
