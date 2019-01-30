@@ -16,7 +16,7 @@
 
 load_single_data_file <- function(input_file_path, contig_lengths, plot.unplaced = TRUE, snp_pos = FALSE) {
 
-    if (snp_pos) {
+    if (snp_pos == TRUE) {
 
         data <- suppressMessages(readr::read_delim(input_file_path, "\t", escape_double = FALSE, trim_ws = TRUE, col_types = 'cifdddddddddddd'))
 
