@@ -83,7 +83,7 @@ load_data_files <- function(contig_lengths_file_path,
     if (!is.null(position_snp_file_path) & file.exists(position_snp_file_path)) {
 
         print(" - Loading positions SNP file")
-        output$position_snp <- load_single_data_file(position_snp_file_path, output$lengths, plot.unplaced = plot.unplaced)
+        output$position_snp <- load_single_data_file(position_snp_file_path, output$lengths, plot.unplaced = plot.unplaced, snps_pos = TRUE)
 
     }
 

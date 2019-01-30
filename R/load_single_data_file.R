@@ -14,10 +14,18 @@
 #' data <- load_single_data_file("fst_window.tsv", contig_lengths, plot.unplaced = FALSE)
 
 
+load_single_data_file <- function(input_file_path, contig_lengths, plot.unplaced = TRUE, snp_pos = FALSE) {
 
-load_single_data_file <- function(input_file_path, contig_lengths, plot.unplaced = TRUE) {
+    if (snp_pos) {
 
-    data <- suppressMessages(readr::read_delim(input_file_path, "\t", escape_double = FALSE, trim_ws = TRUE))
+        data <- suppressMessages(readr::read_delim(input_file_path, "\t", escape_double = FALSE, trim_ws = TRUE, col_types = 'cifdddddddddddd'))
+
+    } else {
+
+        data <- suppressMessages(readr::read_delim(input_file_path, "\t", escape_double = FALSE, trim_ws = TRUE))
+
+    }
+
     data_lg <- subset(data, data$Contig %in% names(contig_lengths$lg))
     data_unplaced <- subset(data, data$Contig %in% names(contig_lengths$unplaced))
 
