@@ -33,7 +33,7 @@
 
 draw_manhattan_plot <- function(data,
                                 output.file = NULL, width = 14, height = 8, dpi = 300,
-                                track = "window_fst",
+                                track = "window_fst", lg_numbers = FALSE,
                                 point.size = 0.5, point.palette = c("dodgerblue3", "darkgoldenrod2"), background.palette = c("grey85", "grey100"),
                                 depth.type = "absolute", min.depth = 10) {
 
@@ -101,7 +101,17 @@ draw_manhattan_plot <- function(data,
     if (length(data$lengths$lg) > 0) {
 
         order <- seq(1, length(data$lengths$plot))
-        names(order) <- names(data$lengths$plot)
+
+        if (lg_numbers == TRUE) {
+
+            names(order) <- c(seq(1, length(order) - 1), "U")
+
+        } else {
+
+            names(order) <- names(data$lengths$plot)
+
+        }
+
         manhattan_data$Color <- order[manhattan_data$Contig] %% 2
         manhattan_data$Color <- as.factor(as.character(manhattan_data$Color))
         show_lgs <- TRUE
@@ -164,8 +174,17 @@ draw_manhattan_plot <- function(data,
                        axis.line.y = ggplot2::element_line(color = "black"),
                        axis.title.x = ggplot2::element_text(face="bold", margin = ggplot2::margin(10, 0, 0, 0)),
                        axis.title.y = ggplot2::element_text(face="bold", margin = ggplot2::margin(0, 10, 0, 0)),
-                       axis.text.y = ggplot2::element_text(color="black", face="bold"),
-                       axis.text.x = ggplot2::element_text(color="black", face="bold", angle=90, vjust=0.5))
+                       axis.text.y = ggplot2::element_text(color="black", face="bold"))
+
+    if (lg_numbers == TRUE) {
+
+        manhattan_plot <- manhattan_plot + ggplot2::theme(axis.text.x = ggplot2::element_text(color="black", face="bold", vjust=0.5))
+
+    } else {
+
+        manhattan_plot <- manhattan_plot + ggplot2::theme(axis.text.x = ggplot2::element_text(color="black", face="bold", vjust=0.5, angle=90))
+
+    }
 
     if (show_lgs) {
 
