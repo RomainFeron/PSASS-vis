@@ -15,6 +15,8 @@
 #' @param track Track to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males", "window_snp_females", "depth_males", "depth_females"
 #' (default: "window_fst").
 #'
+#' @param lg.numbers If TRUE, chromosomes / LGs will be labeled with numbers instead of names to increase readability (default: FALSE).
+#'
 #' @param point.size Size of a point in the plot (default 0.5)
 #'
 #' @param point.palette Color palette for the dots (default c("dodgerblue3", "darkgoldenrod2"))
@@ -33,7 +35,7 @@
 
 draw_manhattan_plot <- function(data,
                                 output.file = NULL, width = 14, height = 8, dpi = 300,
-                                track = "window_fst", lg_numbers = FALSE,
+                                track = "window_fst", lg.numbers = FALSE,
                                 point.size = 0.5, point.palette = c("dodgerblue3", "darkgoldenrod2"), background.palette = c("grey85", "grey100"),
                                 depth.type = "absolute", min.depth = 10) {
 
@@ -45,7 +47,7 @@ draw_manhattan_plot <- function(data,
     if (track == "window_fst") {
 
         manhattan_data <- data$window_fst[, c(1, 2, 3, 5, 6)]
-        y_title = expression(bold((paste("F"["ST"], " in a sliding window"))))
+        y_title = expression(bold(paste("F"["ST"], " in a sliding window")))
 
     } else if (track == "position_fst") {
 
@@ -90,6 +92,9 @@ draw_manhattan_plot <- function(data,
 
         }
 
+    } else {
+
+        stop(paste0("Incorrect value <", track, "> for parameter 'track'"))
     }
 
     names(manhattan_data) <- c("Contig", "Position", "Value", "Original_position", "Contig_id")
@@ -102,7 +107,7 @@ draw_manhattan_plot <- function(data,
 
         order <- seq(1, length(data$lengths$plot))
 
-        if (lg_numbers == TRUE) {
+        if (lg.numbers == TRUE) {
 
             names(order) <- c(seq(1, length(order) - 1), "U")
 
@@ -176,7 +181,7 @@ draw_manhattan_plot <- function(data,
                        axis.title.y = ggplot2::element_text(face="bold", margin = ggplot2::margin(0, 10, 0, 0)),
                        axis.text.y = ggplot2::element_text(color="black", face="bold"))
 
-    if (lg_numbers == TRUE) {
+    if (lg.numbers == TRUE) {
 
         manhattan_plot <- manhattan_plot + ggplot2::theme(axis.text.x = ggplot2::element_text(color="black", face="bold", vjust=0.5))
 
