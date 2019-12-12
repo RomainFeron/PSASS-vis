@@ -4,11 +4,17 @@
 \alias{load_data_files}
 \title{Load a single data file}
 \usage{
-load_data_files(contig_lengths_file_path, prefix = NULL,
-  window_fst_file_path = NULL, position_fst_file_path = NULL,
-  window_snps_file_path = NULL, position_snps_file_path = NULL,
-  depth_file_path = NULL, chromosomes_names_file_path = NULL,
-  plot.unplaced = TRUE)
+load_data_files(
+  contig_lengths_file_path,
+  prefix = NULL,
+  window_fst_file_path = NULL,
+  position_fst_file_path = NULL,
+  window_snps_file_path = NULL,
+  position_snps_file_path = NULL,
+  depth_file_path = NULL,
+  chromosomes_names_file_path = NULL,
+  plot.unplaced = TRUE
+)
 }
 \arguments{
 \item{contig_lengths_file_path}{Path to a contig lengths file.}

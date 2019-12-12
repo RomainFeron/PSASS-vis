@@ -4,14 +4,26 @@
 \alias{draw_scaffold_plot}
 \title{Draw scaffold plot}
 \usage{
-draw_scaffold_plot(data, scaffold, region = NULL, output.file = NULL,
-  width = 12, height = 4, dpi = 300, tracks = c("window_fst",
-  "window_snp_males", "window_snp_females", "depth_ratio"),
-  point.size = 0.5, depth.type = "absolute", min.depth = 10,
-  depth.ratio.lines = FALSE, major.lines.y = TRUE,
-  major.lines.x = FALSE, fst.window.color = "grey50",
-  males.color = "dodgerblue3", females.color = "firebrick2",
-  alpha.value = 0.25)
+draw_scaffold_plot(
+  data,
+  scaffold,
+  region = NULL,
+  output.file = NULL,
+  width = 12,
+  height = 4,
+  dpi = 300,
+  tracks = c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio"),
+  point.size = 0.5,
+  depth.type = "absolute",
+  min.depth = 10,
+  depth.ratio.lines = FALSE,
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  fst.window.color = "grey50",
+  males.color = "dodgerblue3",
+  females.color = "firebrick2",
+  alpha.value = 0.25
+)
 }
 \arguments{
 \item{data}{A PSASS data structure obtained with the \code{\link{load_data_files}} function.}

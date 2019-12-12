@@ -4,8 +4,12 @@
 \alias{load_single_data_file}
 \title{Load a single data file}
 \usage{
-load_single_data_file(input_file_path, contig_lengths,
-  plot.unplaced = TRUE)
+load_single_data_file(
+  input_file_path,
+  contig_lengths,
+  plot.unplaced = TRUE,
+  snp_pos = FALSE
+)
 }
 \arguments{
 \item{input_file_path}{Path to a data file.}

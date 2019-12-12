@@ -4,20 +4,35 @@
 \alias{plot_genome_circos}
 \title{Plot genome circos}
 \usage{
-plot_genome_circos(contig_lengths_file_path, plot.unplaced = TRUE,
-  prefix = NULL, window_fst_file_path = NULL,
-  position_fst_file_path = NULL, window_snps_file_path = NULL,
-  position_snps_file_path = NULL, depth_file_path = NULL,
-  chromosomes_names_file_path = NULL, output.file = NULL,
-  width = 2400, height = 2400, res = 120, tracks = c("window_fst",
-  "window_snp_males", "window_snp_females", "depth_ratio"),
-  highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2,
-  zoom.suffix = " (zoom)", base.color = "white",
-  highlight.color = "grey80", point.size = 0.1,
-  color.unplaced = FALSE, color.palette = c(`0` = "dodgerblue3", `1` =
-  "goldenrod1", `2` = "grey20", males = "dodgerblue3", females =
-  "firebrick2"), sector.titles.expand = NULL, depth.type = "absolute",
-  min.depth = 10)
+plot_genome_circos(
+  contig_lengths_file_path,
+  plot.unplaced = TRUE,
+  prefix = NULL,
+  window_fst_file_path = NULL,
+  position_fst_file_path = NULL,
+  window_snps_file_path = NULL,
+  position_snps_file_path = NULL,
+  depth_file_path = NULL,
+  chromosomes_names_file_path = NULL,
+  output.file = NULL,
+  width = 2400,
+  height = 2400,
+  res = 120,
+  tracks = c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio"),
+  highlight = NULL,
+  zoom.highlights = FALSE,
+  zoom.ratio = 2,
+  zoom.suffix = " (zoom)",
+  base.color = "white",
+  highlight.color = "grey80",
+  point.size = 0.1,
+  color.unplaced = FALSE,
+  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` = "grey20", males =
+    "dodgerblue3", females = "firebrick2"),
+  sector.titles.expand = NULL,
+  depth.type = "absolute",
+  min.depth = 10
+)
 }
 \arguments{
 \item{contig_lengths_file_path}{Path to a contig lengths file.}

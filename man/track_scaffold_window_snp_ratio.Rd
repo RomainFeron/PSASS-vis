@@ -4,10 +4,17 @@
 \alias{track_scaffold_window_snp_ratio}
 \title{Scaffold ratio SNP window track}
 \usage{
-track_scaffold_window_snp_ratio(data, scaffold.name, region,
-  major.lines.y = TRUE, major.lines.x = FALSE, ylim = NULL,
-  males.color = "dodgerblue3", females.color = "firebrick2",
-  bottom.track = FALSE)
+track_scaffold_window_snp_ratio(
+  data,
+  scaffold.name,
+  region,
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  ylim = NULL,
+  males.color = "dodgerblue3",
+  females.color = "firebrick2",
+  bottom.track = FALSE
+)
 }
 \arguments{
 \item{data}{SNP window data frame.}

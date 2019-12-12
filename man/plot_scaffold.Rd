@@ -4,17 +4,33 @@
 \alias{plot_scaffold}
 \title{Plot scaffold}
 \usage{
-plot_scaffold(scaffold, region = NULL, contig_lengths_file_path = NULL,
-  prefix = NULL, window_fst_file_path = NULL,
-  position_fst_file_path = NULL, window_snps_file_path = NULL,
-  position_snps_file_path = NULL, depth_file_path = NULL,
-  chromosomes_names_file_path = NULL, output.file = NULL, width = 12,
-  height = 4, dpi = 300, tracks = c("window_fst",
-  "window_snp_combined", "depth_ratio"), point.size = 0.5,
-  depth.type = "relative", min.depth = 10, depth.ratio.lines = FALSE,
-  major.lines.y = TRUE, major.lines.x = FALSE,
-  fst.window.color = "grey50", males.color = "dodgerblue3",
-  females.color = "firebrick2", alpha.value = 0.25)
+plot_scaffold(
+  scaffold,
+  region = NULL,
+  contig_lengths_file_path = NULL,
+  prefix = NULL,
+  window_fst_file_path = NULL,
+  position_fst_file_path = NULL,
+  window_snps_file_path = NULL,
+  position_snps_file_path = NULL,
+  depth_file_path = NULL,
+  chromosomes_names_file_path = NULL,
+  output.file = NULL,
+  width = 12,
+  height = 4,
+  dpi = 300,
+  tracks = c("window_fst", "window_snp_combined", "depth_ratio"),
+  point.size = 0.5,
+  depth.type = "relative",
+  min.depth = 10,
+  depth.ratio.lines = FALSE,
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  fst.window.color = "grey50",
+  males.color = "dodgerblue3",
+  females.color = "firebrick2",
+  alpha.value = 0.25
+)
 }
 \arguments{
 \item{scaffold}{Name of the scaffold to be plotted. The name can be from the dataset (e.g. "NC_0245486.2") or from the

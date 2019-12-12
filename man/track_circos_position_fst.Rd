@@ -4,11 +4,17 @@
 \alias{track_circos_position_fst}
 \title{Circos FST position track}
 \usage{
-track_circos_position_fst(data, ylim = c(min(data$Fst), 1),
-  bg.col = "white", point.size = 0.5, top.track = FALSE,
-  sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` =
-  "grey20"))
+track_circos_position_fst(
+  data,
+  ylim = c(min(data$Fst), 1),
+  bg.col = "white",
+  point.size = 0.5,
+  top.track = FALSE,
+  sector.names = NULL,
+  sector.titles.expand = 1.3,
+  sectors = NULL,
+  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` = "grey20")
+)
 }
 \arguments{
 \item{data}{FST position data frame.}

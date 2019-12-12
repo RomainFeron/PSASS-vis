@@ -4,11 +4,19 @@
 \alias{track_scaffold_window_depth_combined}
 \title{Scaffold combined depth window track}
 \usage{
-track_scaffold_window_depth_combined(data, scaffold.name, region,
-  type = "absolute", major.lines.y = TRUE, major.lines.x = FALSE,
-  ylim = NULL, males.color = "dodgerblue3",
-  females.color = "firebrick2", bottom.track = FALSE,
-  alpha.value = 0.25)
+track_scaffold_window_depth_combined(
+  data,
+  scaffold.name,
+  region,
+  type = "absolute",
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  ylim = NULL,
+  males.color = "dodgerblue3",
+  females.color = "firebrick2",
+  bottom.track = FALSE,
+  alpha.value = 0.25
+)
 }
 \arguments{
 \item{data}{depth window data frame.}

@@ -4,11 +4,20 @@
 \alias{track_scaffold_window_depth_ratio}
 \title{Scaffold ratio depth window track}
 \usage{
-track_scaffold_window_depth_ratio(data, scaffold.name, region,
-  type = "absolute", min.depth = 0, major.lines.y = TRUE,
-  major.lines.x = FALSE, ylim = NULL, males.color = "dodgerblue3",
-  females.color = "firebrick2", bottom.track = FALSE,
-  ratio.lines = FALSE)
+track_scaffold_window_depth_ratio(
+  data,
+  scaffold.name,
+  region,
+  type = "absolute",
+  min.depth = 0,
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  ylim = NULL,
+  males.color = "dodgerblue3",
+  females.color = "firebrick2",
+  bottom.track = FALSE,
+  ratio.lines = FALSE
+)
 }
 \arguments{
 \item{data}{depth window data frame.}

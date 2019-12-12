@@ -4,11 +4,17 @@
 \alias{track_circos_window_fst}
 \title{Circos FST window track}
 \usage{
-track_circos_window_fst(data, ylim = c(0, 1.025 * max(data$Fst) + 0.01),
-  bg.col = "white", point.size = 0.01, top.track = FALSE,
-  sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` =
-  "grey20"))
+track_circos_window_fst(
+  data,
+  ylim = c(0, 1.025 * max(data$Fst) + 0.01),
+  bg.col = "white",
+  point.size = 0.01,
+  top.track = FALSE,
+  sector.names = NULL,
+  sector.titles.expand = 1.3,
+  sectors = NULL,
+  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` = "grey20")
+)
 }
 \arguments{
 \item{data}{FST window data frame.}

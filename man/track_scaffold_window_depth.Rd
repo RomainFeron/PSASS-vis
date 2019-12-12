@@ -4,9 +4,18 @@
 \alias{track_scaffold_window_depth}
 \title{Scaffold depth window track}
 \usage{
-track_scaffold_window_depth(data, sex, scaffold.name, region,
-  type = "absolute", major.lines.y = TRUE, major.lines.x = FALSE,
-  ylim = NULL, color = NULL, bottom.track = FALSE)
+track_scaffold_window_depth(
+  data,
+  sex,
+  scaffold.name,
+  region,
+  type = "absolute",
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  ylim = NULL,
+  color = NULL,
+  bottom.track = FALSE
+)
 }
 \arguments{
 \item{data}{depth window data frame.}

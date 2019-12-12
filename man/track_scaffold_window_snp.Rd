@@ -4,9 +4,17 @@
 \alias{track_scaffold_window_snp}
 \title{Scaffold SNP window track}
 \usage{
-track_scaffold_window_snp(data, sex, scaffold.name, region,
-  major.lines.y = TRUE, major.lines.x = FALSE, ylim = NULL,
-  color = NULL, bottom.track = FALSE)
+track_scaffold_window_snp(
+  data,
+  sex,
+  scaffold.name,
+  region,
+  major.lines.y = TRUE,
+  major.lines.x = FALSE,
+  ylim = NULL,
+  color = NULL,
+  bottom.track = FALSE
+)
 }
 \arguments{
 \item{data}{SNP window data frame.}
