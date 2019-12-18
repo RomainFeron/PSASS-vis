@@ -29,9 +29,9 @@
 #'
 #' @param res Resolution of the output file if specified, in \% (default: 120).
 #'
-#' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
-#' "window_snp_females", "combined_snp", "depth_males", "depth_females", "depth_ratio"
-#' (default: c("window_fst", "combined_snp", "depth_ratio")).
+#' @param tracks Tracks to be plotted. Possible values are "fst_pos", "fst_win", "snp_pos", "snp_win_pool1",
+#' "snp_win_pool2", "snp_win", "depth_pool1", "depth_pool2", "depth_ratio"
+#' (default: c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio")).
 #'
 #' @param highlight A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).
 #'
@@ -47,12 +47,14 @@
 #'
 #' @param point.size Size of the points in the plot (default: 0.1).
 #'
+#' @param points.color Color of points for fst_pos, fst_win, and depth_ratio tracks (default: "grey20)
+#'
+#' @param pools.color Color of points for each pool for snp_pos, snp_win_pool1, snp_win_pool2, depth_pool1, and depth_pool2 tracks
+#' (default: c("dodgerblue3", "firebrick2") for pool1 and pool2 respectively)
+#'
 #' @param color.unplaced If TRUE, unplaced scaffolds will be colored with alternating colors, like in a manhattan plot (default: FALSE)
 #'
-#' @param color.palette Colors of the points in the plot. "0" and "1" specify the alternating colors for unplaced scaffolds
-#' if color.unplaced is TRUE, "2" specifies the color for chromosomes for unsexed tracks (position_fst, window_fst, depth_ratio), and
-#' "males" and "females" specify the color of each sex for sexed tracks (position_snp, window_snp_males, window_snp_females, combined_snp,
-#' depth_males, depth_females) (default: c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2")).
+#' @param points.color.unplaced Alternating point color for scaffolds when plotting unplaced scaffolds (default: c("0"="dodgerblue3", "1"="goldenrod1"))
 #'
 #' @param sector.titles.expand Parameter to manually override the space between sector titles and x-axis (default: NULL).
 #'
@@ -69,9 +71,9 @@
 #'                    prefix = 'data/psass',
 #'                    output.file = 'figures/psass_genome.png')
 #'
-#' # Plot FST positions and male SNP window with highlight on NC_02456.3
+#' # Plot FST positions and SNP window for the first pool with highlight on NC_02456.3
 #' plot_genome_circos(contig_lengths_file_path = 'data/contig_lengths.tsv', prefix = 'data/psass',
-#'                    tracks = c("position_fst", "window_snp_males"), highlight = c("NC_02456.3"))
+#'                    tracks = c("fst_pos", "snp_win_pool1"), highlight = c("NC_02456.3"))
 
 
 plot_genome_circos <- function(contig_lengths_file_path,
@@ -80,11 +82,13 @@ plot_genome_circos <- function(contig_lengths_file_path,
                                window_snps_file_path = NULL, position_snps_file_path = NULL,
                                depth_file_path = NULL, chromosomes_names_file_path = NULL,
                                output.file = NULL, width = 2400, height = 2400, res = 120,
-                               tracks = c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio"),
+                               tracks = c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio"),
                                highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2, zoom.suffix = " (zoom)",
                                base.color = "white", highlight.color = "grey80", point.size = 0.1,
+                               points.color = "grey20",
+                               pools.color = c("firebrick2", "dodgerblue3"),
                                color.unplaced = FALSE,
-                               color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2"),
+                               points.color.unplaced = c("0"="dodgerblue3", "1"="goldenrod1"),
                                sector.titles.expand = NULL, depth.type = "absolute", min.depth = 10) {
 
 
@@ -113,8 +117,10 @@ plot_genome_circos <- function(contig_lengths_file_path,
                      base.color = base.color,
                      highlight.color = highlight.color,
                      point.size = point.size,
+                     points.color = points.color,
+                     pools.color = pools.color,
                      color.unplaced = color.unplaced,
-                     color.palette = color.palette,
+                     points.color.unplaced = points.color.unplaced,
                      sector.titles.expand = sector.titles.expand,
                      depth.type = depth.type,
                      min.depth = min.depth)

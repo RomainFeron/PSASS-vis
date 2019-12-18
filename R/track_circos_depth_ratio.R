@@ -18,21 +18,24 @@
 #'
 #' @param sectors Vector with the names of the sectors in the plot (default NULL).
 #'
-#' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
+#' @param points.color Color of points for fst_pos, fst_win, and depth_ratio tracks (default: "grey20)
+#'
+#' @param points.color.unplaced Alternating point color for scaffolds when plotting unplaced scaffolds (default: c("dodgerblue3", "goldenrod1"))
 
 
 track_circos_depth_ratio <- function(data, min.depth = 10,
                                      bg.col = "white", point.size = 0.01,
                                      top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                                     color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")) {
+                                     points.color = "grey20", points.color.unplaced = c("dodgerblue3", "goldenrod1")) {
 
+    palette = c(points.color.unplaced, points.color)
 
     print(" - Drawing depth ratio track ...")
 
     # Compute log of depth ratio
-    data$Ratio <- log(data$Males_depth_abs / data$Females_depth_abs, 2)
-    data$Ratio[which(data$Males_depth_abs < min.depth & data$Females_depth_abs < min.depth)] <- 0  # Don't compute ratio when depth is lower than min.depth
-    lim <- 1.25 * max(abs(data$Ratio))
+    data$Ratio <- log(as.vector(unlist(data[, 3])) /as.vector(unlist(data[, 4])), 2)
+    data$Ratio[which(as.vector(unlist(data[, 3])) < min.depth & as.vector(unlist(data[, 4])) < min.depth)] <- 0  # Don't compute ratio when depth is lower than min.depth
+    lim <- 1.1 * max(abs(data$Ratio))
     ylim <- c(-lim, lim)  # Y axis limits
 
     # Draw the top track of the plot, showing sex-bias
@@ -78,8 +81,8 @@ track_circos_depth_ratio <- function(data, min.depth = 10,
 
                                # Plot the data
                                circlize::circos.points(x, y, cex = point.size,
-                                                       col = color.palette[as.character(data$Color[which(data$Contig == sector.index)])],
-                                                       bg = color.palette[as.character(data$Color[which(data$Contig == sector.index)])],
+                                                       col = palette[data$Color[which(data$Contig == sector.index)] + 1],
+                                                       bg = palette[data$Color[which(data$Contig == sector.index)] + 1],
                                                        pch = 21)
 
                                circlize::circos.lines(x = c(0, xmax), y = c(0, 0), col = "grey70", cex = 0.02)

@@ -4,7 +4,7 @@
 #'
 #' @param data SNP window data frame.
 #'
-#' @param sex Sex to draw the track for, either "Females" or "Males".
+#' @param pool Pool to draw the track for, either 1 or 2
 #'
 #' @param ylim Limits of the y axis (default c(0, 1.025 * max(data$Males, data$Females))).
 #'
@@ -20,42 +20,32 @@
 #'
 #' @param sectors Vector with the names of the sectors in the plot (default NULL).
 #'
-#' @param males.color Color for male-specific SNPs (default "dodgerblue3").
-#'
-#' @param females.color Color for female-specific SNPs (default "firebrick2").
+#' @param pools.color Color of points for each pool (default: c("firebrick2", "dodgerblue3") for pool1 and pool2 respectively)
 
 
-track_circos_window_snp <- function(data, sex,
-                             ylim = c(0, 1.025 * max(data$Males, data$Females) + 0.01), bg.col = "white", point.size = 0.01,
-                             top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                             males.color = "dodgerblue3", females.color = "firebrick2") {
+track_circos_window_snp <- function(data, pool,
+                                    ylim = 0, bg.col = "white", point.size = 0.01,
+                                    top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                                    pools.color = c("firebrick2", "dodgerblue3")) {
 
+    # Compute maximum for y axis
+    ylim = c(0, 1.025 * max(data[, 3], data[, 4]) + 0.01)
 
-    # Set data to plot, point color and axis title according to specified sex
-    snp_data <- c()
+    if (!(pool %in% c(1, 2))) {
 
-    if (!(sex %in% c("Males", "Females"))) {
-
-        print(paste0(' - Warning: unknown sex \"', sex, '\" for window SNP track.'))
+        print(paste0(' - Warning: unknown pool \"', pool, '\" for SNP window track.'))
         return(1)
-
-    } else if (sex == "Males") {
-
-        snp_data <- data$Males
-        point.color <- males.color
-        y_label <- expression(bold(atop("M. SNP", "win.")))
 
     } else {
 
-        snp_data <- data$Females
-        point.color <- females.color
-        y_label <- expression(bold(atop("F. SNP", "win.")))
-
+        snp_data <- as.vector(unlist(data[, 2 + pool]))
+        pool_color <- pools.color[pool]
+        y_label <- names(data)[2 + pool]
     }
 
-    print(paste0(" - Drawing window SNP track for ", sex, " ..."))
+    print(paste0(" - Drawing window SNP track for pool ", pool, " ..."))
 
-    # Draw the top track of the plot, showing sex-bias
+    # Draw the track
     circlize::circos.track(factors = data$Contig,
                            x = data$Position,
                            y = snp_data,
@@ -98,8 +88,8 @@ track_circos_window_snp <- function(data, sex,
 
                                # Plot the data
                                circlize::circos.points(x, y, cex = point.size,
-                                                       col = point.color,
-                                                       bg = point.color,
+                                                       col = pool_color,
+                                                       bg = pool_color,
                                                        pch = 21)
 
                                # Add Y axis on the first sector only

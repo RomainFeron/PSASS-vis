@@ -13,7 +13,8 @@ track_circos_window_fst(
   sector.names = NULL,
   sector.titles.expand = 1.3,
   sectors = NULL,
-  color.palette = c(`0` = "dodgerblue3", `1` = "goldenrod1", `2` = "grey20")
+  points.color = "grey20",
+  points.color.unplaced = c("dodgerblue3", "goldenrod1")
 )
 }
 \arguments{
@@ -31,7 +32,9 @@ track_circos_window_fst(
 
 \item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
 
-\item{color.palette}{Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).}
+\item{points.color}{Color of points for fst_pos, fst_win, and depth_ratio tracks (default: "grey20)}
+
+\item{points.color.unplaced}{Alternating point color for scaffolds when plotting unplaced scaffolds (default: c("dodgerblue3", "goldenrod1"))}
 
 \item{sector.title.expand}{Value controlling the distance between sector titles and the top axis (default 1.3).}
 }

@@ -18,13 +18,18 @@
 #'
 #' @param sector.title.expand Value controlling the distance between sector titles and the top axis (default 1.3).
 #'
-#' @param color.palette Color palette for this track (default c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20")).
+#' @param points.color Color of points for fst_pos, fst_win, and depth_ratio tracks (default: "grey20)
+#'
+#' @param points.color.unplaced Alternating point color for scaffolds when plotting unplaced scaffolds (default: c("dodgerblue3", "goldenrod1"))
+
 
 
 track_circos_position_fst <- function(data,
-                               ylim = c(min(data$Fst), 1), bg.col = "white", point.size = 0.5,
-                               top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                               color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20") ) {
+                                      ylim = c(min(data$Fst), 1), bg.col = "white", point.size = 0.5,
+                                      top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
+                                      points.color = "grey20", points.color.unplaced = c("dodgerblue3", "goldenrod1")) {
+
+    palette = c(points.color.unplaced, points.color)
 
     print(" - Drawing position FST track ... ")
 
@@ -71,8 +76,8 @@ track_circos_position_fst <- function(data,
 
                                # Plot the data
                                circlize::circos.points(x, y, cex = point.size,
-                                                       col = color.palette[as.character(data$Color[which(data$Contig == sector.index)])],
-                                                       bg = color.palette[as.character(data$Color[which(data$Contig == sector.index)])],
+                                                       col = palette[data$Color[which(data$Contig == sector.index)] + 1],
+                                                       bg = palette[data$Color[which(data$Contig == sector.index)] + 1],
                                                        pch = 21)
 
                                # Add Y axis on the first sector only

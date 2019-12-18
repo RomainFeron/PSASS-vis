@@ -12,9 +12,9 @@
 #'
 #' @param res Resolution of the output file if specified, in \% (default: 120).
 #'
-#' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "position_snp", "window_snp_males",
-#' "window_snp_females", "combined_snp", "depth_males", "depth_females", "depth_ratio"
-#' (default: c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio")).
+#' @param tracks Tracks to be plotted. Possible values are "fst_pos", "fst_win", "snp_pos", "snp_win_pool1",
+#' "snp_win_pool2", "snp_win", "depth_pool1", "depth_pool2", "depth_ratio"
+#' (default: c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio")).
 #'
 #' @param highlight A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).
 #'
@@ -30,12 +30,14 @@
 #'
 #' @param point.size Size of the points in the plot (default: 0.1).
 #'
+#' @param points.color Color of points for fst_pos, fst_win, and depth_ratio tracks (default: "grey20)
+#'
+#' @param pools.color Color of points for each pool for snp_pos, snp_win_pool1, snp_win_pool2, depth_pool1, and depth_pool2 tracks
+#' (default: c("firebrick2", "dodgerblue3") for pool1 and pool2 respectively)
+#'
 #' @param color.unplaced If TRUE, unplaced scaffolds will be colored with alternating colors, like in a manhattan plot (default: FALSE)
 #'
-#' @param color.palette Colors of the points in the plot. "0" and "1" specify the alternating colors for unplaced scaffolds
-#' if color.unplaced is TRUE, "2" specifies the color for chromosomes for unsexed tracks (position_fst, window_fst, depth_ratio), and
-#' "males" and "females" specify the color of each sex for sexed tracks (position_snp, window_snp_males, window_snp_females, combined_snp,
-#' depth_males, depth_females) (default: c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2")).
+#' @param points.color.unplaced Alternating point color for scaffolds when plotting unplaced scaffolds (default: c(dodgerblue3", "goldenrod1"))
 #'
 #' @param sector.titles.expand Parameter to manually override the space between sector titles and x-axis (default: NULL).
 #'
@@ -52,11 +54,13 @@
 
 draw_circos_plot <- function(data,
                              output.file = NULL, width = 2400, height = 2400, res = 120,
-                             tracks = c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio"),
+                             tracks = c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio"),
                              highlight = NULL, zoom.highlights = FALSE, zoom.ratio = 2, zoom.suffix = " (zoom)",
                              base.color = "white", highlight.color = "grey80", point.size = 0.1,
+                             points.color = "grey20",
+                             pools.color = c("firebrick2", "dodgerblue3"),
                              color.unplaced = FALSE,
-                             color.palette = c("0"="dodgerblue3", "1"="goldenrod1", "2"="grey20", "males"="dodgerblue3", "females"="firebrick2"),
+                             points.color.unplaced = c("dodgerblue3", "goldenrod1"),
                              sector.titles.expand = NULL, depth.type = "absolute", min.depth = 10) {
 
 
@@ -64,6 +68,7 @@ draw_circos_plot <- function(data,
     if (!is.null(output.file)) {
         png(output.file, width=width, height=height,  res=res)
     }
+
 
     # Get sector information
     n_sectors <- length(data$lengths$plot)
@@ -120,8 +125,7 @@ draw_circos_plot <- function(data,
 
     # Setup point colors
     if (!color.unplaced) {
-        color.palette["0"] = color.palette["2"]
-        color.palette["1"] = color.palette["2"]
+        point.color.unplaced = c(points.color, points.color)
     }
 
 
@@ -177,67 +181,70 @@ draw_circos_plot <- function(data,
         top.track <- FALSE
         if (i == 1) top.track <- TRUE
 
-        if (tracks[i] == "position_fst") {
+        if (tracks[i] == "fst_pos") {
 
             track_circos_position_fst(data$position_fst, bg.col = bgs,
-                              point.size = point.size, top.track = top.track, color.palette = color.palette,
-                              sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
+                                      point.size = point.size, top.track = top.track,
+                                      points.color = points.color, points.color.unplaced = points.color.unplaced,
+                                      sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
 
-        } else if (tracks[i] == "window_fst") {
+        } else if (tracks[i] == "fst_win") {
 
             track_circos_window_fst(data$window_fst, bg.col = bgs,
-                            point.size = point.size, top.track = top.track, color.palette = color.palette,
-                            sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
+                                    point.size = point.size, top.track = top.track,
+                                    points.color = points.color, points.color.unplaced = points.color.unplaced,
+                                    sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
 
-        } else if (tracks[i] == "position_snp") {
-
-            # TO BE IMPLEMENTED
-
-            track_circos_window_snp(data$window_snp, sex = "Males", bg.col = bgs,
-                            top.track = top.track, sector.names = sector_names,
-                            sector.titles.expand = sector.titles.expand, sectors = sectors)
-
-        } else if (tracks[i] == "window_snp_males") {
-
-            track_circos_window_snp(data$window_snp, sex = "Males",
-                            bg.col = bgs, point.size = point.size, top.track = top.track,
-                            sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
-                            males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
-
-        } else if (tracks[i] == "window_snp_females") {
-
-            track_circos_window_snp(data$window_snp, sex = "Females",
-                            bg.col = bgs, point.size = point.size, top.track = top.track,
-                            sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
-                            males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
-
-        }  else if (tracks[i] == "combined_snp") {
+        } else if (tracks[i] == "snp_pos") {
 
             # TO BE IMPLEMENTED
 
-            track_circos_window_snp(data$window_snp, sex = "Females", bg.col = bgs,
-                            top.track = top.track, sector.names = sector_names,
-                            sector.titles.expand = sector.titles.expand, sectors = sectors)
+            print("snp_pos track is not implemented yet")
 
-        } else if (tracks[i] == "depth_males") {
+        } else if (tracks[i] == "snp_win_pool1") {
 
-            track_circos_depth(data$depth, sex = "Males", type = depth.type,
-                          bg.col = bgs, top.track = top.track, point.size = point.size,
-                          sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
-                          males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
+            track_circos_window_snp(data$window_snp, pool = 1,
+                                    bg.col = bgs, point.size = point.size, top.track = top.track,
+                                    sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
+                                    pools.color = pools.color)
 
-        } else if (tracks[i] == "depth_females") {
+        } else if (tracks[i] == "snp_win_pool2") {
 
-            track_circos_depth(data$depth, sex = "Females", type = depth.type,
-                          bg.col = bgs, top.track = top.track, point.size = point.size,
-                          sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
-                          males.color = as.character(color.palette["males"]), females.color = as.character(color.palette["females"]))
+            track_circos_window_snp(data$window_snp, pool = 2,
+                                    bg.col = bgs, point.size = point.size, top.track = top.track,
+                                    sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
+                                    pools.color = pools.color)
+
+        }  else if (tracks[i] == "snp_win") {
+
+            # TO BE IMPLEMENTED
+
+            print("snp_win track is not implemented yet")
+
+            # track_circos_window_snp(data$window_snp, sex = "Females", bg.col = bgs,
+            #                 top.track = top.track, sector.names = sector_names,
+            #                 sector.titles.expand = sector.titles.expand, sectors = sectors)
+
+        } else if (tracks[i] == "depth_pool1") {
+
+            track_circos_depth(data$depth, pool = 1, type = depth.type,
+                               bg.col = bgs, top.track = top.track, point.size = point.size,
+                               sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
+                               pools.color = pools.color)
+
+        } else if (tracks[i] == "depth_pool2") {
+
+            track_circos_depth(data$depth, pool = 2, type = depth.type,
+                               bg.col = bgs, top.track = top.track, point.size = point.size,
+                               sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors,
+                               pools.color = pools.color)
 
         } else if (tracks[i] == "depth_ratio") {
 
             track_circos_depth_ratio(data$depth, min.depth = min.depth,
-                                bg.col = bgs, point.size = point.size, top.track = top.track, color.palette = color.palette,
-                                sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
+                                     bg.col = bgs, point.size = point.size, top.track = top.track,
+                                     points.color = points.color, points.color.unplaced = points.color.unplaced,
+                                     sector.names = sector_names, sector.titles.expand = sector.titles.expand, sectors = sectors)
 
         } else {
 

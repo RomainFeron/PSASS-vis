@@ -6,22 +6,21 @@
 \usage{
 track_circos_window_snp(
   data,
-  sex,
-  ylim = c(0, 1.025 * max(data$Males, data$Females) + 0.01),
+  pool,
+  ylim = 0,
   bg.col = "white",
   point.size = 0.01,
   top.track = FALSE,
   sector.names = NULL,
   sector.titles.expand = 1.3,
   sectors = NULL,
-  males.color = "dodgerblue3",
-  females.color = "firebrick2"
+  pools.color = c("firebrick2", "dodgerblue3")
 )
 }
 \arguments{
 \item{data}{SNP window data frame.}
 
-\item{sex}{Sex to draw the track for, either "Females" or "Males".}
+\item{pool}{Pool to draw the track for, either 1 or 2}
 
 \item{ylim}{Limits of the y axis (default c(0, 1.025 * max(data$Males, data$Females))).}
 
@@ -35,9 +34,7 @@ track_circos_window_snp(
 
 \item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
 
-\item{males.color}{Color for male-specific SNPs (default "dodgerblue3").}
-
-\item{females.color}{Color for female-specific SNPs (default "firebrick2").}
+\item{pools.color}{Color of points for each pool (default: c("firebrick2", "dodgerblue3") for pool1 and pool2 respectively)}
 
 \item{sector.title.expand}{Value controlling the distance between sector titles and the top axis (default 1.3).}
 }

@@ -6,7 +6,7 @@
 \usage{
 track_circos_depth(
   data,
-  sex,
+  pool,
   type = "absolute",
   bg.col = "white",
   point.size = 0.01,
@@ -14,14 +14,13 @@ track_circos_depth(
   sector.names = NULL,
   sector.titles.expand = 1.3,
   sectors = NULL,
-  males.color = "dodgerblue3",
-  females.color = "firebrick2"
+  pools.color = c("firebrick2", "dodgerblue3")
 )
 }
 \arguments{
 \item{data}{depth data frame.}
 
-\item{sex}{Sex to draw the track for, either "Females" or "Males".}
+\item{pool}{Pool to draw the track for, either 1 or 2.}
 
 \item{type}{Type of depth to draw the track for, either "absolute" or "relative" (default "absolute").}
 
@@ -35,9 +34,7 @@ track_circos_depth(
 
 \item{sectors}{Vector with the names of the sectors in the plot (default NULL).}
 
-\item{males.color}{Color for male depth (default "dodgerblue3").}
-
-\item{females.color}{Color for female depth (default "firebrick2").}
+\item{pools.color}{Color for each pool (default c("firebrick2", "dodgerblue3"))}
 
 \item{sector.title.expand}{Value controlling the distance between sector titles and the top axis (default 1.3).}
 }

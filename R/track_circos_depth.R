@@ -4,7 +4,7 @@
 #'
 #' @param data depth data frame.
 #'
-#' @param sex Sex to draw the track for, either "Females" or "Males".
+#' @param pool Pool to draw the track for, either 1 or 2.
 #'
 #' @param type Type of depth to draw the track for, either "absolute" or "relative" (default "absolute").
 #'
@@ -20,15 +20,13 @@
 #'
 #' @param sectors Vector with the names of the sectors in the plot (default NULL).
 #'
-#' @param males.color Color for male depth (default "dodgerblue3").
-#'
-#' @param females.color Color for female depth (default "firebrick2").
+#' @param pools.color Color for each pool (default c("firebrick2", "dodgerblue3"))
 
 
-track_circos_depth <- function(data, sex, type = "absolute",
+track_circos_depth <- function(data, pool, type = "absolute",
                                bg.col = "white", point.size = 0.01,
                                top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL,
-                               males.color = "dodgerblue3", females.color = "firebrick2") {
+                               pools.color = c("firebrick2", "dodgerblue3")) {
 
 
     # Set data to plot, point color and axis title according to specified sex and type of depth
@@ -41,44 +39,35 @@ track_circos_depth <- function(data, sex, type = "absolute",
 
     } else if (type == "absolute") {
 
-        ylim <- c(0, 1.025 * max(data$Males_depth_abs, data$Females_depth_abs) + 0.01)
+        ylim <- c(0, 1.025 * max(data[, 3], data[, 4]) + 0.01)
 
     } else {
 
-        ylim <- c(0, 1.025 * max(data$Males_depth_rel, data$Females_depth_rel) + 0.01)
+        ylim <- c(0, 1.025 * max(data[, 5], data[, 6]) + 0.01)
 
     }
 
-    if (!(sex %in% c("Males", "Females"))) {
+    if (!(pool %in% c(1, 2))) {
 
-        print(paste0(' - Warning: unknown sex \"', sex, '\" for depth track.'))
+        print(paste0(' - Warning: unknown pool \"', pool, '\" for depth track.'))
         return(1)
 
-    } else if (sex == "Males") {
-
-        if (type == "absolute") {
-            depth_data <- data$Males_depth_abs
-        } else {
-            depth_data <- data$Males_depth_rel
-        }
-        point.color <- males.color
-        y_label <- expression(bold("M. cov."))
-
     } else {
 
         if (type == "absolute") {
-            depth_data <- data$Females_depth_abs
+            depth_data <- as.vector(unlist(data[, 2 + pool]))
+            y_label <- names(data)[2 + pool]
         } else {
-            depth_data <- data$Females_depth_rel
+            depth_data <- as.vector(unlist(data[, 4 + pool]))
+            y_label <- names(data)[4 + pool]
         }
-        point.color <- females.color
-        y_label <- expression(bold("F. cov."))
 
+        pool_color <- pools.color[pool]
     }
 
-    print(paste0(" - Drawing depth track for ", sex, " ..."))
+    print(paste0(" - Drawing depth track for pool ", pool, " ..."))
 
-    # Draw the top track of the plot, showing sex-bias
+    # Draw the top track of the plot
     circlize::circos.track(factors = data$Contig,
                            x = data$Position,
                            y = depth_data,
@@ -121,8 +110,8 @@ track_circos_depth <- function(data, sex, type = "absolute",
 
                                # Plot the data
                                circlize::circos.points(x, y, cex = point.size,
-                                                       col = point.color,
-                                                       bg = point.color,
+                                                       col = pool_color,
+                                                       bg = pool_color,
                                                        pch = 21)
 
                                # Add Y axis on the first sector only
