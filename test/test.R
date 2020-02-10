@@ -1,4 +1,4 @@
-setwd("/home/romain/work/code/PSASS-vis/tests/")
+setwd("/home/romain/work/code/PSASS-vis/test/")
 
 ###################################
 ########## DATA LOADING ###########
@@ -7,9 +7,28 @@ setwd("/home/romain/work/code/PSASS-vis/tests/")
 # Load chromosome names from file
 chromosomes = load_chromosome_names("chromosomes.tsv")
 
-load_single_data_file
-load_data_files
+# Load psass window output
+psass_window_chr = load_genome_input("psass_window.tsv", chromosomes)
+psass_window_chr_detect = load_genome_input("psass_window.tsv", chromosomes=NULL, detect.chromosomes = TRUE)
+psass_window_no_chr = load_genome_input("psass_window.tsv", detect.chromosomes = FALSE)
+psass_window_no_unplaced = load_genome_input("psass_window_no_unplaced.tsv")
 
+# Load psass snp output
+psass_snp_chr = load_genome_input("psass_snps.tsv", chromosomes)
+psass_snp_chr_detect = load_genome_input("psass_snps.tsv", chromosomes=NULL, detect.chromosomes = TRUE)
+psass_snp_no_chr = load_genome_input("psass_snps.tsv", detect.chromosomes = FALSE)
+psass_snp_no_unplaced = load_genome_input("psass_snps_no_unplaced.tsv")
+
+# Load psass snp output
+psass_fst_chr = load_genome_input("psass_fst.tsv", chromosomes)
+psass_fst_chr_detect = load_genome_input("psass_fst.tsv", chromosomes=NULL, detect.chromosomes = TRUE)
+psass_fst_no_chr = load_genome_input("psass_fst.tsv", detect.chromosomes = FALSE)
+psass_fst_no_unplaced = load_genome_input("psass_fst_no_unplaced.tsv")
+
+# Fst window track
+track_circos_window(data, metric, points.color = "gray20", points.color.unplaced = c("dodgerblue3", "goldenrod1"),
+                    bg.col = "white", point.size = 0.01,
+                    top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL)
 
 draw_circos_plot
 plot_genome_circos
