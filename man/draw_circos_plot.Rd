@@ -6,29 +6,31 @@
 \usage{
 draw_circos_plot(
   data,
+  contig_lengths,
+  tracks = c("Fst", "Snps_females", "Snps_males"),
+  track.labels = c("Fst", "SNP F.", "SNP M."),
+  track.colors = c("grey20", "firebrick2", "dodgerblue3"),
+  point.size = 0.1,
+  bg.color = "white",
+  highlight = NULL,
+  bg.highlight.color = "grey80",
   output.file = NULL,
   width = 2400,
   height = 2400,
   res = 120,
-  tracks = c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio"),
-  highlight = NULL,
-  zoom.highlights = FALSE,
-  zoom.ratio = 2,
-  zoom.suffix = " (zoom)",
-  base.color = "white",
-  highlight.color = "grey80",
-  point.size = 0.1,
-  points.color = "grey20",
-  pools.color = c("firebrick2", "dodgerblue3"),
-  color.unplaced = FALSE,
-  points.color.unplaced = c("dodgerblue3", "goldenrod1"),
-  sector.titles.expand = NULL,
-  depth.type = "absolute",
-  min.depth = 10
+  sector.titles.expand = NULL
 )
 }
 \arguments{
 \item{data}{A PSASS data structure obtained with the \code{\link{load_data_files}} function.}
+
+\item{tracks}{Tracks to be plotted. Possible values are "fst_pos", "fst_win", "snp_pos", "snp_win_pool1",
+"snp_win_pool2", "snp_win", "depth_pool1", "depth_pool2", "depth_ratio"
+(default: c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio")).}
+
+\item{point.size}{Size of the points in the plot (default: 0.1).}
+
+\item{highlight}{A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).}
 
 \item{output.file}{Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).}
 
@@ -38,11 +40,7 @@ draw_circos_plot(
 
 \item{res}{Resolution of the output file if specified, in \% (default: 120).}
 
-\item{tracks}{Tracks to be plotted. Possible values are "fst_pos", "fst_win", "snp_pos", "snp_win_pool1",
-"snp_win_pool2", "snp_win", "depth_pool1", "depth_pool2", "depth_ratio"
-(default: c("fst_win", "snp_win_pool1", "snp_win_pool2", "depth_ratio")).}
-
-\item{highlight}{A vector of sectors to highlight, for instance c("LG5") or c("NC_02536.1", "NC_02543.1") (default: NULL).}
+\item{sector.titles.expand}{Parameter to manually override the space between sector titles and x-axis (default: NULL).}
 
 \item{zoom.highlights}{If TRUE, highlighted sectors will be enlarged and placed at the top of the plot (default: FALSE).}
 
@@ -54,8 +52,6 @@ draw_circos_plot(
 
 \item{highlight.color}{Background color of a highlighted sector (default: "grey80").}
 
-\item{point.size}{Size of the points in the plot (default: 0.1).}
-
 \item{points.color}{Color of points for fst_pos, fst_win, and depth_ratio tracks (default: "grey20)}
 
 \item{pools.color}{Color of points for each pool for snp_pos, snp_win_pool1, snp_win_pool2, depth_pool1, and depth_pool2 tracks
@@ -64,8 +60,6 @@ draw_circos_plot(
 \item{color.unplaced}{If TRUE, unplaced scaffolds will be colored with alternating colors, like in a manhattan plot (default: FALSE)}
 
 \item{points.color.unplaced}{Alternating point color for scaffolds when plotting unplaced scaffolds (default: c(dodgerblue3", "goldenrod1"))}
-
-\item{sector.titles.expand}{Parameter to manually override the space between sector titles and x-axis (default: NULL).}
 
 \item{depth.type}{Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").}
 

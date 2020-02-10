@@ -22,21 +22,20 @@
 #'
 #' @param pools.color Color for each pool (default c("firebrick2", "dodgerblue3"))
 
+
 track_circos_window <- function(data, metric,
-                                points.color = "gray20", points.color.unplaced = c("dodgerblue3", "goldenrod1"),
                                 bg.col = "white", point.size = 0.01,
-                                top.track = FALSE, sector.names = NULL, sector.titles.expand = 1.3, sectors = NULL) {
+                                top.track = FALSE, sector.titles.expand = 1.3,
+                                first_sector=NULL) {
 
     # Assign values for y-axis parameters
     ylim <- c(0, 1.025 * max(data[, 4]) + 0.01)
     ylabel <- metric
 
-    data$Color = c(points.color.unplaced, points.color)[data$Color + 1]
-
     # Draw the top track of the plot
     circlize::circos.track(factors = data$Contig_plot,
                            x = data$Position_plot,
-                           y = data[, 4],
+                           y = as.vector(unlist(data[,4])),
                            ylim = ylim,
                            bg.col = bg.col,
                            panel.fun = function(x, y) {  # panel.fun is the function drawing the track
@@ -64,14 +63,12 @@ track_circos_window <- function(data, metric,
                                                          labels.pos.adjust = TRUE)
 
                                    # Add sector names
-                                   if (!is.null(sector.names)) {
-                                       circlize::circos.text(xcenter,
-                                                             sector.titles.expand * ymax,
-                                                             sector.names[sector.index],
-                                                             cex = 1.5,
-                                                             facing = "bending.inside",
-                                                             niceFacing = TRUE)
-                                   }
+                                   circlize::circos.text(xcenter,
+                                                         sector.titles.expand * ymax,
+                                                         sector.index,
+                                                         cex = 1.5,
+                                                         facing = "bending.inside",
+                                                         niceFacing = TRUE)
                                }
 
                                # Plot the data
@@ -81,12 +78,12 @@ track_circos_window <- function(data, metric,
                                                        pch = 21)
 
                                # Add Y axis on the first sector only
-                               if (sector.index == sectors[1]) {
+                               if (sector.index == first_sector) {
 
                                    # Create y axis
                                    circlize::circos.yaxis(side = "left",
                                                           at = c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]),  # 3 labels
-                                                          sector.index = sectors[1],
+                                                          sector.index = first_sector,
                                                           labels.cex = 1.2,
                                                           labels.niceFacing = FALSE,
                                                           labels = round(c(ylim[1], (ylim[2] - ylim[1]) / 2 + ylim[1], ylim[2]), 0))
@@ -95,8 +92,8 @@ track_circos_window <- function(data, metric,
                                    label_offset <- - 7.5 * (xmax - xmin) / (xplot[1] - xplot[2])  # Axis title will be plotted 5° on the left of the axis
                                    circlize::circos.text(label_offset,
                                                          0.5 * (ymax - ymin) + ymin,
-                                                         y_label,
-                                                         sector.index = sectors[1],
+                                                         ylabel,
+                                                         sector.index = first_sector,
                                                          facing = "inside",
                                                          cex = 1.3,
                                                          font = 2)

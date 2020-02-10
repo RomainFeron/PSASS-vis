@@ -27,39 +27,6 @@ load_chromosome_names <- function(input_file_path) {
 
 
 
-#' @title Detect chromosomes
-#'
-#' @description Automatically detect chromosomes in a psass output data frame
-#'
-#' @param data Psass output data frame
-#'
-#' @return A named vector with contig IDs as names and chromosome names as values
-#'
-#' @examples
-#' chromosomes <- detect_chromosomes(data)
-
-detect_chromosomes <- function(data) {
-
-    # Order contigs by length in a data frame
-    contig_lengths <- data.frame(unique(data[, c(1, 3)]))[order(unique(data.frame(data[,3])), decreasing = TRUE),]
-
-    # Identify chromosomes based on name: start with LG, CH, or NC (case-unsensitive)
-    detected_chr <- subset(contig_lengths, toupper(substr(contig_lengths$Contig, 1, 2)) %in% c("LG", "CH", "NC"))
-
-    if (nrow(detected_chr) > 0) {
-
-        # Sometimes mitochondria are also called NC_xxx. If one chromosome is > 50 times smaller than the average of all other chromosomes,
-        # or if it is smaller than 50000 bp, it is considered to be the mitochondrion and is removed
-        potential_mt <- tail(detected_chr, 1)
-        if (50 * potential_mt$Length < median(detected_chr$Length) | potential_mt$Length < 50000) detected_chr <- subset(detected_chr, detected_chr$Contig != potential_mt)
-
-    }
-
-    # Create the named vector of chromosome names with detected chromosomes
-    return(setNames(detected_chr$Contig, detected_chr$Contig))
-}
-
-
 
 #' @title Load a genome input file
 #'
@@ -71,12 +38,14 @@ detect_chromosomes <- function(data) {
 #'
 #' @param detect.chromosomes If TRUE, will consider contigs starting with LG, CH, or NC as chromosomes if no chromosomes were specified (default: TRUE)
 #'
+#' @param unplaced.label Unplaced contigs label (default: "Unplaced")
+#'
 #' @return A list with two elements: "data" = parsed genome metrics data, "lengths" = lengths of contigs to be plotted
 #'
 #' @examples
 #' window_data <- load_genome_input("psass_window.tsv", chromosomes=chromosomes)
 
-load_genome_input <- function(input_file_path, chromosomes=NULL, detect.chromosomes=TRUE) {
+load_genome_input <- function(input_file_path, chromosomes=NULL, detect.chromosomes=TRUE, unplaced.label = "Unplaced") {
 
     data <- suppressMessages(readr::read_delim(input_file_path, "\t", escape_double = FALSE, trim_ws = TRUE))
     data$Contig_plot <- data$Contig
@@ -124,7 +93,7 @@ load_genome_input <- function(input_file_path, chromosomes=NULL, detect.chromoso
         # Transform position on each contig into position on cumulated contig
         cumulated_lengths <- setNames(c(0, head(cumsum(unplaced_len$Length), -1)), unplaced_len$Contig)
         unplaced$Position_plot <- unplaced$Position + cumulated_lengths[unplaced$Contig]
-        unplaced$Contig_plot <- "Unplaced"
+        unplaced$Contig_plot <- unplaced.label
 
         # Compute total length of unplaced contigs
         total_unplaced_length <- sum(unplaced_len$Length)
@@ -135,7 +104,7 @@ load_genome_input <- function(input_file_path, chromosomes=NULL, detect.chromoso
     if (!is.null(lg) & nrow(unplaced) > 0) {
 
         data <- rbind(lg, unplaced)  # Combined lg and unplaced data
-        plot_contig_lengths <- rbind(plot_contig_lengths, data.frame(Contig="Unplaced", Length=total_unplaced_length))
+        plot_contig_lengths <- rbind(plot_contig_lengths, data.frame(Contig=unplaced.label, Length=total_unplaced_length))
 
     } else if (!is.null(lg)) {
 
@@ -144,7 +113,7 @@ load_genome_input <- function(input_file_path, chromosomes=NULL, detect.chromoso
     } else if (nrow(unplaced) > 0) {
 
         data <- unplaced  # Entire dataset is unplaced
-        plot_contig_lengths <- data.frame(Contig=c("Unplaced"), Length=c(total_unplaced_length))
+        plot_contig_lengths <- data.frame(Contig=c(unplaced.label), Length=c(total_unplaced_length))
 
     } else {
 
@@ -154,4 +123,38 @@ load_genome_input <- function(input_file_path, chromosomes=NULL, detect.chromoso
     }
 
     return(list(data=data, lengths=setNames(plot_contig_lengths$Length, plot_contig_lengths$Contig)))
+}
+
+
+
+#' @title Detect chromosomes
+#'
+#' @description Automatically detect chromosomes in a psass output data frame
+#'
+#' @param data Psass output data frame
+#'
+#' @return A named vector with contig IDs as names and chromosome names as values
+#'
+#' @examples
+#' chromosomes <- detect_chromosomes(data)
+
+detect_chromosomes <- function(data) {
+
+    # Order contigs by length in a data frame
+    contig_lengths <- data.frame(unique(data[, c(1, 3)]))[order(unique(data.frame(data[,3])), decreasing = TRUE),]
+
+    # Identify chromosomes based on name: start with LG, CH, or NC (case-unsensitive)
+    detected_chr <- subset(contig_lengths, toupper(substr(contig_lengths$Contig, 1, 2)) %in% c("LG", "CH", "NC"))
+
+    if (nrow(detected_chr) > 0) {
+
+        # Sometimes mitochondria are also called NC_xxx. If one chromosome is > 50 times smaller than the average of all other chromosomes,
+        # or if it is smaller than 50000 bp, it is considered to be the mitochondrion and is removed
+        potential_mt <- tail(detected_chr, 1)
+        if (50 * potential_mt$Length < median(detected_chr$Length) | potential_mt$Length < 50000) detected_chr <- subset(detected_chr, detected_chr$Contig != potential_mt)
+
+    }
+
+    # Create the named vector of chromosome names with detected chromosomes
+    return(setNames(detected_chr$Contig, detected_chr$Contig))
 }
