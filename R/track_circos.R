@@ -23,13 +23,13 @@
 #' @param pools.color Color for each pool (default c("firebrick2", "dodgerblue3"))
 
 
-track_circos_window <- function(data, metric,
-                                bg.col = "white", point.size = 0.01,
-                                top.track = FALSE, sector.titles.expand = 1.3,
-                                first_sector=NULL) {
+circos_track <- function(data, metric,
+                         bg.col = "white", point.size = 0.01, ylim = NULL,
+                         top.track = FALSE, sector.titles.expand = 1.3,
+                         first_sector=NULL) {
 
     # Assign values for y-axis parameters
-    ylim <- c(0, 1.025 * max(data[, 4]) + 0.01)
+    if (is.null(ylim)) { ylim = c(0.975 * min(data[, 4]) - 0.01, 1.025 * max(data[, 4]) + 0.01) }
     ylabel <- metric
 
     # Draw the top track of the plot

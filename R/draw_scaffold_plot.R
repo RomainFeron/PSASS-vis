@@ -1,232 +1,44 @@
-#' @title Draw scaffold plot
-#'
-#' @description Draw a scaffold plot from the PSASS data
-#'
-#' @param data A PSASS data structure obtained with the \code{\link{load_data_files}} function.
-#'
-#' @param scaffold Name of the scaffold to be plotted. The name can be from the dataset (e.g. "NC_0245486.2") or from the
-#' 'chromosomes_names' file (e.g. "LG4").
-#'
-#' @param region A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000). If NULL, the entire scaffold
-#' will be plotted (default: NULL).
-#'
-#' @param output.file Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).
-#'
-#' @param width Width of the output file if specified, in inches (default: 12).
-#'
-#' @param height Height of the output file if specified, in inches (default: 4 * number of plots).
-#'
-#' @param dpi Resolution of the output file if specified, in dpi (default: 300).
-#'
-#' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males",
-#' "window_snp_females", "window_snp_combined", "window_snp_ratio", "depth_males", "depth_females", "depth_combined", "depth_ratio"
-#' (default: c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio")).
-#'
-#' @param point.size Size of the points in the plot (default: 0.1).
-#'
-#' @param depth.type Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").
-#'
-#' @param depth.ratio.lines If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).
-#'
-#' @param min.depth Minimum depth to compute depth ratio.
-#' The log of ratio for positions with depth lower than this value in either sex will be 0 (default: 10).
-#'
-#' @param major.lines.y If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
-#'
-#' @param major.lines.x If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
-#'
-#' @param alpha.value Transparency values for combined tracks (default: 0.25).
-#'
-#' @param fst.window.color Color of the FST window track (default: "grey50").
-#'
-#' @param males.color Color of the male window tracks (default: "dodgerblue3").
-#'
-#' @param females.color Color of the female window tracks (default: "firebrick2").
-#'
-#' @examples
-#'
 
+draw_region <- function(data, contig_lengths, region,
+                        tracks = list("Fst", c("Snps_females", "Snps_males")),
+                        track.labels = c("Fst", "Pool-specific SNPs"),
+                        track.colors = list("grey20", c("firebrick2", "dodgerblue3")),
+                        track.alpha = list(1, c(0.5, 0.5)),
+                        track.types = list("ribbon", c("ribbon", "ribbon")),
+                        point.size = 0.5, major.lines.y = TRUE, major.lines.x = FALSE,
+                        output.file = NULL, width = 12, height = 4, res = 300) {
 
-draw_scaffold_plot <- function(data, scaffold, region = NULL,
-                               output.file = NULL, width = 12, height = 4, dpi = 300,
-                               tracks = c("window_fst", "window_snp_males", "window_snp_females", "depth_ratio"),
-                               point.size = 0.5, depth.type = "absolute", min.depth = 10, depth.ratio.lines = FALSE,
-                               major.lines.y = TRUE, major.lines.x = FALSE,
-                               fst.window.color = "grey50", males.color = "dodgerblue3", females.color = "firebrick2", alpha.value = 0.25) {
+    # Add original contig names to contig lengths so that user can specify both chromosome names or contig names in region
+    contig_lengths <- c(contig_lengths, setNames(unique(data$Length), unique(data$Contig)))
+
+    # Get contig, min, and max from the region string
+    region_info <- parse_region(region, contig_lengths)
 
     # Initialize list of plots
     n_tracks <- length(tracks)
     plots <- rep(list(NULL), n_tracks)
 
-    # Getting contig information
-    if (scaffold %in% data$names) {
-
-        # Case of scaffold = "LG05"
-        scaffold_name <- scaffold
-        scaffold <- names(data$names[which(data$names == scaffold)])
-
-    } else if (scaffold %in% names(data$names)) {
-
-        # Case of scaffold = "NC_0215354.2"
-        scaffold_name <- data$names[which(names(data$names) == scaffold)]
-
-    } else if (scaffold %in% c(names(data$lengths$unplaced), names(data$lengths$lg))) {
-
-        # Case of unplaced scaffold or no scaffold names
-        scaffold_name <- scaffold
-
-    } else {
-
-        stop(paste0(" - Error: scaffold \"", scaffold, "\" does not exist."))
-
-    }
-
-    # If both males and females SNPs tracks, set a common scale
-    snp_y_lim <- NULL
-    if ("window_snp_males" %in% tracks & "window_snp_females" %in% tracks) snp_y_lim <- c(0, max(data$window_snp$Males, data$window_snp$Females))
-
-    # Setting region to entire scaffold if region is NULL
-    if (is.null(region)) {
-        if (scaffold %in% names(data$lengths$lg)) {
-            region <- c(0, data$lengths$lg[[scaffold]])
-        } else if (scaffold %in% names(data$lengths$unplaced)){
-            region <- c(0, data$lengths$unplaced[[scaffold]])
-        } else {
-            stop(paste0(" - Error: could not find length for scaffold \"", scaffold, "\"."))
-        }
-    }
-
     # Draw specified tracks
-    for (i in c(1:length(tracks))) {
+    bottom_track <- FALSE
+    for (i in c(1:n_tracks)) {
 
-        bottom.track <- FALSE
-        if (i == length(tracks)) bottom.track <- TRUE
+        if (i == n_tracks) bottom_track <- TRUE
 
-        if (tracks[i] == "position_fst") {
+        track_data <- create_region_track_data(data, region_info, tracks[[i]], track.colors[[i]])
 
-            temp <- subset(data$position_fst, data$position_fst$Contig_id == scaffold &
-                           data$position_fst$Original_position >= region[1] & data$position_fst$Original_position <= region[2])
+        plots[[i]] <- track_region(track_data, region_info,
+                                   plot.type = track.types[[i]], alpha = track.alpha[[i]], point.size = 0.1,
+                                   major.lines.y = TRUE, major.lines.x = FALSE,
+                                   ylim = NULL, bottom.track = bottom_track,
+                                   y.label = track.labels[i], legend.position = "right")
 
-            p <- track_scaffold_position_fst(temp, scaffold_name, region,
-                                             major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                             ylim = c(min(temp$Fst), 1), point.size = point.size, bottom.track = bottom.track)
-            plots[[i]] <- p
-
-        } else if (tracks[i] == "window_fst") {
-
-            temp <- subset(data$window_fst, data$window_fst$Contig_id == scaffold &
-                           data$window_fst$Original_position >= region[1] & data$window_fst$Original_position <= region[2])
-
-            p <- track_scaffold_window_fst(temp, scaffold_name, region,
-                                           major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                           ylim = c(0, max(temp$Fst)), color = fst.window.color, bottom.track = bottom.track)
-            plots[[i]] <- p
-
-
-        } else if (tracks[i] == "position_snp") {
-
-            # TO BE IMPLEMENTED
-
-        } else if (tracks[i] == "window_snp_males") {
-
-            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
-                           data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
-
-            p <- track_scaffold_window_snp(temp, "males", scaffold_name, region,
-                                           ylim = snp_y_lim,
-                                           major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                           color = males.color, bottom.track = bottom.track)
-            plots[[i]] <- p
-
-
-        } else if (tracks[i] == "window_snp_females") {
-
-            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
-                        data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
-
-            p <- track_scaffold_window_snp(temp, "females", scaffold_name, region,
-                                           ylim = snp_y_lim,
-                                           major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                           color = females.color, bottom.track = bottom.track)
-            plots[[i]] <- p
-
-
-        } else if (tracks[i] == "window_snp_combined") {
-
-            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
-                           data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
-
-            p <- track_scaffold_window_snp_combined(temp, scaffold_name, region,
-                                                    major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                                    males.color = males.color, females.color = females.color,
-                                                    bottom.track = bottom.track)
-            plots[[i]] <- p
-
-        } else if (tracks[i] == "window_snp_ratio") {
-
-            temp <- subset(data$window_snp, data$window_snp$Contig_id == scaffold &
-                           data$window_snp$Original_position >= region[1] & data$window_snp$Original_position <= region[2])
-
-            p <- track_scaffold_window_snp_ratio(temp, scaffold_name, region,
-                                                 major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                                 males.color = males.color, females.color = females.color,
-                                                 bottom.track = bottom.track)
-            plots[[i]] <- p
-
-        } else if (tracks[i] == "depth_males") {
-
-            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
-                               data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
-
-            p <- track_scaffold_window_depth(temp, "males", scaffold_name, region, type = depth.type,
-                                                major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                                color = males.color, bottom.track = bottom.track)
-            plots[[i]] <- p
-
-        } else if (tracks[i] == "depth_females") {
-
-            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
-                           data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
-
-            p <- track_scaffold_window_depth(temp, "females", scaffold_name, region, type = depth.type,
-                                                major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                                color = females.color, bottom.track = bottom.track)
-            plots[[i]] <- p
-
-        } else if (tracks[i] == "depth_combined") {
-
-            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
-                           data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
-
-            p <- track_scaffold_window_depth_combined(temp, scaffold_name, region, type = depth.type,
-                                                         major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                                         males.color = males.color, females.color = females.color,
-                                                         bottom.track = bottom.track, alpha.value = alpha.value)
-            plots[[i]] <- p
-
-        } else if (tracks[i] == "depth_ratio") {
-
-            temp <- subset(data$depth, data$depth$Contig_id == scaffold &
-                               data$depth$Original_position >= region[1] & data$depth$Original_position <= region[2])
-
-            p <- track_scaffold_window_depth_ratio(temp, scaffold_name, region, type = depth.type, min.depth = min.depth,
-                                                      major.lines.y = major.lines.y, major.lines.x = major.lines.x,
-                                                      males.color = males.color, females.color = females.color,
-                                                      bottom.track = bottom.track, ratio.lines = depth.ratio.lines)
-            plots[[i]] <- p
-
-        } else {
-
-            print(paste0("Warning: unknown track type \"", tracks[i], "\" ..."))
-
-        }
     }
 
     combined <- cowplot::plot_grid(plotlist = plots, ncol = 1, align = "v")
 
     if (!is.null(output.file)) {
 
-        cowplot::ggsave(output.file, plot = combined, width = width, height = height * n_tracks, dpi = dpi)
+        ggplot2::ggsave(output.file, plot = combined, width = width, height = height * n_tracks, dpi = res)
 
     } else {
 
@@ -235,4 +47,24 @@ draw_scaffold_plot <- function(data, scaffold, region = NULL,
     }
 
     return(combined)
+}
+
+
+
+create_region_track_data <- function(data, region_info, track, track.color) {
+
+    if (region_info[[1]] %in% unique(data$Contig)) {
+
+        data = subset(data, data$Contig == region_info[[1]] & data$Position >= region_info[[2]] & data$Position <= region_info[[3]])
+
+    } else if (region_info[[1]] %in% unique(data$Contig_plot)) {
+
+        data = subset(data, data$Contig_plot == region_info[[1]] & data$Position >= region_info[[2]] & data$Position <= region_info[[3]])
+
+    }
+
+    track_data <- data[, c("Position")]
+    for (i in 1:length(track)) { track_data = cbind(track_data, data[, c(track[i])], rep(track.color[i], nrow(data))) }
+
+    return(track_data)
 }

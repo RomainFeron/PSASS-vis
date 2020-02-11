@@ -56,10 +56,10 @@ draw_circos_plot <- function(data, contig_lengths,
         if (tracks[i] %in% names(data)) {
 
             track_data <- create_track_data(data, tracks[i], track.colors[i])
-            track_circos_window(track_data, track.labels[i],
-                                bg.col = bg_colors, point.size = 0.01,
-                                top.track = top_track, sector.titles.expand = sector.titles.expand,
-                                first_sector = names(contig_lengths)[1])
+            circos_track(track_data, track.labels[i],
+                         bg.col = bg_colors, point.size = point.size,
+                         top.track = top_track, sector.titles.expand = sector.titles.expand,
+                         first_sector = names(contig_lengths)[1])
 
         } else {
 
@@ -111,3 +111,4 @@ create_track_data <- function(data, track.name, track.color) {
 
     return(track_data)
 }
+
