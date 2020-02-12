@@ -1,7 +1,9 @@
 
 draw_region <- function(data, contig_lengths, region,
                         tracks = NULL,
-                        output.file = NULL, width = 12, height = 4, res = 300) {
+                        default.color = "grey20", default.alpha = 1, default.type = "ribbon", default.point.size = 0.5, default.ylim=NULL,
+                        default.major.lines.y = TRUE, default.major.lines.x = FALSE, default.legend.position = "right",
+                        output.file = NULL, width = 12, track.height = 4, res = 300) {
 
     # Add original contig names to contig lengths so that user can specify both chromosome names or contig names in region
     contig_lengths <- c(contig_lengths, setNames(unique(data$Length), unique(data$Contig)))
@@ -19,16 +21,14 @@ draw_region <- function(data, contig_lengths, region,
 
         if (i == n_tracks) bottom_track <- TRUE
 
-        print(tracks[[i]]$label)
+        tracks[[i]] <- assign_track_default(tracks[[i]], default.color = default.color,
+                                            default.alpha = default.alpha, default.type = default.type, default.point.size = default.point.size,
+                                            default.major.lines.y = default.major.lines.y, default.major.lines.x = default.major.lines.x,
+                                            default.legend.position = default.legend.position, default.ylim = default.ylim)
 
         track_data <- create_region_track_data(data, region_info, tracks[[i]])
 
-        print(tracks[[i]]$label)
-        print(tracks[[i]]$alpha)
-
         plots[[i]] <- track_region(track_data, region_info, tracks[[i]], bottom.track = bottom_track)
-
-        print(tracks[[i]]$label)
 
     }
 
@@ -38,7 +38,7 @@ draw_region <- function(data, contig_lengths, region,
 
     if (!is.null(output.file)) {
 
-        ggplot2::ggsave(output.file, plot = combined, width = width, height = height * n_tracks, dpi = res)
+        ggplot2::ggsave(output.file, plot = combined, width = width, height = track.height * n_tracks, dpi = res)
 
     } else {
 
@@ -73,8 +73,8 @@ create_region_track_data <- function(data, region_info, track) {
 
 
 
-track <- function(metrics, label = NULL, color = "grey20", alpha = 1, type = "ribbon", point.size = 0.5,
-                  major.lines.y = TRUE, major.lines.x = FALSE, legend.position = "right", ylim=NULL) {
+track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type = NULL, point.size = NULL,
+                  major.lines.y = NULL, major.lines.x = NULL, legend.position = NULL, ylim=NULL) {
 
     n_metrics <- length(metrics)
 
@@ -98,6 +98,10 @@ track <- function(metrics, label = NULL, color = "grey20", alpha = 1, type = "ri
         if (length(alpha) == 1) { alpha <- rep(alpha, n_metrics) }
         if (length(type) == 1) { type <- rep(type, n_metrics) }
         if (length(point.size) == 1) { point.size <- rep(point.size, n_metrics) }
+        if (length(major.lines.y) == 1) { major.lines.y <- rep(major.lines.y, n_metrics) }
+        if (length(major.lines.x) == 1) { major.lines.x <- rep(major.lines.x, n_metrics) }
+        if (length(legend.position) == 1) { legend.position <- rep(legend.position, n_metrics) }
+        if (length(ylim) == 1) { ylim <- rep(ylim, n_metrics) }
 
     }
 
@@ -106,4 +110,29 @@ track <- function(metrics, label = NULL, color = "grey20", alpha = 1, type = "ri
                        ylim = ylim)
 
     return(track_info)
+}
+
+
+assign_track_default <- function(track, default.color = "grey20", default.alpha = 1, default.type = "ribbon",
+                                 default.point.size = 0.5, default.ylim=NULL,
+                                 default.major.lines.y = TRUE, default.major.lines.x = FALSE,
+                                 default.legend.position = "right") {
+
+
+    n_metrics <- length(track$metrics)
+
+    # Metrics-specific options (create vector)
+    if (is.null(track$color)) { track$color = rep(default.color, n_metrics) }
+    if (is.null(track$alpha)) { track$alpha = rep(default.alpha, n_metrics) }
+    if (is.null(track$type)) { track$type = rep(default.type, n_metrics) }
+    if (is.null(track$point.size)) { track$point.size = rep(default.point.size, n_metrics) }
+    if (is.null(track$legend.position)) { track$legend.position = rep(default.legend.position, n_metrics) }
+    if (is.null(track$ylim)) { track$ylim = rep(default.ylim, n_metrics) }
+
+    # Track-specific options (single value)
+    if (is.null(track$major.lines.y)) { track$major.lines.y = default.major.lines.y }
+    if (is.null(track$major.lines.x)) { track$major.lines.x = default.major.lines.x }
+
+    return(track)
+
 }
