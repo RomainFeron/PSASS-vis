@@ -29,11 +29,8 @@ psass_fst_no_unplaced = load_genome_input("psass_fst_no_unplaced.tsv")
 draw_circos_plot(psass_window_chr$data, psass_window_chr$contig_lengths, output.file = "circos.png")
 
 region = draw_region(psass_window_chr$data, psass_window_chr$lengths, "Chr01:0-5000000",
-                     tracks = list("Fst", c("Snps_females", "Snps_males"), c("Rel_depth_females", "Rel_depth_males")),
-                     track.labels = c("Fst", "Pool-specific SNPs", "Depth"),
-                     track.colors = list("grey20", c("firebrick2", "dodgerblue3"), c("firebrick2", "dodgerblue3")),
-                     track.alpha = list(1, c(0.5, 0.5), c(0.5, 0.5)),
-                     track.types = list("ribbon", c("ribbon", "ribbon"), c("ribbon", "ribbon")),
-                     point.size = 0.5, major.lines.y = TRUE, major.lines.x = FALSE,
+                     tracks = list(track("Fst", label = expression("F"["ST"])),
+                                   track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6),
+                                   track(c("Abs_depth_females", "Abs_depth_males"), label = "Absolute depth", color = c("firebrick2", "dodgerblue3"), alpha=c(0.4, 0.4))),
                      output.file = "region.png", width = 12, height = 4, res = 300)
 
