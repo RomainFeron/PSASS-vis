@@ -1,7 +1,7 @@
 
 draw_region <- function(data, contig_lengths, region,
                         tracks = NULL,
-                        default.color = "grey20", default.alpha = 1, default.type = "ribbon", default.point.size = 0.5, default.ylim=NULL,
+                        default.color = "grey20", default.alpha = 1, default.type = "ribbon", default.point.size = 0.5, default.ylim = NULL,
                         default.major.lines.y = TRUE, default.major.lines.x = FALSE, default.legend.position = "right",
                         output.file = NULL, width = 12, track.height = 4, res = 300) {
 
@@ -74,7 +74,7 @@ create_region_track_data <- function(data, region_info, track) {
 
 
 track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type = NULL, point.size = NULL,
-                  major.lines.y = NULL, major.lines.x = NULL, legend.position = NULL, ylim=NULL) {
+                  major.lines.y = NULL, major.lines.x = NULL, legend.position = NULL, ylim = NULL) {
 
     n_metrics <- length(metrics)
 
@@ -114,10 +114,9 @@ track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type = NULL
 
 
 assign_track_default <- function(track, default.color = "grey20", default.alpha = 1, default.type = "ribbon",
-                                 default.point.size = 0.5, default.ylim=NULL,
+                                 default.point.size = 0.5, default.ylim = NULL,
                                  default.major.lines.y = TRUE, default.major.lines.x = FALSE,
                                  default.legend.position = "right") {
-
 
     n_metrics <- length(track$metrics)
 

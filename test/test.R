@@ -26,9 +26,10 @@ psass_fst_no_chr = load_genome_input("psass_fst.tsv", detect.chromosomes = FALSE
 psass_fst_no_unplaced = load_genome_input("psass_fst_no_unplaced.tsv")
 
 # Circos plot
-draw_circos_plot(psass_window_chr$data, psass_window_chr$contig_lengths, output.file = "circos.png")
+draw_circos_plot(psass_window_chr$data, psass_window_chr$lengths, output.file = "circos.png")
 
-region = draw_region(psass_window_chr$data, psass_window_chr$lengths, "Chr01:0-5000000",
+# Region plot
+region = draw_region(psass_window_chr$data, psass_window_chr$lengths, "Chr24",
                      tracks = list(track("Fst", label = expression("F"["ST"])),
                                    track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6),
                                    track(c("Abs_depth_females", "Abs_depth_males"), label = "Absolute depth", color = c("firebrick2", "dodgerblue3"), alpha=c(0.4, 0.4))),

@@ -1,27 +1,3 @@
-#' @title Circos depth track
-#'
-#' @description Draws a track on a circos plot for depth data. This function is intended for use in the \code{\link{draw_circos_plot}} function.
-#'
-#' @param data depth data frame.
-#'
-#' @param pool Pool to draw the track for, either 1 or 2.
-#'
-#' @param type Type of depth to draw the track for, either "absolute" or "relative" (default "absolute").
-#'
-#' @param bg.col Background color for sectors, either a single color or a vector of colors for each sector (default "white").
-#'
-#' @param point.size Size of a point in the plot (default 0.01).
-#'
-#' @param top.track If TRUE, this track will be considered top track of the plot and the x axis will be drawn (default FALSE).
-#'
-#' @param sector.names Vector of contig names obtained with the \code{\link{load_contig_names}} (default NULL).
-#'
-#' @param sector.title.expand Value controlling the distance between sector titles and the top axis (default 1.3).
-#'
-#' @param sectors Vector with the names of the sectors in the plot (default NULL).
-#'
-#' @param pools.color Color for each pool (default c("firebrick2", "dodgerblue3"))
-
 
 circos_track <- function(data, metric,
                          bg.col = "white", point.size = 0.01, ylim = NULL,
