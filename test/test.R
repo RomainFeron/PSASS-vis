@@ -25,8 +25,20 @@ psass_fst_chr_detect = load_genome_input("psass_fst.tsv", chromosomes=NULL, dete
 psass_fst_no_chr = load_genome_input("psass_fst.tsv", detect.chromosomes = FALSE)
 psass_fst_no_unplaced = load_genome_input("psass_fst_no_unplaced.tsv")
 
-# Circos plot
-draw_circos_plot(psass_window_chr$data, psass_window_chr$lengths, output.file = "circos.png")
+# Draw circos plot
+draw_circos(psass_window_chr$data, psass_window_chr$lengths,
+            tracks = list(track("Fst", label = expression("F"["ST"])),
+                          track(c("Snps_females", "Snps_males"), label = "SNPs", color = c("firebrick2", "dodgerblue3")),
+                          track(c("Abs_depth_females", "Abs_depth_males"), label = "Depth", color = c("firebrick2", "dodgerblue3"))),
+            output.file = "circos.png")
+
+# Plot circos
+plot_circos("psass_window.tsv",
+            tracks = list(circos_track("Fst", label = expression("F"["ST"])),
+                          circos_track(c("Snps_females", "Snps_males"), label = "SNPs", color = c("firebrick2", "dodgerblue3")),
+                          circos_track(c("Abs_depth_females", "Abs_depth_males"), label = "Depth", color = c("firebrick2", "dodgerblue3"))),
+            chromosomes.file.path = "chromosomes.tsv",
+            output.file = "circos2.png")
 
 # Draw region plot
 region = draw_region(psass_window_chr$data, psass_window_chr$lengths, "Chr24",

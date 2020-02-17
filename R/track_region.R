@@ -1,4 +1,4 @@
-#' @title Plot a single track
+#' @title Plot a region track
 #'
 #' @description Plot a single track for a genomic region
 #'

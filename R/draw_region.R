@@ -4,15 +4,11 @@
 #'
 #' @param data Genomic data (e.g. result of PSASS or RADSex loaded with the \code{\link{load_genome_input}} function)
 #'
-#' @param contig_lengths Contig lengths from the output of the \code{\link{load_genome_input}} function
+#' @param contig.lengths Contig lengths from the output of the \code{\link{load_genome_input}} function
 #'
 #' @param region Region to plot, with syntax "Contig" or "Contig:start-end"
 #'
 #' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{region_track}} function
-#'
-#' @param chromosomes.file.path Path to a tabulated file specifying chromosome names (default: NULL)
-#'
-#' @param detect.chromosomes If TRUE, will consider contigs starting with LG, CH, or NC as chromosomes if no chromosomes were specified (default: TRUE)
 #'
 #' @param output.file Path to an output file for the generated region plot, or NULL to plot in the current R device (default: NULL)
 #'
@@ -41,7 +37,6 @@
 #' @return Combined plot data (ggplot object)
 #'
 #' @examples
-#'
 #' # Plotting an FST track and a combined pool-specific SNPs track
 #' # for the first 3Mb of chromosome 1 to the default R device
 #'
@@ -52,11 +47,10 @@
 #'                           region_track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)))
 #'
 
-draw_region <- function(data, contig_lengths, region,
-                        tracks = NULL,
+draw_region <- function(data, contig.lengths, region, tracks,
+                        output.file = NULL, width = 12, track.height = 4, res = 300,
                         default.color = "grey20", default.alpha = 1, default.type = "ribbon", default.point.size = 0.5, default.ylim = NULL,
-                        default.major.lines.y = TRUE, default.major.lines.x = FALSE, default.legend.position = "right",
-                        output.file = NULL, width = 12, track.height = 4, res = 300) {
+                        default.major.lines.y = TRUE, default.major.lines.x = FALSE, default.legend.position = "right") {
 
     # Add original contig names to contig lengths so that user can specify both chromosome names or contig names in region
     contig_lengths <- c(contig_lengths, setNames(unique(data$Length), unique(data$Contig)))
@@ -122,7 +116,6 @@ draw_region <- function(data, contig_lengths, region,
 #' Position | Metric 1 | Metric 1 colors | ... | Metric N | Metric N colors
 #'
 #' @examples
-#'
 #' genomic_data <- load_genome_input("psass_window.tsv")
 #' region_info <- parse_region("Chr01:0-1500000")
 #' track <- region_track("Fst")
@@ -185,7 +178,6 @@ create_region_track_data <- function(data, region.info, track) {
 #' @return A named list with the value of each track property
 #'
 #' @examples
-#'
 #' # Single metric
 #' track_data <- region_track("Fst", color = "grey70", type = "points", point.size = 0.75)
 #'
@@ -262,8 +254,7 @@ region_track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type
 #' @return A track object with default values for properties not specified by the user
 #'
 #' @examples
-#'
-#' track_data <- assign_track_default(track_data, default.alpha = 0.75)
+#' track_data <- assign_region_track_default(track_data, default.alpha = 0.75)
 #'
 
 assign_region_track_default <- function(track, default.color = "grey20", default.alpha = 1, default.type = "ribbon",

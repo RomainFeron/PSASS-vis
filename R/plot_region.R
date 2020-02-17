@@ -63,10 +63,10 @@ plot_region <- function(input.file.path, region, tracks,
     data <- load_genome_input(input.file.path, chromosomes = chromosomes, detect.chromosomes = detect.chromosomes, unplaced.label = "Unplaced")
 
     # Plot genomic region
-    region_plot <- draw_region(data = data$data,
-                               contig_lengths = data$lengths,
-                               region = region,
-                               tracks = tracks,
+    region_plot <- draw_region(data$data,
+                               data$lengths,
+                               region,
+                               tracks,
                                output.file = output.file,
                                width = width,
                                track.height = track.height,
