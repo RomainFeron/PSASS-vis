@@ -75,10 +75,10 @@ draw_region <- function(data, contig_lengths, region,
         if (i == n_tracks) bottom_track <- TRUE  # For x-axis labels and title
 
         # Assign default values to track properties if not specified by user
-        tracks[[i]] <- assign_track_default(tracks[[i]], default.color = default.color,
-                                            default.alpha = default.alpha, default.type = default.type, default.point.size = default.point.size,
-                                            default.major.lines.y = default.major.lines.y, default.major.lines.x = default.major.lines.x,
-                                            default.legend.position = default.legend.position, default.ylim = default.ylim)
+        tracks[[i]] <- assign_region_track_default(tracks[[i]], default.color = default.color,
+                                                   default.alpha = default.alpha, default.type = default.type, default.point.size = default.point.size,
+                                                   default.major.lines.y = default.major.lines.y, default.major.lines.x = default.major.lines.x,
+                                                   default.legend.position = default.legend.position, default.ylim = default.ylim)
 
         # Generate track data
         track_data <- create_region_track_data(data, region_info, tracks[[i]])
@@ -237,7 +237,7 @@ region_track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type
 
 
 
-#' @title Assign default values to track object
+#' @title Assign default values to a region track object
 #'
 #' @description Assign default values to all properties for which the value was not specified by the user (e.g. value is NULL)
 #'
@@ -266,10 +266,10 @@ region_track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type
 #' track_data <- assign_track_default(track_data, default.alpha = 0.75)
 #'
 
-assign_track_default <- function(track, default.color = "grey20", default.alpha = 1, default.type = "ribbon",
-                                 default.point.size = 0.5, default.ylim = NULL,
-                                 default.major.lines.y = TRUE, default.major.lines.x = FALSE,
-                                 default.legend.position = "right") {
+assign_region_track_default <- function(track, default.color = "grey20", default.alpha = 1, default.type = "ribbon",
+                                        default.point.size = 0.5, default.ylim = NULL,
+                                        default.major.lines.y = TRUE, default.major.lines.x = FALSE,
+                                        default.legend.position = "right") {
 
     n_metrics <- length(track$metrics)
 
