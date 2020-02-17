@@ -1,4 +1,28 @@
-track_region <- function(data, region_info, track, bottom.track = FALSE) {
+#' @title Plot a single track
+#'
+#' @description Plot a single track for a genomic region
+#'
+#' @param data Input data generated with the \code{\link{create_region_track_data}} function)
+#'
+#' @param region.info Information on the region to plot, output of the \code{\link{parse_region}} function
+#'
+#' @param track Track object storing properties for the current track, generated with the \code{\link{track}} function
+#'
+#' @param bottom.track If TRUE, x-axis labels and title will be added to the plot
+#'
+#' @return A ggplot object for the plot
+#'
+#' @examples
+#'
+#' genomic_data <- load_genome_input("psass_window.tsv")
+#' region_info <- parse_region("Chr01:0-1500000")
+#' fst_track <- track("Fst")
+#' region_data <- create_region_track_data(genomic_data, region_info, fst_track)
+#'
+#' fst_plot <- track_region(region_data, region_info, fst_track, bottom.track=TRUE)
+#'
+
+track_region <- function(data, region.info, track, bottom.track = FALSE) {
 
     # Create major grid lines for y axis if specified
     if (track$major.lines.y) {
@@ -37,7 +61,7 @@ track_region <- function(data, region_info, track, bottom.track = FALSE) {
 
     }
 
-    # Draw the plot
+    # Initialize the plot
     g <- ggplot2::ggplot() +
         cowplot::theme_cowplot() +
         ggplot2::scale_y_continuous(name = track$label, expand = ggplot2::expand_scale(c(0, 0.01), 0), limits = track$ylim) +
@@ -48,10 +72,12 @@ track_region <- function(data, region_info, track, bottom.track = FALSE) {
                        panel.grid.major.x = major_lines_x,
                        axis.title.x = axis_title_x)
 
+    # Draw data for each metric
     for (i in c(1:n_datasets)) {
 
         if (track$type[i] == "ribbon") {
 
+            # For ribbon, single color
             plot_data <- data[, c(1, 2*i)]
             names(plot_data) <- c("Position", "Values")
             ribbon_color = as.character(data[1, 2*i+1])
@@ -61,6 +87,7 @@ track_region <- function(data, region_info, track, bottom.track = FALSE) {
 
         } else if (track$type[i] == "points") {
 
+            # For points, color is a vector
             plot_data <- data[, c(1, 2*i, 2*i+1)]
             names(plot_data) <- c("Position", "Values", "Color")
 
