@@ -1,107 +1,83 @@
-#' @title Plot scaffold
+#' @title Plot region
 #'
-#' @description Generate plots for a specific scaffold and/or region from the results of PSASS.
+#' @description Generate a linear plot with multiple tracks for a specified genomic region
 #'
-#' @param contig_lengths_file_path Path to a contig lengths file.
+#' @param input.file.path Path to a genomic data input file (e.g. result of PSASS or RADSex)
 #'
-#' @param chromosomes_names_file_path Path to a contig names file (default NULL).
+#' @param region Region to plot, with syntax "Contig" or "Contig:start-end"
 #'
-#' @param prefix Prefix (including full path) to a complete dataset. If prefix is specified, it will be override individual file specifications
-#' such as "window_fst_file_path" (default NULL).
+#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{track}} function
 #'
-#' @param window_fst_file_path Path to a FST window output file (default NULL).
+#' @param chromosomes.file.path Path to a tabulated file specifying chromosome names (default: NULL)
 #'
-#' @param position_fst_file_path Path to a FST positions output file (default NULL).
+#' @param detect.chromosomes If TRUE, will consider contigs starting with LG, CH, or NC as chromosomes if no chromosomes were specified (default: TRUE)
 #'
-#' @param window_snps_file_path Path to a SNPs window output file (default NULL).
+#' @param output.file Path to an output file for the generated region plot, or NULL to plot in the current R device (default: NULL)
 #'
-#' @param position_snps_file_path Path to a SNPs positions output file (default NULL).
+#' @param width Plot width when plotting to an output file, in inches (default: 12)
 #'
-#' @param depth_file_path Path to a depth output file (default NULL).
+#' @param track.height Height of a single track when plotting to an output file, in inches (default: 4)
 #'
-#' @param scaffold Name of the scaffold to be plotted. The name can be from the dataset (e.g. "NC_0245486.2") or from the
-#' 'chromosomes_names' file (e.g. "LG4").
+#' @param res Image resolution when plotting to an output file, in dpi (default: 300)
 #'
-#' @param region A vector specifying the boundaries of the region to be plotted, e.g. c(125000, 250000). If NULL, the entire scaffold
-#' will be plotted (default: NULL).
+#' @param default.color Default color for a track when not specified in track data (default: "grey20")
 #'
-#' @param output.file Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).
+#' @param default.alpha Default alpha value for a track when not specified in track data (default: 1)
 #'
-#' @param width Width of the output file if specified, in inches (default: 12).
+#' @param default.type Default plot type for a track when not specified in track data (default: "ribbon")
 #'
-#' @param height Height of the output file if specified, in inches (default: 4 * number of plots).
+#' @param default.point.size Default point size for a track of type "points" when not specified in track data (default: 0.5)
 #'
-#' @param dpi Resolution of the output file if specified, in dpi (default: 300).
+#' @param default.ylim Default y-axis limits for a track when not specified in track data (default: NULL, i.e. infer from data)
 #'
-#' @param tracks Tracks to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males",
-#' "window_snp_females", "window_snp_combined", "window_snp_ratio", "depth_males", "depth_females", "depth_combined", "depth_ratio"
-#' (default: c("window_fst", "window_snp_combined", "depth_ratio")).
+#' @param default.major.lines.y If TRUE, reference lines will be plotted for the y axis if not specified in track data (default: TRUE)
 #'
-#' @param point.size Size of the points in the plot (default: 0.1).
+#' @param default.major.lines.x If TRUE, reference lines will be plotted for the x axis if not specified in track data (default: FALSE)
 #'
-#' @param depth.type Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").
+#' @param default.legend.position Default legend position when not specified in track data (default: "none")
 #'
-#' @param depth.ratio.lines If TRUE, lines will be drawn for ratios of 2, 3/2, 2/3, and 1/2 (default: FALSE).
-#'
-#' @param min.depth Minimum depth to compute depth ratio.
-#' The log of ratio for positions with depth lower than this value in either sex will be 0 (default: 10).
-#'
-#' @param major.lines.y If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
-#'
-#' @param major.lines.x If TRUE, major grid lines will be plotted for the y axis (default: TRUE).
-#'
-#' @param alpha.value Transparency values for combined tracks (default: 0.25).
-#'
-#' @param fst.window.color Color of the FST window track (default: "grey50").
-#'
-#' @param males.color Color of the male window tracks (default: "dodgerblue3").
-#'
-#' @param females.color Color of the female window tracks (default: "firebrick2").
+#' @return Combined plot data (ggplot object)
 #'
 #' @examples
 #'
+#' # Plotting an FST track and a combined pool-specific SNPs track
+#' # for an entire chromosome to the default R device
+#'
+#' plot_region("data/psass_window.tsv", "Chr01",
+#'             tracks = list(track("Fst", label = expression("F"["ST"])),
+#'                           track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)),
+#'             chromosomes.file.path = "data/chromosomes.tsv")
+#'
 
 
-plot_scaffold <- function(scaffold, region = NULL,
-                          contig_lengths_file_path = NULL, prefix = NULL,
-                          window_fst_file_path = NULL, position_fst_file_path = NULL,
-                          window_snps_file_path = NULL, position_snps_file_path = NULL,
-                          depth_file_path = NULL, chromosomes_names_file_path = NULL,
-                          output.file = NULL, width = 12, height = 4, dpi = 300,
-                          tracks = c("window_fst", "window_snp_combined", "depth_ratio"),
-                          point.size = 0.5, depth.type = "relative", min.depth = 10, depth.ratio.lines = FALSE,
-                          major.lines.y = TRUE, major.lines.x = FALSE,
-                          fst.window.color = "grey50", males.color = "dodgerblue3", females.color = "firebrick2", alpha.value = 0.25) {
+plot_region <- function(input.file.path, region, tracks,
+                        chromosomes.file.path = NULL, detect.chromosomes = TRUE,
+                        output.file = NULL, width = 12, track.height = 4, res = 300,
+                        default.color = "grey20", default.alpha = 1, default.type = "ribbon", default.point.size = 0.5, default.ylim = NULL,
+                        default.major.lines.y = TRUE, default.major.lines.x = FALSE, default.legend.position = "none") {
 
 
-    # Load the data
-    data <- load_data_files(contig_lengths_file_path,
-                            prefix = prefix,
-                            window_fst_file_path = window_fst_file_path,
-                            position_fst_file_path = position_fst_file_path,
-                            window_snps_file_path = window_snps_file_path,
-                            position_snps_file_path = position_snps_file_path,
-                            depth_file_path = depth_file_path,
-                            chromosomes_names_file_path = chromosomes_names_file_path,
-                            plot.unplaced = TRUE)
+    # Load chromosome names (return NULL of no chromosomes file)
+    chromosomes <- load_chromosome_names(chromosomes.file.path)
 
-    # Draw the plot
-    draw_scaffold_plot(data,
-                       scaffold = scaffold,
-                       region = region,
-                       output.file = output.file,
-                       width = width,
-                       height = height,
-                       dpi = dpi,
-                       tracks = tracks,
-                       point.size = point.size,
-                       depth.type = depth.type,
-                       min.depth = min.depth,
-                       depth.ratio.lines = depth.ratio.lines,
-                       major.lines.y = major.lines.y,
-                       major.lines.x = major.lines.x,
-                       fst.window.color = fst.window.color,
-                       males.color = males.color,
-                       females.color = females.color,
-                       alpha.value = alpha.value)
+    # Load genomic data
+    data <- load_genome_input(input.file.path, chromosomes = chromosomes, detect.chromosomes = detect.chromosomes, unplaced.label = "Unplaced")
+
+    # Plot genomic region
+    region_plot <- draw_region(data = data$data,
+                               contig_lengths = data$lengths,
+                               region = region,
+                               tracks = tracks,
+                               output.file = output.file,
+                               width = width,
+                               track.height = track.height,
+                               res = res,
+                               default.color = default.color,
+                               default.alpha = default.alpha,
+                               default.type = default.type,
+                               default.point.size = default.point.size,
+                               default.ylim = default.ylim,
+                               default.major.lines.y = default.major.lines.y,
+                               default.major.lines.x = default.major.lines.x,
+                               default.legend.position = default.legend.position)
 }

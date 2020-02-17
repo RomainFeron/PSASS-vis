@@ -28,10 +28,17 @@ psass_fst_no_unplaced = load_genome_input("psass_fst_no_unplaced.tsv")
 # Circos plot
 draw_circos_plot(psass_window_chr$data, psass_window_chr$lengths, output.file = "circos.png")
 
-# Region plot
+# Draw region plot
 region = draw_region(psass_window_chr$data, psass_window_chr$lengths, "Chr24",
                      tracks = list(track("Fst", label = expression("F"["ST"])),
                                    track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6),
                                    track(c("Abs_depth_females", "Abs_depth_males"), label = "Absolute depth", color = c("firebrick2", "dodgerblue3"), alpha=c(0.4, 0.4))),
                      output.file = "region.png", width = 12, track.height = 4, res = 300)
 
+# Plot region
+plot_region("psass_window.tsv", "Chr24",
+            tracks = list(track("Fst", label = expression("F"["ST"])),
+                          track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6),
+                          track(c("Abs_depth_females", "Abs_depth_males"), label = "Absolute depth", color = c("firebrick2", "dodgerblue3"), alpha=c(0.4, 0.4))),
+            chromosomes.file.path = "chromosomes.tsv",
+            output.file = "region.png", width = 12, track.height = 4, res = 300)
