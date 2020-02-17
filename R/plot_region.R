@@ -1,6 +1,6 @@
 #' @title Plot region
 #'
-#' @description Generate a linear plot with multiple tracks for a specified genomic region
+#' @description High-level function to generate a linear plot with multiple tracks for a specified genomic region
 #'
 #' @param input.file.path Path to a genomic data input file (e.g. result of PSASS or RADSex)
 #'
@@ -48,7 +48,6 @@
 #'                           track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)),
 #'             chromosomes.file.path = "data/chromosomes.tsv")
 #'
-
 
 plot_region <- function(input.file.path, region, tracks,
                         chromosomes.file.path = NULL, detect.chromosomes = TRUE,

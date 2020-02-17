@@ -36,9 +36,9 @@ region = draw_region(psass_window_chr$data, psass_window_chr$lengths, "Chr24",
                      output.file = "region.png", width = 12, track.height = 4, res = 300)
 
 # Plot region
-plot_region("psass_window.tsv", "Chr24",
+plot_region("psass_window.tsv", "Chr24:0-6000000",
             tracks = list(track("Fst", label = expression("F"["ST"])),
                           track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6),
                           track(c("Abs_depth_females", "Abs_depth_males"), label = "Absolute depth", color = c("firebrick2", "dodgerblue3"), alpha=c(0.4, 0.4))),
             chromosomes.file.path = "chromosomes.tsv",
-            output.file = "region.png", width = 12, track.height = 4, res = 300)
+            output.file = "region2.png", width = 12, track.height = 4, res = 300)
