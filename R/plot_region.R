@@ -6,7 +6,7 @@
 #'
 #' @param region Region to plot, with syntax "Contig" or "Contig:start-end"
 #'
-#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{track}} function
+#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{region_track}} function
 #'
 #' @param chromosomes.file.path Path to a tabulated file specifying chromosome names (default: NULL)
 #'
@@ -44,8 +44,8 @@
 #' # for an entire chromosome to the default R device
 #'
 #' plot_region("data/psass_window.tsv", "Chr01",
-#'             tracks = list(track("Fst", label = expression("F"["ST"])),
-#'                           track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)),
+#'             tracks = list(region_track("Fst", label = expression("F"["ST"])),
+#'                           region_track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)),
 #'             chromosomes.file.path = "data/chromosomes.tsv")
 #'
 

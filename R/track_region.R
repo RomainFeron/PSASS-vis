@@ -19,10 +19,10 @@
 #' fst_track <- track("Fst")
 #' region_data <- create_region_track_data(genomic_data, region_info, fst_track)
 #'
-#' fst_plot <- track_region(region_data, region_info, fst_track, bottom.track=TRUE)
+#' fst_plot <- plot_track_region(region_data, region_info, fst_track, bottom.track=TRUE)
 #'
 
-track_region <- function(data, region.info, track, bottom.track = FALSE) {
+plot_track_region <- function(data, region.info, track, bottom.track = FALSE) {
 
     # Create major grid lines for y axis if specified
     if (track$major.lines.y) {

@@ -8,7 +8,7 @@
 #'
 #' @param region Region to plot, with syntax "Contig" or "Contig:start-end"
 #'
-#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{track}} function
+#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{region_track}} function
 #'
 #' @param chromosomes.file.path Path to a tabulated file specifying chromosome names (default: NULL)
 #'
@@ -48,8 +48,8 @@
 #' genomic_data <- load_genome_input("psass_window.tsv")
 #'
 #' draw_region(genomic_data$data, genomic_data$lengths, "Chr01:0-3000000",
-#'             tracks = list(track("Fst", label = expression("F"["ST"])),
-#'                           track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)))
+#'             tracks = list(region_track("Fst", label = expression("F"["ST"])),
+#'                           region_track(c("Snps_females", "Snps_males"), label = "Pool-specific SNPs", color = c("firebrick2", "dodgerblue3"), alpha=0.6)))
 #'
 
 draw_region <- function(data, contig_lengths, region,
@@ -84,7 +84,7 @@ draw_region <- function(data, contig_lengths, region,
         track_data <- create_region_track_data(data, region_info, tracks[[i]])
 
         # Generate track plot
-        plots[[i]] <- track_region(track_data, region_info, tracks[[i]], bottom.track = bottom_track)
+        plots[[i]] <- plot_track_region(track_data, region_info, tracks[[i]], bottom.track = bottom_track)
 
     }
 
@@ -110,13 +110,13 @@ draw_region <- function(data, contig_lengths, region,
 
 #' @title Create region track data
 #'
-#' @description Create input data frame for the \code{\link{track_region}} function from the genomic data and the track information
+#' @description Create input data frame for the \code{\link{plot_track_region}} function from the genomic data and the track information
 #'
 #' @param data Genomic data (e.g. result of PSASS or RADSex loaded with the \code{\link{load_genome_input}} function)
 #'
 #' @param region.info Information on the region to plot, output of the \code{\link{parse_region}} function
 #'
-#' @param track Track object for the current plot, generated with the \code{\link{track}} function
+#' @param track Track object for the current plot, generated with the \code{\link{region_track}} function
 #'
 #' @return A data frame with columns:
 #' Position | Metric 1 | Metric 1 colors | ... | Metric N | Metric N colors
@@ -125,7 +125,7 @@ draw_region <- function(data, contig_lengths, region,
 #'
 #' genomic_data <- load_genome_input("psass_window.tsv")
 #' region_info <- parse_region("Chr01:0-1500000")
-#' track <- track("Fst")
+#' track <- region_track("Fst")
 #'
 #' region_data <- create_region_track_data(genomic_data, region_info, track)
 #'
@@ -152,7 +152,7 @@ create_region_track_data <- function(data, region.info, track) {
 
 
 
-#' @title Create track object
+#' @title Create region track object
 #'
 #' @description Generate an object storing all properties for a region track
 #'
@@ -187,14 +187,14 @@ create_region_track_data <- function(data, region.info, track) {
 #' @examples
 #'
 #' # Single metric
-#' track_data <- track("Fst", color = "grey70", type = "points", point.size = 0.75)
+#' track_data <- region_track("Fst", color = "grey70", type = "points", point.size = 0.75)
 #'
 #' # Multiple metrics
-#' track_data <- track(c("Snp_females", "Snp_males"), color = c("firebrick2", "dodgerblue3"), alpha = 0.5)
+#' track_data <- region_track(c("Snp_females", "Snp_males"), color = c("firebrick2", "dodgerblue3"), alpha = 0.5)
 #'
 
-track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type = NULL, point.size = NULL,
-                  major.lines.y = NULL, major.lines.x = NULL, legend.position = NULL, ylim = NULL) {
+region_track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type = NULL, point.size = NULL,
+                         major.lines.y = NULL, major.lines.x = NULL, legend.position = NULL, ylim = NULL) {
 
     n_metrics <- length(metrics)
 
@@ -241,7 +241,7 @@ track <- function(metrics, label = NULL, color = NULL, alpha = NULL, type = NULL
 #'
 #' @description Assign default values to all properties for which the value was not specified by the user (e.g. value is NULL)
 #'
-#' @param track A track object generated with the \code{\link{track}} function)
+#' @param track A track object generated with the \code{\link{region_track}} function)
 #'
 #' @param default.color Default color for a track when not specified in track data (default: "grey20")
 #'
