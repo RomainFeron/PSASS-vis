@@ -1,6 +1,6 @@
 #' @title Plot region
 #'
-#' @description High-level function to generate a linear plot with multiple tracks for a specified genomic region
+#' @description Generate a linear plot with multiple tracks for a specified genomic region from a genomic data file
 #'
 #' @param input.file.path Path to a genomic data input file (e.g. result of PSASS or RADSex)
 #'

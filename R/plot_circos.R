@@ -1,6 +1,6 @@
-#' @title Plot genome circos
+#' @title Plot circos
 #'
-#' @description Generate a circos plot of the entire genome from the results of PSASS.
+#' @description Generate a circos plot with multiple tracks from a genomic data file
 #'
 #' @param input.file.path Path to a genomic data input file (e.g. result of PSASS or RADSex)
 #'

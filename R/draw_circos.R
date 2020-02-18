@@ -110,7 +110,7 @@ draw_circos <- function(data, contig.lengths, tracks,
         # Plot a single track
         plot_circos_track(track_data, tracks[[i]],
                           top.track = top_track, sector.titles.expand = sector.titles.expand,
-                          first_sector = names(contig.lengths)[1])
+                          first.sector = names(contig.lengths)[1])
 
         top_track <- FALSE
     }
