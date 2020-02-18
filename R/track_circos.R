@@ -13,7 +13,6 @@
 #' @param first.sector Name of the first sector to draw y-axis on (default: NULL)
 #'
 #' @examples
-#'
 #' genomic_data <- load_genome_input("psass_window.tsv")
 #' fst_track <- circos_track("Fst")
 #' circos_data <- create_circos_track_data(genomic_data, fst_track)

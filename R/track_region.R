@@ -13,7 +13,6 @@
 #' @return A ggplot object for the plot
 #'
 #' @examples
-#'
 #' genomic_data <- load_genome_input("psass_window.tsv")
 #' region_info <- parse_region("Chr01:0-1500000")
 #' fst_track <- region_track("Fst")
