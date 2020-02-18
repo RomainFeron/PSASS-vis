@@ -16,7 +16,7 @@
 #'
 #' genomic_data <- load_genome_input("psass_window.tsv")
 #' region_info <- parse_region("Chr01:0-1500000")
-#' fst_track <- track("Fst")
+#' fst_track <- region_track("Fst")
 #' region_data <- create_region_track_data(genomic_data, region_info, fst_track)
 #'
 #' fst_plot <- plot_track_region(region_data, region_info, fst_track, bottom.track=TRUE)

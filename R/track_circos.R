@@ -15,7 +15,7 @@
 #' @examples
 #'
 #' genomic_data <- load_genome_input("psass_window.tsv")
-#' fst_track <- track("Fst")
+#' fst_track <- circos_track("Fst")
 #' circos_data <- create_circos_track_data(genomic_data, fst_track)
 #'
 #' plot_track_region(region_data, fst_track, top.track=TRUE)
