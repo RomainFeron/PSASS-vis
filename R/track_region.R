@@ -6,7 +6,7 @@
 #'
 #' @param region.info Information on the region to plot, output of the \code{\link{parse_region}} function
 #'
-#' @param track Track object storing properties for the current track, generated with the \code{\link{track}} function
+#' @param track Track object storing properties for the current track, generated with the \code{\link{region_track}} function
 #'
 #' @param bottom.track If TRUE, x-axis labels and title will be added to the plot
 #'

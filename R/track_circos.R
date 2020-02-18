@@ -4,7 +4,7 @@
 #'
 #' @param data Input data generated with the \code{\link{create_region_track_data}} function)
 #'
-#' @param track Track object storing properties for the current track, generated with the \code{\link{track}} function
+#' @param track Track object storing properties for the current track, generated with the \code{\link{circos_track}} function
 #'
 #' @param top.track If TRUE, x-axis labels and sector names will be added to the track
 #'
