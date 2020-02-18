@@ -1,20 +1,39 @@
-parse_region <- function(region, contig_lengths) {
+#' @title Parse region
+#'
+#' @description Parse a region string with format "Contig:start-end"
+#'
+#' @param region String defining the region, with format "Contig" or "Contig:start-end"
+#'
+#' @param contig.lengths Vector with contigs as names and lengths as values (e.g. output of the \code{\link{load_genome_input}} function)
+#'
+#' @return A list of three elements: contig name, region start, and region end
+#'
+#' @examples
+#' data <- load_genome_input("psass_window.tsv")
+#' region_info <- parse_region("Chr01:150000-250000", data$lengths)
+#'
 
+parse_region <- function(region, contig.lengths) {
+
+    # Get contig
     tmp = strsplit(region, ":")
     contig = tmp[[1]][1]
 
+    # Check that contig is in list of contig lengths
+    # When used in the draw_region function, unplaced contigs are added to vector of contig lengths
+    # before parsing region string
     if (!(contig %in% names(contig_lengths))) {
         print(paste0("Error: invalid contig in region <", region, ">"))
         exit(1)
     }
 
-    if (length(tmp[[1]]) == 2) {
+    if (length(tmp[[1]]) == 2) {  # Case "Contig:start-end"
 
         tmp = strsplit(tmp[[1]][2], "-")
         start = as.numeric(tmp[[1]][1])
         end = as.numeric(tmp[[1]][2])
 
-    } else {
+    } else {  # Case "Contig": get end from vector of contig lengths
 
         start = 0
         end = unname(contig_lengths[contig])
@@ -25,39 +44,90 @@ parse_region <- function(region, contig_lengths) {
 }
 
 
+
+#' @title Convert to Mb
+#'
+#' @description Convert a genomic position to Mega bp (round to n digits).
+#' This function can be called directly to generate labels in plot scales.
+#'
+#' @param x Genomic position to convert
+#'
+#' @param n Number of digits to round the value
+#'
+#' @return A float of the converted value
+#'
+#' @examples
+#' x_mb <- convert_to_mb(1267356, 2)
+#' x_mb: 1.27
+#'
 convert_to_mb <- function(x, n = 0) {
     round(x / 10^6, n)
 }
 
 
+
+#' @title Convert to Kb
+#'
+#' @description Convert a genomic position to Kilo bp (round to n digits).
+#' This function can be called directly to generate labels in ggplot scales.
+#'
+#' @param x Genomic position to convert
+#'
+#' @param n Number of digits to round the value
+#'
+#' @return A float of the converted value
+#'
+#' @examples
+#' x_mb <- convert_to_kb(1267356, 2)
+#' x_mb: 1267.36
+#'
 convert_to_kb <- function(x, n = 0) {
     round(x / 10^3, n)
 }
 
 
-# Generate a nice scale for any interval
-generate_x_scale <- function(region_info) {
+
+#' @title Generate x-axis scale
+#'
+#' @description Generate an x-axis scale with a given number of ticks, automatically converting genomic positions to the best unit
+#'
+#' @param region.info A list with three elements: contig name, region start, region end (e.g. output of the \code{\link{parse_region}} function)
+#'
+#' @param n.ticks Number of ticks in the scale
+#'
+#' @return An object of type scale_x_continuous (from ggplot2) encoding the scale
+#'
+#' @examples
+#' x_mb <- convert_to_kb(1267356, 2)
+#' x_mb: 1267.36
+#'
+generate_x_scale <- function(region.info, n.ticks = 10) {
 
     # Size of the region
-    S <- (region_info[[3]] - region_info[[2]]) / 10
-    if (S <= 0) stop(paste0("Error: the size of the region has to be > 0 (value: ", S * 10, ")"))
+    S <- (region_info[[3]] - region_info[[2]]) / n.ticks
+    if (S <= 0) stop(paste0("Error: the size of the region has to be > 0 (value: ", S * n.ticks, ")"))
 
     # Find the order of magnitude of the region's size
     N <- floor(log(S, 10))
     N10 <- 10 ^ N
 
-    # Generate a scale of 10 round values within the region
+    # Generate a scale of n.ticks round values within the region
     scale <- seq(N10 * floor(region_info[[2]] / N10), N10 * ceiling(region_info[[3]] / N10), N10 * round(S / N10, 1))
 
-    # Adjust the labels based on the size of the values (megabp or kilop)
+    # Adjust the labels based on the size of the values (megabp or kilobp)
     if (region_info[[2]] < 10 ^ 6 & region_info[[3]] < 10 ^ 6) {
+
         scale_labels <- round(scale / 10 ^ 3, 3 - N)
         bp_unit <- "K"
+
     } else {
+
         scale_labels <- round(scale / 10 ^ 6, 6 - N)
         bp_unit <- "M"
+
     }
 
+    # Generate the scale object
     output <- ggplot2::scale_x_continuous(name = paste0("Position on ", region_info[[1]], " (", bp_unit, "bp)"),
                                           expand = c(0.01, 0.01),
                                           breaks = scale,
