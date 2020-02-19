@@ -1,222 +1,194 @@
-#' @title Draw a manhattan plot
-#'
-#' @description Draw a manhattan plot from the PSASS data
-#'
-#' @param data A PSASS data structure obtained with the \code{\link{load_data_files}} function.
-#'
-#' @param output.file Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).
-#'
-#' @param width Width of the output file if specified, in inches (default: 14).
-#'
-#' @param height Height of the output file if specified, in inches (default: 8).
-#'
-#' @param dpi Resolution of the output file if specified, in dpi (default: 300).
-#'
-#' @param track Track to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males", "window_snp_females", "depth_males", "depth_females"
-#' (default: "window_fst").
-#'
-#' @param lg.numbers If TRUE, chromosomes / LGs will be labeled with numbers instead of names to increase readability (default: FALSE).
-#'
-#' @param point.size Size of a point in the plot (default 0.5)
-#'
-#' @param point.palette Color palette for the dots (default c("dodgerblue3", "darkgoldenrod2"))
-#'
-#' @param background.palette Color palette for the background (default c("grey85", "grey100"))
-#'
-#' @param depth.type Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").
-#'
-#' @param min.depth Minimum depth to compute depth ratio.
-#' The ratio for positions with depth lower than this value in either sex will be 1 (default: 10).
-#'
-#' @examples
-#'
-#' draw_manhattan_plot(data, track = "window_fst")
+draw_manhattan_plot <- function(data, contig.lengths, tracks,
+                                output.file = NULL, width = 14, track.height = 6, res = 300,
+                                chromosomes.as.numbers = FALSE,
+                                default.point.color = c("dodgerblue3", "darkgoldenrod2"),
+                                default.bg.color = c("grey85", "white"),
+                                default.point.size = 0.5, default.ylim = NULL) {
 
+    # Compute increment to add to each contig (i.e. cumulative length of each contig before this one)
+    increments <- setNames(c(0, cumsum(head(contig.lengths, -1))), names(contig.lengths))
 
-draw_manhattan_plot <- function(data,
-                                output.file = NULL, width = 14, height = 8, dpi = 300,
-                                track = "window_fst", lg.numbers = FALSE,
-                                point.size = 0.5, point.palette = c("dodgerblue3", "darkgoldenrod2"), background.palette = c("grey85", "grey100"),
-                                depth.type = "absolute", min.depth = 10) {
+    # Adjust x-axis position for each point in the data based on increments
+    data$Position_plot = data$Position_plot + increments[data$Contig_plot]
 
-    # Compute cumulative lengths of contigs, which will be added to the position of each point depending on the contig
-    cumulative_lengths <- c(0, cumsum(data$lengths$lg))
-    names(cumulative_lengths) <- c(names(data$lengths$lg), "Unplaced")
+    # Create data for background rectangles (for alternating background color)
+    backgrounds <- data.frame(contig = names(increments), start = increments, end = increments + contig.lengths)
 
-    # Load data
-    if (track == "window_fst") {
+    # Initialize list of plots
+    n_tracks <- length(tracks)
+    plots <- rep(list(NULL), n_tracks)
 
-        manhattan_data <- data$window_fst[, c(1, 2, 3, 5, 6)]
-        y_title = expression(bold(paste("F"["ST"], " in a sliding window")))
+    # Draw specified tracks
+    bottom_track <- FALSE
+    for (i in c(1:n_tracks)) {
 
-    } else if (track == "position_fst") {
+        if (i == n_tracks) bottom_track <- TRUE  # For x-axis labels and title
 
-        manhattan_data <- data$position_fst[, c(1, 2, 3, 5, 6)]
-        y_title = expression(bold(paste("Per-base F"["ST"])))
+        # Assign default values to track properties if not specified by user
+        tracks[[i]] <- assign_manhattan_track_default(tracks[[i]], default.point.color = default.point.color, default.bg.color = default.bg.color,
+                                                      default.point.size = default.point.size, default.ylim = default.ylim)
 
-    } else if (track == "window_snp_males") {
+        # Generate track data
+        track_data <- create_manhattan_track_data(data, tracks[[i]])
 
-        manhattan_data <- data$window_snp[, c(1, 2, 3, 6, 7)]
-        y_title = expression(bold(paste("Male-specific SNPs in a sliding window")))
+        # Generate background data
+        track_background_data <- create_manhattan_background_data(backgrounds, tracks[[i]])
 
-    } else if (track == "window_snp_females") {
-
-        manhattan_data <- data$window_snp[, c(1, 2, 4, 6, 7)]
-        y_title = expression(bold(paste("Female-specific SNPs in a sliding window")))
-
-    } else if (track == "depth_males") {
-
-        if (depth.type == "absolute") {
-
-            manhattan_data <- data$depth[, c(1, 2, 3, 8, 9)]
-            y_title = expression(bold(paste("Absolute male depth in a sliding window")))
-
-        } else if (depth.type == "relative") {
-
-            manhattan_data <- data$depth[, c(1, 2, 5, 8, 9)]
-            y_title = expression(bold(paste("Relative male depth in a sliding window")))
-
-        }
-
-    } else if (track == "depth_females") {
-
-        if (depth.type == "absolute") {
-
-            manhattan_data <- data$depth[, c(1, 2, 4, 8, 9)]
-            y_title = expression(bold(paste("Absolute female depth in a sliding window")))
-
-        } else if (depth.type == "relative") {
-
-            manhattan_data <- data$depth[, c(1, 2, 6, 8, 9)]
-            y_title = expression(bold(paste("Relative female depth in a sliding window")))
-
-        }
-
-    } else {
-
-        stop(paste0("Incorrect value <", track, "> for parameter 'track'"))
-    }
-
-    names(manhattan_data) <- c("Contig", "Position", "Value", "Original_position", "Contig_id")
-
-    # Adjust x-axis position for each point in the data based on cumulative lengths of contigs
-    manhattan_data$Position = manhattan_data$Position + cumulative_lengths[manhattan_data$Contig]
-
-    # Attribute alternating colors to each contig
-    if (length(data$lengths$lg) > 0) {
-
-        order <- seq(1, length(data$lengths$plot))
-
-        if (lg.numbers == TRUE) {
-
-            names(order) <- c(seq(1, length(order) - 1), "U")
-
-        } else {
-
-            names(order) <- names(data$lengths$plot)
-
-        }
-
-        manhattan_data$Color <- order[manhattan_data$Contig] %% 2
-        manhattan_data$Color <- as.factor(as.character(manhattan_data$Color))
-        show_lgs <- TRUE
-
-    } else {
-
-        order <- seq(1, length(data$lengths$unplaced))
-        names(order) <- names(data$lengths$unplaced)
-        manhattan_data$Color <- order[manhattan_data$Contig_id] %% 2
-        manhattan_data$Color <- as.factor(as.character(manhattan_data$Color))
-        show_lgs = FALSE
+        # Generate track plot
+        plots[[i]] <- plot_track_manhattan(track_data, backgrounds, tracks[[i]], bottom.track = bottom_track)
 
     }
 
-    # Create the background data for alternating background color
-    if (length(data$lengths$lg) > 0) {
+    # Combine all tracks in a single plot
+    combined <- cowplot::plot_grid(plotlist = plots, ncol = 1, align = "v")
 
-        background = data.frame(start = cumulative_lengths, end = cumulative_lengths + data$lengths$plot)
-        background$Color = rep_len(c("A", "B"), length.out = dim(background)[1])  # Alternating A/B
-
-    } else {
-
-        background = data.frame(start = cumulative_lengths, end = cumulative_lengths + data$lengths$plot)
-        background$Color = rep_len(c("A", "B"), length.out = dim(background)[1])  # Alternating A/B
-
-    }
-
-
-    # Create merged color palette for background and data points
-    merged_color_palette <- c("0"=point.palette[1], "1"=point.palette[2], "B"=background.palette[1], "A"=background.palette[2])
-
-    # Maximum / minimum Y value
-    ymax = 1.1 * max(manhattan_data$Value)
-    ymin = min(manhattan_data$Value)
-
-    manhattan_plot <- ggplot2::ggplot() +
-        # Backgrounds with alternating colors
-        ggplot2::geom_rect(data = background,
-                           ggplot2::aes(xmin = start, xmax = end, ymin = 0, ymax = ymax, fill = Color),
-                           alpha = 0.5) +
-        # Data points
-        ggplot2::geom_point(data = manhattan_data,
-                            ggplot2::aes(x = Position, y = Value, color = Color),
-                            size = point.size,
-                            alpha = 1) +
-        # Attribute color values from merged color scale for points and backgrounds
-        ggplot2::scale_color_manual(values = merged_color_palette) +
-        ggplot2::scale_fill_manual(values = merged_color_palette) +
-        # Generate y-axis
-        ggplot2::scale_y_continuous(name=y_title,
-                                    limits=c(ymin, ymax),
-                                    expand = c(0, 0)) +
-        # Adjust theme elements
-        cowplot::theme_cowplot() +
-        ggplot2::theme(legend.position = "none",
-                       panel.grid.minor = ggplot2::element_blank(),
-                       panel.grid.major.x = ggplot2::element_blank(),
-                       axis.line.x = ggplot2::element_blank(),
-                       panel.border = ggplot2::element_blank(),
-                       axis.line.y = ggplot2::element_line(color = "black"),
-                       axis.title.x = ggplot2::element_text(face="bold", margin = ggplot2::margin(10, 0, 0, 0)),
-                       axis.title.y = ggplot2::element_text(face="bold", margin = ggplot2::margin(0, 10, 0, 0)),
-                       axis.text.y = ggplot2::element_text(color="black", face="bold"))
-
-    if (lg.numbers == TRUE) {
-
-        manhattan_plot <- manhattan_plot + ggplot2::theme(axis.text.x = ggplot2::element_text(color="black", face="bold", vjust=0.5))
-
-    } else {
-
-        manhattan_plot <- manhattan_plot + ggplot2::theme(axis.text.x = ggplot2::element_text(color="black", face="bold", vjust=0.5, angle=90))
-
-    }
-
-    if (show_lgs) {
-
-        # Generate x-axis, use background start and end to place LG labels
-        manhattan_plot <- manhattan_plot + ggplot2::scale_x_continuous(name="Linkage Group",
-                                                                       breaks = background$start + (background$end - background$start) / 2,
-                                                                       labels = names(order),
-                                                                       expand = c(0, 0))
-
-    } else {
-
-        # Generate x-axis
-        manhattan_plot <- manhattan_plot +
-            ggplot2::scale_x_continuous() +
-            ggplot2::theme(axis.text.x = element_blank(), axis.ticks.x = element_blank(), axis.title.x = element_blank())
-
-    }
-
+    # Output to file if specified or print in current R device otherwise
     if (!is.null(output.file)) {
 
-        cowplot::ggsave(output.file, plot = manhattan_plot, width = width, height = height, dpi = dpi)
+        ggplot2::ggsave(output.file, plot = combined, width = width, height = track.height * n_tracks, dpi = res)
 
     } else {
 
-        print(manhattan_plot)
+        print(combined)
 
     }
 
-    return(manhattan_plot)
+    return(combined)
+}
+
+
+
+#' @title Create manhattan track object
+#'
+#' @description Generate an object storing all properties for a manhattan track
+#'
+#' @param metric Metric represented by the track, which should correspond to a column name in the data frame used as input
+#' data in the plot (output of the \code{\link{load_genome_input}} function)
+#'
+#' @param label Track label, NULL to set the label to the metric name (default: NULL)
+#'
+#' @param point.color Point color, either a string (e.g. "grey20") or a vector of alternating colors (e.g. c("red", "blue") for two colors)
+#'
+#' @param bg.color Background color, either a string (e.g. "white") or a vector of alternating colors (e.g. c("grey85", "white") for two colors)
+#'
+#' @param point.size Point size, directly passed to ggplot
+#'
+#' @param ylim Vector of y-axis limits for the track; if NULL, infer directly from data
+#'
+#' @return A named list with the value of each track property
+#'
+#' @examples
+#' # Single metric
+#' track_data <- manhattan_track("Fst", color = c("blue", "yellow"), point.size = 0.75)
+
+manhattan_track <- function(metric, label = NULL, point.color = NULL, bg.color = NULL, point.size = NULL, ylim = NULL) {
+
+    # Set a default label if not specified
+    if (is.null(label)) { label <- metric }
+
+    # Create track object
+    track_info <- list(metric=metric, label=label, point.color=point.color, bg.color=bg.color, point.size=point.size, ylim=ylim)
+
+    return(track_info)
+}
+
+
+
+#' @title Assign default values to a manhattan track object
+#'
+#' @description Assign default values to all properties for which the value was not specified by the user (e.g. value is NULL)
+#'
+#' @param track A track object generated with the \code{\link{manhattan_track}} function)
+#'
+#' @param default.point.color Default point color when not specified in track data (default: c("dodgerblue3", "darkgoldenrod2"))
+#'
+#' @param default.bg.color Default background color when not specified in track data (default: c("white", "grey85"))
+#'
+#' @param default.point.size Default point size for a track when not specified in track data (default: 0.5)
+#'
+#' @param default.ylim Default y-axis limits for a track when not specified in track data (default: NULL, i.e. infer from data)
+#'
+#' @return A track object with default values for properties not specified by the user
+#'
+#' @examples
+#' track_data <- assign_manhattan_track_default(track_data, default.point.size = 0.75)
+#'
+
+assign_manhattan_track_default <- function(track, default.point.color = c("dodgerblue3", "darkgoldenrod2"),
+                                           default.bg.color = c("white", "grey85"),
+                                           default.point.size = 0.5, default.ylim = NULL) {
+
+    if (is.null(track$point.color)) { track$point.color <- default.point.color }
+    if (is.null(track$bg.color)) { track$bg.color <- default.bg.color }
+    if (is.null(track$point.size)) { track$point.size <- default.point.size }
+    if (is.null(track$ylim)) { track$ylim <- default.ylim }
+
+    return(track)
+
+}
+
+
+
+#' @title Create manhattan track data
+#'
+#' @description Create input data frame for the \code{\link{plot_track_manhattan}} function from the genomic data and the track information
+#'
+#' @param data Genomic data (e.g. result of PSASS or RADSex loaded with the \code{\link{load_genome_input}} function)
+#'
+#' @param track Track object for the current plot, generated with the \code{\link{manhattan_track}} function
+#'
+#' @return A data frame with columns:
+#' Contig_plot | Position_plot | Metric | Point Color
+#'
+#' @examples
+#' genomic_data <- load_genome_input("psass_window.tsv")
+#' track <- manhattan_track("Fst")
+#'
+#' track_data <- create_manhattan_track_data(genomic_data, track)
+#'
+
+create_manhattan_track_data <- function(data, track) {
+
+    # Extract required columns and create color columns
+    track_data <- data[, c("Contig_plot", "Position_plot", track$metric)]
+    names(track_data)[3] <- "Value"
+    # Sort data by Contig then Position
+    track_data <- track_data[order(track_data$Contig_plot, track_data$Position_plot), ]
+    # Assign point color
+    contigs <- unique(track_data$Contig_plot)
+    n_contigs <- length(contigs)
+    points_palette <- setNames(rep(track$point.color, n_contigs)[1:n_contigs], contigs)
+    track_data$Color <- points_palette[track_data$Contig_plot]
+
+    return(track_data)
+}
+
+
+
+#' @title Create manhattan background data
+#'
+#' @description Create background data frame for the \code{\link{plot_track_manhattan}} function
+#'
+#' @param data Data frame with contig, start, and end for each background rectangle
+#'
+#' @param track Track object for the current plot, generated with the \code{\link{manhattan_track}} function
+#'
+#' @return A data frame with columns:
+#' contig | start | end | color
+#'
+#' @examples
+#' track <- manhattan_track("Fst")
+#' background_data <- create_manhattan_background_data(background_data, track)
+#'
+
+create_manhattan_background_data <- function(data, track) {
+
+    background_data <- data
+
+    # Assign point and background color
+    n_contigs <- nrow(data)
+    bg_palette <- setNames(rep(track$bg.color, n_contigs)[1:n_contigs], data$contig)
+    background_data$color <- bg_palette[background_data$contig]
+
+    return(background_data)
 }

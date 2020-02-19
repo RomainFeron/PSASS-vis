@@ -312,4 +312,3 @@ assign_circos_track_default <- function(track, default.color = "grey20", default
     return(track)
 
 }
-
