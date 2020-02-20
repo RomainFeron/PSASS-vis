@@ -1,10 +1,10 @@
 #' @title Draw circos plot
 #'
-#' @description Generate a circular plot with multiple track for the entire genome
+#' @description Generate a circular plot with multiple tracks for the entire genome
 #'
 #' @param data Genomic data (e.g. result of PSASS or RADSex loaded with the \code{\link{load_genome_input}} function)
 #'
-#' @param contig.lengths Contig lengths from the output of the \code{\link{load_genome_input}} function
+#' @param contig.lengths Contig lengths vector (e.g. from the output of the \code{\link{load_genome_input}} function)
 #'
 #' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{region_track}} function
 #'

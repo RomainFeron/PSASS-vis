@@ -6,7 +6,13 @@
 #'
 #' @param track Track object storing properties for the current track, generated with the \code{\link{manhattan_track}} function
 #'
-#' @param bottom.track If TRUE, x-axis labels and title will be added to the plot
+#' @param bottom.track If TRUE, x-axis labels and title will be added to the plot (default: TRUE)
+#'
+#' @param show.chromosome.names If TRUE, display chromosome names on the x axis (default: TRUE)
+#'
+#' @param x.labels.angle If TRUE, replace chromosome names with numbers for readability (default: FALSE)
+#'
+#' @param x.axis.title Title to display on the x axis (default: NULL, i.e. no title)
 #'
 #' @return A ggplot object for the plot
 #'
@@ -18,8 +24,11 @@
 #' fst_plot <- plot_track_manhattan(manhattan_data, fst_track, bottom.track=TRUE)
 #'
 
-plot_track_manhattan <- function(data, backgrounds, track, bottom.track = FALSE,
-                                 x.labels.angle = 90, x.title = "Chromosomes") {
+plot_track_manhattan <- function(data, backgrounds, track, bottom.track = TRUE,
+                                 show.chromosome.names = TRUE, x.labels.angle = 90, x.axis.title = NULL) {
+
+
+    if (is.null(x.axis.title)) { x.axis.title <- ggplot2::element_blank()}
 
     # Maximum / minimum Y value
     if (is.null(track$ylim)) { track$ylim = c(min(data[, 3]), 1.025 * max(data[, 3]) + 0.01) }
@@ -59,20 +68,20 @@ plot_track_manhattan <- function(data, backgrounds, track, bottom.track = FALSE,
                        axis.text.y = ggplot2::element_text(color = "black", face = "bold"),
                        axis.text.x = ggplot2::element_text(color = "black", face = "bold", vjust = 0.5, angle = x.labels.angle))
 
-    if (show_lgs) {
+    if (show.chromosome.names) {
 
         # Generate x-axis, use background start and end to place LG labels
-        manhattan_plot <- manhattan_plot + ggplot2::scale_x_continuous(name = x.label,
+        manhattan_plot <- manhattan_plot + ggplot2::scale_x_continuous(name = x.axis.title,
                                                                        breaks = backgrounds$start + (backgrounds$end - backgrounds$start) / 2,
-                                                                       labels = c(seq(1, nrow(backgrounds) - 1), "U"),
+                                                                       labels = unique(data$Contig_plot),
                                                                        expand = c(0, 0))
 
     } else {
 
-        # Generate x-axis
+        # Generate empty x-axis
         manhattan_plot <- manhattan_plot +
-            ggplot2::scale_x_continuous(expand = c(0, 0)) +
-            ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank(), axis.title.x = ggplot2::element_blank())
+            ggplot2::scale_x_continuous(expand = c(0, 0), name = x.axis.title) +
+            ggplot2::theme(axis.text.x = ggplot2::element_blank(), axis.ticks.x = ggplot2::element_blank())
 
     }
 }

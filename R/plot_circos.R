@@ -4,7 +4,7 @@
 #'
 #' @param input.file.path Path to a genomic data input file (e.g. result of PSASS or RADSex)
 #'
-#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{region_track}} function
+#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{circos_track}} function
 #'
 #' @param chromosomes.file.path Path to a tabulated file specifying chromosome names (default: NULL)
 #'

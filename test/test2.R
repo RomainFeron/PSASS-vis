@@ -10,9 +10,13 @@ default.point.color = c("dodgerblue3", "darkgoldenrod2")
 default.bg.color = c("grey85", "white")
 default.point.size = 0.5
 default.ylim = NULL
+show.chromosome.names = TRUE
+x.axis.title = "Chromosomes"
 
 
 data <- track_data
 backgrounds <- track_background_data
 track <- tracks[[1]]
 bottom.track <- TRUE
+x.labels.angle = 90
+x.title = "Chromosomes"

@@ -1,87 +1,78 @@
-#' @title Plot manhattan
+#' @title Manhattan plot
 #'
-#' @description Generate a manhattan plot for a specific track from the results of PSASS.
+#' @description Generate a manhattan plot with multiple tracks from a genomic data file
 #'
-#' @param contig_lengths_file_path Path to a contig lengths file.
+#' @param input.file.path Path to a genomic data input file (e.g. result of PSASS or RADSex)
 #'
-#' @param chromosomes_names_file_path Path to a contig names file (default NULL).
+#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{manhattan_track}} function
 #'
-#' @param prefix Prefix (including full path) to a complete dataset. If prefix is specified, it will be override individual file specifications
-#' such as "window_fst_file_path" (default NULL).
+#' @param chromosomes.file.path Path to a tabulated file specifying chromosome names (default: NULL)
 #'
-#' @param window_fst_file_path Path to a FST window output file (default NULL).
+#' @param detect.chromosomes If TRUE, will consider contigs starting with LG, CH, or NC as chromosomes if no chromosomes were specified (default: TRUE)
 #'
-#' @param position_fst_file_path Path to a FST positions output file (default NULL).
+#' @param unplaced.label Label for unplaced contigs (default: "Unplaced")
 #'
-#' @param window_snps_file_path Path to a SNPs window output file (default NULL).
+#' @param output.file Path to an output file for the generated manhattan plot, or NULL to plot in the current R device (default: NULL)
 #'
-#' @param position_snps_file_path Path to a SNPs positions output file (default NULL).
+#' @param width Plot width when plotting to an output file, in inches (default: 12)
 #'
-#' @param depth_file_path Path to a depth output file (default NULL).
+#' @param track.height Height of a single track when plotting to an output file, in inches (default: 6)
 #'
-#' @param output.file Path to an output file in PNG format. If NULL, the plot will be drawn in the default graphic device (default: NULL).
+#' @param res Image resolution when plotting to an output file, in dpi (default: 300)
 #'
-#' @param width Width of the output file if specified, in inches (default: 14).
+#' @param chromosomes.as.numbers If TRUE, replace chromosome names with numbers for readability (default: FALSE)
 #'
-#' @param height Height of the output file if specified, in inches (default: 8).
+#' @param show.chromosome.names If TRUE, display chromosome names on the x axis (default: TRUE)
 #'
-#' @param dpi Resolution of the output file if specified, in dpi (default: 300).
+#' @param x.axis.title Title to display on the x axis (default: NULL, i.e. no title)
 #'
-#' @param track Track to be plotted. Possible values are "position_fst", "window_fst", "window_snp_males", "window_snp_females", "depth_males", "depth_females"
-#' (default: "window_fst").
+#' @param default.point.color Default color for a track when not specified in track data,
+#' either a string (e.g. "grey20") or a vector of alternating colors (e.g. c("red", "blue") for two colors) (default: c("dodgerblue3", "darkgoldenrod2"))
 #'
-#' @param lg.numbers If TRUE, chromosomes / LGs will be labeled with numbers instead of names to increase readability (default: FALSE).
+#' @param default.bg.color Default background color when not specified in track data,
+#' either a string (e.g. "grey20") or a vector of alternating colors (e.g. c("grey80", "white") for two colors) (default: c("grey85", "white"))
 #'
-#' @param point.size Size of a point in the plot (default 0.5)
+#' @param default.point.size Default point size for a track when not specified in track data (default: 0.5)
 #'
-#' @param point.palette Color palette for the dots (default c("dodgerblue3", "darkgoldenrod2"))
-#'
-#' @param background.palette Color palette for the background (default c("grey85", "grey100"))
-#'
-#' @param depth.type Type of depth to be plotted, either "absolute" or "relative" (default: "absolute").
-#'
-#' @param min.depth Minimum depth to compute depth ratio.
-#' The ratio for positions with depth lower than this value in either sex will be 1 (default: 10).
+#' @param default.ylim Default y-axis limits for a track when not specified in track data (default: NULL, i.e. infer from data)
 #'
 #' @examples
+#' # Manhattan plot showing female-specific and male-specific SNPs on two tracks
+#' plot_manhattan("psass_window.tsv",
+#'                tracks = list(manhattan_track("Snps_females", point.color = c("firebrick1", "firebrick3")),
+#'                              manhattan_track("Snps_males", point.color = c("dodgerblue1", "dodgerblue3"))),
+#'                output.file = "manhattan.png",
+#'                chromosomes.as.numbers = TRUE, show.chromosome.names = TRUE, x.axis.title = "Chromosome")
 #'
-#' c_length <- "genome.fasta.fai"
-#' c_names <- "names.tsv"
-#' prefix <- "psass"
-#' plot_manhattan(c_length, prefix=prefix, chromosomes_names_file_path = c_names, lg.numbers = TRUE)
 
-plot_manhattan <- function(contig_lengths_file_path,
-                           prefix = NULL,
-                           window_fst_file_path = NULL, position_fst_file_path = NULL,
-                           window_snps_file_path = NULL, position_snps_file_path = NULL,
-                           depth_file_path = NULL, chromosomes_names_file_path = NULL,
-                           output.file = NULL, width = 14, height = 8, dpi = 300,
-                           track = "window_fst", lg.numbers = FALSE,
-                           point.size = 0.5, point.palette = c("dodgerblue3", "darkgoldenrod2"), background.palette = c("grey85", "grey100"),
-                           depth.type = "absolute", min.depth = 10) {
+plot_manhattan <- function(input.file.path, tracks,
+                           chromosomes.file.path = NULL, detect.chromosomes = TRUE, unplaced.label = "Unplaced",
+                           output.file = NULL, width = 14, track.height = 6, res = 300,
+                           chromosomes.as.numbers = FALSE, show.chromosome.names = TRUE,
+                           x.axis.title = NULL,
+                           default.point.color = c("dodgerblue3", "darkgoldenrod2"),
+                           default.bg.color = c("grey85", "white"),
+                           default.point.size = 0.5, default.ylim = NULL) {
 
 
-    # Load the data
-    data <- load_data_files(contig_lengths_file_path,
-                            prefix = prefix,
-                            window_fst_file_path = window_fst_file_path,
-                            position_fst_file_path = position_fst_file_path,
-                            window_snps_file_path = window_snps_file_path,
-                            position_snps_file_path = position_snps_file_path,
-                            depth_file_path = depth_file_path,
-                            chromosomes_names_file_path = chromosomes_names_file_path,
-                            plot.unplaced = TRUE)
+    # Load chromosome names (return NULL of no chromosomes file)
+    chromosomes <- load_chromosome_names(chromosomes.file.path)
 
-    draw_manhattan_plot(data,
-                        output.file = output.file,
-                        width = width,
-                        height = height,
-                        dpi = dpi,
-                        track = track,
-                        lg.numbers = lg.numbers,
-                        point.size = point.size,
-                        point.palette = point.palette,
-                        background.palette = background.palette,
-                        depth.type = depth.type,
-                        min.depth = min.depth)
+    # Load genomic data
+    data <- load_genome_input(input.file.path, chromosomes = chromosomes, detect.chromosomes = detect.chromosomes, unplaced.label = unplaced.label)
+
+    manhattan_plot <- draw_manhattan_plot(data$data,
+                                          data$lengths,
+                                          tracks,
+                                          output.file = output.file,
+                                          width = width,
+                                          track.height = track.height,
+                                          res = res,
+                                          chromosomes.as.numbers = chromosomes.as.numbers,
+                                          show.chromosome.names = show.chromosome.names,
+                                          x.axis.title = x.axis.title,
+                                          default.point.color = default.point.color,
+                                          default.bg.color = default.bg.color,
+                                          default.point.size = default.point.size,
+                                          default.ylim = default.ylim)
 }

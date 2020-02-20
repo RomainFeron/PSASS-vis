@@ -4,7 +4,7 @@
 #'
 #' @param data Genomic data (e.g. result of PSASS or RADSex loaded with the \code{\link{load_genome_input}} function)
 #'
-#' @param contig.lengths Contig lengths from the output of the \code{\link{load_genome_input}} function
+#' @param contig.lengths Contig lengths vector (e.g. from the output of the \code{\link{load_genome_input}} function)
 #'
 #' @param region Region to plot, with syntax "Contig" or "Contig:start-end"
 #'

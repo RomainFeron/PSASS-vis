@@ -1,6 +1,53 @@
+#' @title Draw manhattan plot
+#'
+#' @description Generate a manhattan plot with multiple tracks for the entire genome
+#'
+#' @param data Genomic data (e.g. result of PSASS or RADSex loaded with the \code{\link{load_genome_input}} function)
+#'
+#' @param contig.lengths Contig lengths vector (e.g. from the output of the \code{\link{load_genome_input}} function)
+#'
+#' @param tracks List of tracks to plot. Tracks can be generated with the \code{\link{manhattan_track}} function
+#'
+#' @param output.file Path to an output file for the generated manhattan plot, or NULL to plot in the current R device (default: NULL)
+#'
+#' @param width Plot width when plotting to an output file, in inches (default: 12)
+#'
+#' @param track.height Height of a single track when plotting to an output file, in inches (default: 6)
+#'
+#' @param res Image resolution when plotting to an output file, in dpi (default: 300)
+#'
+#' @param chromosomes.as.numbers If TRUE, replace chromosome names with numbers for readability (default: FALSE)
+#'
+#' @param show.chromosome.names If TRUE, display chromosome names on the x axis (default: TRUE)
+#'
+#' @param x.axis.title Title to display on the x axis (default: NULL, i.e. no title)
+#'
+#' @param default.point.color Default color for a track when not specified in track data,
+#' either a string (e.g. "grey20") or a vector of alternating colors (e.g. c("red", "blue") for two colors) (default: c("dodgerblue3", "darkgoldenrod2"))
+#'
+#' @param default.bg.color Default background color when not specified in track data,
+#' either a string (e.g. "grey20") or a vector of alternating colors (e.g. c("grey80", "white") for two colors) (default: c("grey85", "white"))
+#'
+#' @param default.point.size Default point size for a track when not specified in track data (default: 0.5)
+#'
+#' @param default.ylim Default y-axis limits for a track when not specified in track data (default: NULL, i.e. infer from data)
+#'
+#' @return Combined plot data (ggplot object)
+#'
+#' @examples
+#' # Manhattan plot showing female-specific and male-specific SNPs on two tracks
+#' genomic_data <- load_genome_input("psass_window.tsv")
+#' draw_manhattan_plot(genomic_data$data, genomic_data$lengths,
+#'                     tracks = list(manhattan_track("Snps_females", point.color = c("firebrick1", "firebrick3")),
+#'                                   manhattan_track("Snps_males", point.color = c("dodgerblue1", "dodgerblue3"))),
+#'                     output.file = "manhattan.png",
+#'                     chromosomes.as.numbers = TRUE, show.chromosome.names = TRUE, x.axis.title = "Chromosome")
+#'
+
 draw_manhattan_plot <- function(data, contig.lengths, tracks,
                                 output.file = NULL, width = 14, track.height = 6, res = 300,
-                                chromosomes.as.numbers = FALSE,
+                                chromosomes.as.numbers = FALSE, show.chromosome.names = TRUE,
+                                x.axis.title = NULL,
                                 default.point.color = c("dodgerblue3", "darkgoldenrod2"),
                                 default.bg.color = c("grey85", "white"),
                                 default.point.size = 0.5, default.ylim = NULL) {
@@ -18,6 +65,9 @@ draw_manhattan_plot <- function(data, contig.lengths, tracks,
     n_tracks <- length(tracks)
     plots <- rep(list(NULL), n_tracks)
 
+    x.labels.angle = 90  # Vertical labels when full chromosome names
+    if (chromosomes.as.numbers) {x.labels.angle = 0}  # Horizontal labels when numbers
+
     # Draw specified tracks
     bottom_track <- FALSE
     for (i in c(1:n_tracks)) {
@@ -29,13 +79,15 @@ draw_manhattan_plot <- function(data, contig.lengths, tracks,
                                                       default.point.size = default.point.size, default.ylim = default.ylim)
 
         # Generate track data
-        track_data <- create_manhattan_track_data(data, tracks[[i]])
+        track_data <- create_manhattan_track_data(data, tracks[[i]], chromosomes.as.numbers = chromosomes.as.numbers)
 
         # Generate background data
         track_background_data <- create_manhattan_background_data(backgrounds, tracks[[i]])
 
         # Generate track plot
-        plots[[i]] <- plot_track_manhattan(track_data, backgrounds, tracks[[i]], bottom.track = bottom_track)
+        plots[[i]] <- plot_track_manhattan(track_data, track_background_data, tracks[[i]], bottom.track = bottom_track,
+                                           show.chromosome.names = show.chromosome.names, x.labels.angle = x.labels.angle,
+                                           x.axis.title = x.axis.title)
 
     }
 
@@ -137,6 +189,8 @@ assign_manhattan_track_default <- function(track, default.point.color = c("dodge
 #'
 #' @param track Track object for the current plot, generated with the \code{\link{manhattan_track}} function
 #'
+#' @param chromosomes.as.numbers If TRUE, replace chromosome names with numbers for readability (default: FALSE)
+#'
 #' @return A data frame with columns:
 #' Contig_plot | Position_plot | Metric | Point Color
 #'
@@ -147,7 +201,7 @@ assign_manhattan_track_default <- function(track, default.point.color = c("dodge
 #' track_data <- create_manhattan_track_data(genomic_data, track)
 #'
 
-create_manhattan_track_data <- function(data, track) {
+create_manhattan_track_data <- function(data, track, chromosomes.as.numbers = FALSE) {
 
     # Extract required columns and create color columns
     track_data <- data[, c("Contig_plot", "Position_plot", track$metric)]
@@ -159,6 +213,11 @@ create_manhattan_track_data <- function(data, track) {
     n_contigs <- length(contigs)
     points_palette <- setNames(rep(track$point.color, n_contigs)[1:n_contigs], contigs)
     track_data$Color <- points_palette[track_data$Contig_plot]
+
+    if (chromosomes.as.numbers) {
+        chromosome_numbers <- setNames(c(seq(1, n_contigs - 1), 'U'), contigs)
+        track_data$Contig_plot <- chromosome_numbers[track_data$Contig_plot]
+    }
 
     return(track_data)
 }
