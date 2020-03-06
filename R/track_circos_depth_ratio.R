@@ -30,8 +30,8 @@ track_circos_depth_ratio <- function(data, min.depth = 10,
     print(" - Drawing depth ratio track ...")
 
     # Compute log of depth ratio
-    data$Ratio <- log(data$Males_depth_abs / data$Females_depth_abs, 2)
-    data$Ratio[which(data$Males_depth_abs < min.depth & data$Females_depth_abs < min.depth)] <- 0  # Don't compute ratio when depth is lower than min.depth
+    data$Ratio <- log(data$Males_depth_rel / data$Females_depth_rel, 2)
+    data$Ratio[which(data$Males_depth_abs < min.depth | data$Females_depth_abs < min.depth)] <- 0  # Don't compute ratio when depth is lower than min.depth
     lim <- 1.25 * max(abs(data$Ratio))
     ylim <- c(-lim, lim)  # Y axis limits
 
